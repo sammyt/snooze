@@ -1,4 +1,4 @@
-package org.projectsnooze.session
+package org.projectsnooze.dependency
 {
 	import org.projectsnooze.patterns.Command;
 	import org.projectsnooze.patterns.Observer;

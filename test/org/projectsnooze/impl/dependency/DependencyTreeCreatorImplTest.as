@@ -14,7 +14,6 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.impl.scheme.EntityDataMapProviderImpl;
 	import org.projectsnooze.impl.scheme.SchemeBuilderImpl;
 	import org.projectsnooze.scheme.SchemeBuilder;
-	import org.projectsnooze.session.DependencyNode;
 
 	public class DependencyTreeCreatorImplTest extends TestCase
 	{
@@ -27,7 +26,7 @@ package org.projectsnooze.impl.dependency
 		public static function suite():TestSuite 
 		{
    			var ts:TestSuite = new TestSuite();
-   			//ts.addTest( new DependencyTreeCreatorImplTest( "testDependencyMap" ) );
+   			ts.addTest( new DependencyTreeCreatorImplTest( "testGettingTheEntities" ) );
    			return ts;
    		}
    		
@@ -56,9 +55,20 @@ package org.projectsnooze.impl.dependency
    			_treeCreator = null;
    		}
    		
-   		public function testDependencyMap () : void
+   		public function testGettingTheEntities () : void
    		{
-   			/* var school : SchoolClass = new SchoolClass();
+   			
+   			var school : SchoolClass = new SchoolClass();
+   			
+   			assertTrue( "just the one object" , _treeCreator.getAllContainedEntities( school ).length == 1 );
+   		}
+   		
+   		
+   		/* public function testDependencyMap () : void
+   		{
+			assertTrue( false );
+	
+   			var school : SchoolClass = new SchoolClass();
    			
    			var mother : Mother = new Mother();
    			mother.setName( "its all gone wrong" );
@@ -76,7 +86,7 @@ package org.projectsnooze.impl.dependency
    			{
    				var dep : DependencyNode = deps[i] as DependencyNode;
    				trace ( dep.getEntityDataMap().getTableName() );
-   			} */
-   		}
+   			} 
+   		} */
 	}
 }

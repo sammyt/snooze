@@ -3,13 +3,10 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
-	import org.projectsnooze.impl.session.DependancyNodeImpl;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
-	import org.projectsnooze.session.DependencyNode;
 
 	public class DependencyTreeCreatorImpl implements DependencyTreeCreator
 	{
@@ -23,69 +20,52 @@ package org.projectsnooze.impl.dependency
 		
 		public function getSaveDependencyTree ( entity : Object ) : Array
 		{
-			trace( "getSaveDependencyTree " + entity );
 			var saveTree : Array = new Array();
-			buildNodes ( entity , saveTree );
+			
+			// need to create DependencyNode for each entity
+			
+			
+			
 			return saveTree;
 		}
 		
-		private function buildNodes ( entity : Object , list : Array , prevNode : DependencyNode = null , prevRelationship : Relationship = null ) : void
+		public function getAllContainedEntities ( entity : Object ) : Array
 		{
-			trace ( "buildNodes " + entity + " , " + list + " , " + prevNode + " , " + prevRelationship );
-			var dataMap : EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity ); 
+			var entities : Array = new Array();
+			entities.push( entity );
+			var dataMap : EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
 			
-			var node : DependencyNode = new DependancyNodeImpl();
-			node.setEntityDataMap( dataMap );
-			node.setEnity( entity );
-			list.push( node );
-			
-			if ( prevNode != null && prevRelationship != null )
-			{
-				if ( prevRelationship.getType().getForeignKeyContainer() )
-				{
-					node.registerObserver( prevNode );
-				}
-				else
-				{
-					prevNode.registerObserver( node );
-				}
-			}
-			
-			trace ( "DataMap " + dataMap.getTableName() );
 			for ( var iterator : Iterator = dataMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
 				var relationship : Relationship = iterator.next() as Relationship;
-				trace( "relationship " + relationship.getType().getName() );
-				//trace( "get" + relationship.getPropertyName() + " , " + entity );
-				
-				var value : * = entity[ "get" + relationship.getPropertyName() ]();
-				if ( value != null )
+				if ( relationship.getType().getForeignKeyContainer() )
 				{
-					if ( getTypeUtils().isCollection( value )  )
+					var getter : Function = entity[ "get" + relationship.getPropertyName() ] as Function;
+					if ( getter != null )
 					{
-						for ( var i : Iterator = new SmartIterator( value ) ; i.hasNext() ; )
+						var obj : * = getter();
+						if ( ! getTypeUtils().isCollection( obj ) )
 						{
-							buildNodes( i.next() , list , node , relationship );
+							entities.push( obj );
 						}
-					}
-					else
-					{
-						buildNodes( value , list , node , relationship );
+						else 
+						{
+							addContainedEntities( obj , entities );
+						}
 					}
 				}
 			}
+			return entities;
 		}
 		
-		private function isEntityAlreadyInDependecnyTree ( entity : Object , list : Array ) : Boolean
+		public function addContainedEntities ( entitiesToAdd : * , list : Array ) : void
 		{
-			for( var iterator : Iterator = new ArrayIterator( list ) ; iterator.hasNext() ; )
+			for( var iterator : Iterator = new SmartIterator ( entitiesToAdd ) ; iterator.hasNext() ; )
 			{
-				var dep : DependencyNode = iterator.next() as DependencyNode;
-				if ( dep.getEntity() == entity ) return true
+				var entity : * = iterator.next();
+				list.push( entity );
 			}
-			return false;
 		}
-		
 		
 		public function setEntityDataMapProvider ( entityDataMap : EntityDataMapProvider ) : void
 		{

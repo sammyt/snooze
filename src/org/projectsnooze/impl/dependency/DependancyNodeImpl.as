@@ -1,12 +1,12 @@
-package org.projectsnooze.impl.session
+package org.projectsnooze.impl.dependency
 {
 	import mx.collections.ArrayCollection;
 	
+	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.impl.patterns.ArrayCollectionIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.patterns.Observer;
 	import org.projectsnooze.scheme.EntityDataMap;
-	import org.projectsnooze.session.DependencyNode;
 
 	public class DependancyNodeImpl implements DependencyNode
 	{
