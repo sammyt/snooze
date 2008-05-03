@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="onCreationComplete()" >
+	<mx:Script>
+		<![CDATA[
+			import flexunit.junit.JUnitTestRunner;
+			import org.projectsnooze.impl.dependency.DependencyTreeCreatorImplTest;
+			import org.projectsnooze.impl.session.SessionImplTest;
+			import org.projectsnooze.impl.generator.DDLGeneratorImplTest;
+			import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
+			import org.projectsnooze.impl.scheme.EntityDataMapproviderImplTest;
+			import org.projectsnooze.impl.scheme.SchemeBuilderImplTest;
+			import org.projectsnooze.impl.scheme.TypeUtilsImplTest;
+			
+			import flexunit.framework.TestSuite;
+			
+			
+			private var runner:JUnitTestRunner;
+
+	        private function testComplete():void {
+	           fscommand( "quit" );
+	        }
+			
+			private function onCreationComplete() : void
+			{
+				
+				
+ 				var ts : TestSuite = new TestSuite();
+ 				ts.addTestSuite( SchemeBuilderImplTest );
+ 				ts.addTestSuite( EntityDataMapproviderImplTest );
+ 				ts.addTestSuite( TypeUtilsImplTest );
+ 				ts.addTestSuite( DDLGeneratorImplTest );
+ 				ts.addTestSuite( SessionImplTest );
+ 				ts.addTestSuite( DependencyTreeCreatorImplTest );
+ 				
+				runner = new JUnitTestRunner();
+ 				runner.run( ts , testComplete  );
+ 			}
+			
+		
+		]]>
+	</mx:Script>
+</mx:Application>

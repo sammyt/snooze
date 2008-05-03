@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication 
+				xmlns:mx="http://www.adobe.com/2006/mxml" 
+				xmlns="*"
+				xmlns:flexunit="flexunit.flexui.*"
+				creationComplete="onCreationComplete()" 
+				width="1000" height="700">
+	
+	<mx:Script>
+		<![CDATA[
+			import org.projectsnooze.impl.dependency.DependencyTreeCreatorImplTest;
+			import org.projectsnooze.impl.session.SessionImplTest;
+			import org.projectsnooze.impl.generator.DDLGeneratorImplTest;
+			import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
+			import org.projectsnooze.impl.scheme.EntityDataMapproviderImplTest;
+			import org.projectsnooze.impl.scheme.SchemeBuilderImplTest;
+			import org.projectsnooze.impl.scheme.TypeUtilsImplTest;
+			
+			import flexunit.framework.TestSuite;
+			
+			private function onCreationComplete() : void
+			{
+ 				testRunner.test = createSuite();
+ 				testRunner.startTest();
+ 			}
+			
+			private function createSuite() : TestSuite 
+			{
+ 				var testSuite:TestSuite = new TestSuite();
+ 				
+ 				testSuite.addTest( SchemeBuilderImplTest.suite() );
+ 				testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
+ 				testSuite.addTest( TypeUtilsImplTest.suite() );
+ 				testSuite.addTest( DDLGeneratorImplTest.suite() );
+ 				testSuite.addTest( SessionImplTest.suite() );
+ 				testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
+ 				
+ 				return testSuite;
+ 			}
+			
+		]]>
+	</mx:Script>
+
+	<flexunit:TestRunnerBase id="testRunner" width="100%" height="100%" />
+	
+</mx:WindowedApplication>
