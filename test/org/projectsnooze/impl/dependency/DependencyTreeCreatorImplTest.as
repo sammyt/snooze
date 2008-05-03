@@ -60,7 +60,7 @@ package org.projectsnooze.impl.dependency
    			
    			var school : SchoolClass = new SchoolClass();
    			
-   			assertTrue( "just the one object" , _treeCreator.getAllContainedEntities( school ).length == 5 );
+   			assertTrue( "just the one object" , _treeCreator.getAllContainedEntities( school ).length == 1 );
    		}
    		
    		
