@@ -45,11 +45,13 @@ package org.projectsnooze.impl.dependency
 			
 			if ( isPrevEntityFKContiner && lastDepNode )
 			{
-				depNode.registerObserver( lastDepNode );
+				depNode.addDependentNode( lastDepNode );
+				lastDepNode.addDependency( depNode )
 			}
 			else if ( lastDepNode )
 			{
-				lastDepNode.registerObserver( depNode );
+				lastDepNode.addDependentNode( depNode );
+				depNode.addDependency( lastDepNode )
 			}
 			
 			tree.push( entity );

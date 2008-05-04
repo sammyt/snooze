@@ -10,6 +10,7 @@ package org.projectsnooze.impl.dependency
 
 	public class DependancyNodeImpl implements DependencyNode
 	{
+		private var _dependencies : ArrayCollection;
 		private var _observers : ArrayCollection;
 		private var _entityDataMap : EntityDataMap;
 		private var _entity : Object;
@@ -17,6 +18,7 @@ package org.projectsnooze.impl.dependency
 		public function DependancyNodeImpl()
 		{
 			_observers = new ArrayCollection();
+			_dependencies = new ArrayCollection();
 		}
 
 		public function registerObserver(observer:Observer):void
@@ -30,7 +32,7 @@ package org.projectsnooze.impl.dependency
 		
 		public function update(obj:Object=null):void
 		{
-			var deoendancyNode : DependencyNode = obj as DependencyNode;
+			var dependencyNode : DependencyNode = obj as DependencyNode;
 			
 		}
 		
@@ -48,14 +50,40 @@ package org.projectsnooze.impl.dependency
 			}
 		}
 		
-		public function isDependent():Boolean
+		public function isComplete () : Boolean
 		{
 			return false;
 		}
 		
+		public function isDependent():Boolean
+		{
+			return _dependencies.length > 0;
+		}
+		
 		public function dependenciesAreMet():Boolean
 		{
-			return false;
+			var depsMet : Boolean = true;
+			
+			for ( var iterator : Iterator = new ArrayCollectionIterator( _dependencies ) ; iterator.next() ; )
+			{
+				var depNode : DependencyNode = iterator.next() as DependencyNode;
+				if ( ! depNode.isComplete() ) 
+				{
+					depsMet = false;
+				}
+			}
+			
+			return depsMet;
+		}
+		
+		public function addDependentNode ( dependencyNode : DependencyNode ) : void
+		{
+			registerObserver( dependencyNode );
+		}
+		
+		public function addDependency ( dependencyNode : DependencyNode ) : void
+		{
+			_dependencies.addItem( dependencyNode );
 		}
 		
 		public function setEnity ( entity : Object ) : void

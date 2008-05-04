@@ -11,6 +11,8 @@ package org.projectsnooze.dependency
 		
 		function dependenciesAreMet () : Boolean;
 		
+		function isComplete () : Boolean;
+		
 		function setEnity ( entity : Object ) : void;
 		
 		function getEntity () : Object;
@@ -18,5 +20,9 @@ package org.projectsnooze.dependency
 		function setEntityDataMap ( entityDataMap : EntityDataMap ) : void;
 		
 		function getEntityDataMap () : EntityDataMap;
+		
+		function addDependentNode ( dependencyNode : DependencyNode ) : void;
+		
+		function addDependency ( dependencyNode : DependencyNode ) : void;
 	}
 }
