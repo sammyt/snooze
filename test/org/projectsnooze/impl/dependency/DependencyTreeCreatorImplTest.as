@@ -8,25 +8,31 @@ package org.projectsnooze.impl.dependency
 	import flexunit.framework.TestCase;
 	import flexunit.framework.TestSuite;
 	
+	import mx.logging.ILogger;
+	
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.impl.scheme.EntityDataMapProviderImpl;
 	import org.projectsnooze.impl.scheme.SchemeBuilderImpl;
 	import org.projectsnooze.scheme.SchemeBuilder;
+	import org.projectsnooze.utils.SnoozeLog;
 
 	public class DependencyTreeCreatorImplTest extends TestCase
 	{
 		private var _treeCreator : DependencyTreeCreatorImpl;
+		private static var logger : ILogger
 		
 		public function DependencyTreeCreatorImplTest(methodName:String=null)
 		{
 			super(methodName);
 		}
+		
 		public static function suite():TestSuite 
 		{
+			
    			var ts:TestSuite = new TestSuite();
-   			ts.addTest( new DependencyTreeCreatorImplTest( "testGettingTheEntities" ) );
+   			ts.addTest( new DependencyTreeCreatorImplTest( "testGetSaveTree" ) );
    			return ts;
    		}
    		
@@ -55,38 +61,29 @@ package org.projectsnooze.impl.dependency
    			_treeCreator = null;
    		}
    		
-   		public function testGettingTheEntities () : void
+   		public function testGetSaveTree () : void
    		{
-   			
    			var school : SchoolClass = new SchoolClass();
    			
-   			assertTrue( "just the one object" , _treeCreator.getAllContainedEntities( school ).length == 1 );
-   		}
-   		
-   		
-   		/* public function testDependencyMap () : void
-   		{
-			assertTrue( false );
-	
-   			var school : SchoolClass = new SchoolClass();
+   			var child : Child = new Child();
+   			child.setHeight( 55 );
    			
    			var mother : Mother = new Mother();
-   			mother.setName( "its all gone wrong" );
-   			mother.setConcerns( [ new Concern() ] );
+   			mother.setName( "mummy" );
    			
-   			var c1 : Child = new Child();
-   			c1.setHeight( 3 );
-   			c1.setMother( mother );
+   			var concern : Concern = new Concern();
    			
-   			school.addChild( c1 );
+   			mother.addConcern( concern );
+   			child.setMother( mother );
+   			school.addChild( child );
    			
-   			var deps : Array = _treeCreator.getSaveDependencyTree( school );
+   			var list : Array = _treeCreator.getSaveDependencyTree( school )
+   			 
+   			logger = SnoozeLog.getLogger( this );
+   			logger.debug( "the dependency tree contains {0} node(s) , there should be 4" , list.length ); 
    			
-   			for ( var i : int = 0; i < deps.length ; i++ )
-   			{
-   				var dep : DependencyNode = deps[i] as DependencyNode;
-   				trace ( dep.getEntityDataMap().getTableName() );
-   			} 
-   		} */
+   			assertTrue( "has length of 4" , list.length == 4 );
+   			
+   		}
 	}
 }

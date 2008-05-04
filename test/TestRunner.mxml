@@ -8,6 +8,12 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.logging.targets.TraceTarget;
+			import mx.logging.ILogger;
+			import mx.logging.LogEventLevel;
+			import mx.logging.ILoggingTarget;
+			import cim.fx.logging.targets.LocalConnectionTarget;
+			import mx.logging.Log;
 			import org.projectsnooze.impl.dependency.DependencyTreeCreatorImplTest;
 			import org.projectsnooze.impl.session.SessionImplTest;
 			import org.projectsnooze.impl.generator.DDLGeneratorImplTest;
@@ -20,6 +26,25 @@
 			
 			private function onCreationComplete() : void
 			{
+				var localTarget:LocalConnectionTarget = new LocalConnectionTarget( "_snooze" );
+                localTarget.filters=["*"];
+                localTarget.level = LogEventLevel.ALL;
+                localTarget.includeDate = true;
+                localTarget.includeTime = true;
+                localTarget.includeCategory = true;
+                localTarget.includeLevel = true;
+                
+                var traceTarget: TraceTarget = new TraceTarget();
+                traceTarget.filters=["*"];
+                traceTarget.level = LogEventLevel.ALL;
+                traceTarget.includeDate = true;
+                traceTarget.includeTime = true;
+                traceTarget.includeCategory = true;
+                traceTarget.includeLevel = true;
+                
+                var logger : ILogger = Log.getLogger(this.className);
+				this.className
+				
  				testRunner.test = createSuite();
  				testRunner.startTest();
  			}

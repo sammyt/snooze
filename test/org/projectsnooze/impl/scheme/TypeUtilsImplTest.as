@@ -45,8 +45,8 @@ package org.projectsnooze.impl.scheme
    			{
    				if ( method.@name == "getConcerns" )
    				{
-   					var type : String = _typeUtils.getTypeWithinCollection( method );
-   			
+   					var type : String = _typeUtils.getTypeFromMetadata( method );
+   					
    					assertTrue( "get concert out" , type == "domain::Concern" );
    				}
    			}

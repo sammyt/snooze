@@ -8,6 +8,8 @@ package org.projectsnooze.impl.scheme
 	import flexunit.framework.TestCase;
 	import flexunit.framework.TestSuite;
 	
+	import mx.logging.ILogger;
+	
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
 	import org.projectsnooze.impl.associations.ManyToOneBelongs;
@@ -18,14 +20,17 @@ package org.projectsnooze.impl.scheme
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
+	import org.projectsnooze.utils.SnoozeLog;
 
 	public class SchemeBuilderImplTest extends TestCase
 	{
 		private var _builder : SchemeBuilderImpl;
+		private static var logger : ILogger;
 		
 		public function SchemeBuilderImplTest(methodName:String=null)
 		{
 			super(methodName);
+			logger = SnoozeLog.getLogger ( this );
 		}
 		
 		public static function suite():TestSuite 
@@ -75,6 +80,7 @@ package org.projectsnooze.impl.scheme
 			for ( var iterator : Iterator = motherMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
 				var relationship : Relationship = iterator.next() as Relationship;
+				logger.info( "Mother relationship to {0} , by {1} , has key {2}" , relationship.getEntityDataMap().getTableName() , relationship.getType().getName() , relationship.getType().getForeignKeyContainer() );
 				assertTrue( "Has concern" , relationship.getEntityDataMap().getTableName() == "Concern" );
 				assertTrue( "Mother is owner" , relationship.getType().getName() == OneToManyOwns.Name ); 
 			}

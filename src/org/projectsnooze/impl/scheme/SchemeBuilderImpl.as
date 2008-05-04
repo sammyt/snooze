@@ -46,7 +46,7 @@ package org.projectsnooze.impl.scheme
 				var entity : * = new ( _classes[i] as Class )();
 				var reflection : XML = describeType( entity );
 				
-				addRelationships( reflection ,getEntityDataMapProvider().getEntityDataMapByClassName( reflection.@name ) );
+				addRelationships( reflection , getEntityDataMapProvider().getEntityDataMapByClassName( reflection.@name ) );
 			}
 		}
 		
@@ -78,21 +78,23 @@ package org.projectsnooze.impl.scheme
 					var getter : String = method.@name;
 					var name : String = getter.substr( 3 , getter.length );
 					
-					var belongs : Relationship = new RelationshipImpl();
-					var owns : Relationship = new RelationshipImpl();
+					var hasMetadata : Relationship = new RelationshipImpl();
+					var describedByMetadata : Relationship = new RelationshipImpl();
 						
-					var classInCollection : String = getTypeUtils().getTypeWithinCollection( method );
-					var containedEntityDataMap : EntityDataMap = getEntityDataMapProvider().getEntityDataMapByClassName( classInCollection );
+					var describedClazz : String = getTypeUtils().getTypeFromMetadata( method );
+					var describedEntityDataMap : EntityDataMap = getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
 					
-					owns.setEntityDataMap( containedEntityDataMap );
-					owns.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , true ) );
-					owns.setPropertyName( name );
-					entityDataMap.addRelationship( owns ); 
+					describedByMetadata.setEntityDataMap( entityDataMap );
+					describedByMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , false ) );
+					describedByMetadata.setPropertyName( name );
+					describedByMetadata.setIsEntityContainer( false );
+					describedEntityDataMap.addRelationship( describedByMetadata ); 
 
-					belongs.setEntityDataMap( entityDataMap );
-					belongs.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , false ) );
-					belongs.setPropertyName( name );
-					containedEntityDataMap.addRelationship( belongs );
+					hasMetadata.setEntityDataMap( describedEntityDataMap );
+					hasMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , true ) );
+					hasMetadata.setPropertyName( name );
+					hasMetadata.setIsEntityContainer( true );
+					entityDataMap.addRelationship( hasMetadata );
 					
 				}
 			}

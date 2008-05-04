@@ -2,6 +2,11 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="onCreationComplete()" >
 	<mx:Script>
 		<![CDATA[
+			import mx.logging.LogEventLevel;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			import mx.logging.targets.TraceTarget;
+			import cim.fx.logging.targets.LocalConnectionTarget;
 			import flexunit.junit.JUnitTestRunner;
 			import org.projectsnooze.impl.dependency.DependencyTreeCreatorImplTest;
 			import org.projectsnooze.impl.session.SessionImplTest;
@@ -17,23 +22,41 @@
 			private var runner:JUnitTestRunner;
 
 	        private function testComplete():void {
-	           fscommand( "quit" );
+	        	var logger : ILogger = Log.getLogger(this.className);
+	           	fscommand( "quit" );
 	        }
 			
 			private function onCreationComplete() : void
 			{
+				var localTarget:LocalConnectionTarget = new LocalConnectionTarget( "_snooze" );
+                localTarget.filters=["*"];
+                localTarget.level = LogEventLevel.ALL;
+                localTarget.includeDate = true;
+                localTarget.includeTime = true;
+                localTarget.includeCategory = true;
+                localTarget.includeLevel = true;
+                
+                var traceTarget: TraceTarget = new TraceTarget();
+                traceTarget.filters=["*"];
+                traceTarget.level = LogEventLevel.ALL;
+                traceTarget.includeDate = true;
+                traceTarget.includeTime = true;
+                traceTarget.includeCategory = true;
+                traceTarget.includeLevel = true;
+                
+                var logger : ILogger = Log.getLogger(this.className);
 				
-				
- 				var ts : TestSuite = new TestSuite();
- 				ts.addTestSuite( SchemeBuilderImplTest );
- 				ts.addTestSuite( EntityDataMapproviderImplTest );
- 				ts.addTestSuite( TypeUtilsImplTest );
- 				ts.addTestSuite( DDLGeneratorImplTest );
- 				ts.addTestSuite( SessionImplTest );
- 				ts.addTestSuite( DependencyTreeCreatorImplTest );
+ 				var testSuite:TestSuite = new TestSuite();
+ 				
+ 				testSuite.addTest( SchemeBuilderImplTest.suite() );
+ 				testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
+ 				testSuite.addTest( TypeUtilsImplTest.suite() );
+ 				testSuite.addTest( DDLGeneratorImplTest.suite() );
+ 				testSuite.addTest( SessionImplTest.suite() );
+ 				testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
  				
 				runner = new JUnitTestRunner();
- 				runner.run( ts , testComplete  );
+ 				runner.run( testSuite , testComplete );
  			}
 			
 		

@@ -8,21 +8,25 @@ package org.projectsnooze.impl.generator
 	import flexunit.framework.TestCase;
 	import flexunit.framework.TestSuite;
 	
+	import mx.logging.ILogger;
+	
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.impl.scheme.EntityDataMapProviderImpl;
 	import org.projectsnooze.impl.scheme.SchemeBuilderImpl;
-	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.scheme.SchemeBuilder;
+	import org.projectsnooze.utils.SnoozeLog;
 
 	public class DDLGeneratorImplTest extends TestCase
 	{
 		private var _generator : DDLGeneratorImpl;
+		private static var logger : ILogger;
 		
 		public function DDLGeneratorImplTest(methodName:String=null)
 		{
 			super(methodName);
+			logger = SnoozeLog.getLogger ( this );
 		}
 		
 		public static function suite():TestSuite 
@@ -58,6 +62,7 @@ package org.projectsnooze.impl.generator
    		public function testGetDDL () : void
    		{
    			//trace ( _generator.getDDL().getSQL() );
+   			logger.info( "the DDL {0}" , _generator.getDDL().getSQL() );
    			assertTrue( true );
    		}
 	}

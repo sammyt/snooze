@@ -17,5 +17,9 @@ package org.projectsnooze.associations
 		
 		function getPropertyName () : String;
 		
+		function setIsEntityContainer ( isEntityContainer : Boolean ) : void;
+		
+		function getIsEntityContainer () : Boolean;
+		
 	}
 }

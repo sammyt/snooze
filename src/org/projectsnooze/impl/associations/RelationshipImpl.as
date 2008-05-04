@@ -9,6 +9,7 @@ package org.projectsnooze.impl.associations
 		private var _type : LinkType;
 		private var _dataMap : EntityDataMap;
 		private var _name : String;
+		private var _isEntityContainer : Boolean;
 		
 		public function RelationshipImpl()
 		{
@@ -42,6 +43,16 @@ package org.projectsnooze.impl.associations
 		public function getPropertyName () : String
 		{
 			return _name;
+		}
+		
+		public function setIsEntityContainer ( isEntityContainer : Boolean ) : void
+		{
+			_isEntityContainer = isEntityContainer;
+		}
+		
+		public function getIsEntityContainer () : Boolean
+		{
+			return _isEntityContainer;
 		}
 	}
 }

@@ -8,6 +8,6 @@ package org.projectsnooze.datatype
 		
 		function isCollectionType ( type : String ) : Boolean;
 		
-		function getTypeWithinCollection ( method : XML ) : String;
+		function getTypeFromMetadata ( method : XML ) : String;
 	}
 }

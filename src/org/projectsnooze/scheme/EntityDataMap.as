@@ -10,6 +10,8 @@ package org.projectsnooze.scheme
 		
 		function addRelationship ( relationship : Relationship ) : void;
 		
+		function getRelationship ( dataMap : EntityDataMap ) : Relationship;
+		
 		function setPrimaryKey ( mapping : NameTypeMapping ) : void;
 		
 		function getPrimaryKey () : NameTypeMapping;
@@ -22,6 +24,5 @@ package org.projectsnooze.scheme
 		
 		function setTableName ( name : String ) : void;
 		
-		function getRelationship ( dataMap : EntityDataMap ) : Relationship;
 	}
 }

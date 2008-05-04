@@ -15,7 +15,5 @@ package org.projectsnooze.dependency
 		function setTypeUtils ( typeUtils : TypeUtils ) : void
 		
 		function getTypeUtils () : TypeUtils;
-		
-		function getAllContainedEntities ( entity : Object ) : Array;
 	}
 }

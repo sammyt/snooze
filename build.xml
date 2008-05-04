@@ -13,6 +13,7 @@
 			<library-path dir="${lib.dir}" append="true">
 				<include name="flexunit.swc" />
 				<include name="FlexUnitOptional.swc" />
+				<include name="LocalConnectionTarget.swc" />
 			</library-path>
 			<library-path dir="${deploy.swc}/" append="true">
 				<include name="${snooze.out}" />
@@ -24,6 +25,7 @@
 			<library-path dir="${lib.dir}" append="true">
 				<include name="flexunit.swc" />
 				<include name="FlexUnitOptional.swc" />
+				<include name="LocalConnectionTarget.swc" />
 			</library-path>
 			<library-path dir="${deploy.swc}/" append="true">
 				<include name="${snooze.out}" />

@@ -9,6 +9,7 @@ package domain
 		
 		public function Mother()
 		{
+			_concerns = new Array();
 		}
 		
 		[Id]
@@ -41,6 +42,11 @@ package domain
 		public function setConcerns ( concerns : Array ) : void
 		{
 			_concerns = concerns;
+		}
+		
+		public function addConcern ( concern : Concern ) : void
+		{
+			_concerns.push( concern );
 		}
 		
 		[Transient]

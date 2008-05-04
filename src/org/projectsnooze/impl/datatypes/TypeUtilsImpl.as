@@ -32,9 +32,17 @@ package org.projectsnooze.impl.datatypes
 			return false;
 		}
 		
-		public function getTypeWithinCollection(method:XML):String
+		public function getTypeFromMetadata(method:XML):String
 		{
-			return method.metadata.arg.@value;
+			if ( isCollectionType( method.@returnType ) )
+			{
+				return method.metadata.arg.@value;
+			}
+			else
+			{
+				return method.@returnType;
+			}
+			return null;
 		}
 		
 	}
