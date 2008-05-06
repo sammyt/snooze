@@ -23,19 +23,20 @@
  * THE SOFTWARE.
  */
 
-package org.projectsnooze
+package org.projectsnooze.generator
 {
-	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.scheme.EntityDataMap;
 	
 	public interface StatementCreator
 	{
-		function getSelectSql ( data : EntityDataMap ) : Statement;
+		function getSelectStatement ( data : EntityDataMap ) : Statement;
 		
-		function getInsertSql ( data : EntityDataMap ) : Statement;
+		function getInsertStatement ( data : EntityDataMap ) : Statement;
 		
-		function getUpdateSql ( data : EntityDataMap ) : Statement;
+		function getUpdateStatement ( data : EntityDataMap ) : Statement;
 		
-		function getDeleteSql ( data : EntityDataMap ) : Statement;
+		function getDeleteStatement ( data : EntityDataMap ) : Statement;
+		
+		function getStatementByType ( type : String , data : EntityDataMap ) : Statement;
 	}
 }

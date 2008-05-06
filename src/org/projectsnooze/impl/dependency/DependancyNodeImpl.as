@@ -29,11 +29,11 @@ package org.projectsnooze.impl.dependency
 	import mx.logging.Log;
 	
 	import org.projectsnooze.NameTypeMapping;
-	import org.projectsnooze.StatementCreator;
 	import org.projectsnooze.associations.Relationship;
-	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.dependency.DependencyNode;
+	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.generator.Statement;
+	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SubjectImpl;
 	import org.projectsnooze.patterns.Iterator;
@@ -43,7 +43,7 @@ package org.projectsnooze.impl.dependency
 	{
 		private static var logger : ILogger = Log.getLogger( "DependancyNodeImpl" );
 		
-		private var _connectionPool : ConnectionPool;
+		private var _statementExecutor : StatementExecutor;
 		private var _statementCreator : StatementCreator;
 		private var _statement : Statement;
 		private var _dependencies : Array;
@@ -55,7 +55,7 @@ package org.projectsnooze.impl.dependency
 			_dependencies = new Array();
 		}
 		
-		public function update(obj:Object=null):void
+		public function update( obj : Object = null ) : void
 		{
 			var dependencyNode : DependencyNode = obj as DependencyNode;
 		}
@@ -78,8 +78,6 @@ package org.projectsnooze.impl.dependency
 			addNaturalParams();
 			addPrimaryKeyParams();
 			addForeignKeyParams();
-			//logger.debug( "the sql skeleton {0}" , _statement.getSqlSkeleton() );
-			//logger.debug( "the sql {0}" , _statement.getSQL() );
 		}
 		
 		private function addNaturalParams () : void
@@ -142,36 +140,37 @@ package org.projectsnooze.impl.dependency
 		public function execute( data : * = null ):void
 		{
 			var crudType : String = data as String;
-			switch ( crudType )
-			{
-				case "insert":
-					_statement = getStatementCreator().getInsertSql( getEntityDataMap() );
-					break;
-				case "update":
-					break;
-				case "select":
-					break;
-				case "delete":
-					break;
-			}
+			_statement = getStatementCreator().getStatementByType( crudType , getEntityDataMap() );
+			
 			if ( dependenciesAreMet() )
 			{
 				addParams();
+				getStatementExecutor().setStatement( _statement );
+				getStatementExecutor().setResponder( this );
+				getStatementExecutor().execute();
 			}
 		}
 		
+		public function result( data : Object ):void
+		{
+		}
+	
+		public function fault( info : Object ):void
+		{
+			
+		}
 		
 		public function isComplete () : Boolean
 		{
 			return false;
 		}
 		
-		public function isDependent():Boolean
+		public function isDependent() : Boolean
 		{
 			return ( _dependencies.length > 0 );
 		}
 		
-		public function dependenciesAreMet():Boolean
+		public function dependenciesAreMet() : Boolean
 		{
 			var depsMet : Boolean = true;
 			for ( var iterator : Iterator = new ArrayIterator( _dependencies ) ; iterator.next() ; )
@@ -217,14 +216,14 @@ package org.projectsnooze.impl.dependency
 			return _statementCreator;
 		}
 		
-		public function getConnectionPool () : ConnectionPool
+		public function setStatementExecutor ( statementExecutor : StatementExecutor ) : void
 		{
-			return _connectionPool;
+			_statementExecutor = statementExecutor
 		}
 		
-		public function setConnectionPool ( connectionPool : ConnectionPool ) : void
+		public function getStatementExecutor () : StatementExecutor
 		{
-			_connectionPool = connectionPool;
+			return _statementExecutor;	
 		}
 	}
 }

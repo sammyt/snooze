@@ -29,9 +29,9 @@ package org.projectsnooze.impl
 	import mx.logging.Log;
 	
 	import org.projectsnooze.NameTypeMapping;
-	import org.projectsnooze.StatementCreator;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.generator.Statement;
+	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.generator.StatementImpl;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
@@ -46,12 +46,12 @@ package org.projectsnooze.impl
 		{
 		}
 
-		public function getSelectSql( data : EntityDataMap ):Statement
+		public function getSelectStatement( data : EntityDataMap ):Statement
 		{
 			return null;
 		}
 		
-		public function getInsertSql( data : EntityDataMap ):Statement
+		public function getInsertStatement( data : EntityDataMap ):Statement
 		{
 			var statement : Statement = new StatementImpl();
 			var sql : String = "";
@@ -80,12 +80,12 @@ package org.projectsnooze.impl
 			return statement;
 		}
 		
-		public function getUpdateSql( data : EntityDataMap ):Statement
+		public function getUpdateStatement( data : EntityDataMap ):Statement
 		{
 			return null;
 		}
 		
-		public function getDeleteSql( data : EntityDataMap ):Statement
+		public function getDeleteStatement( data : EntityDataMap ):Statement
 		{
 			return null;
 		}
@@ -134,6 +134,26 @@ package org.projectsnooze.impl
 				csv += i < list.length - 1 ? "," : "";
 			}
 			return csv;
+		}
+		
+		public function getStatementByType ( type : String , data : EntityDataMap ) : Statement
+		{
+			switch ( type )
+			{
+				case "insert":
+					return getInsertStatement( data );
+					break;
+				case "update":
+					return getUpdateStatement( data );
+					break;
+				case "select":
+					return getSelectStatement( data );
+					break;
+				case "delete":
+					return getDeleteStatement( data );
+					break;
+			}
+			return null;
 		}
 	}
 }

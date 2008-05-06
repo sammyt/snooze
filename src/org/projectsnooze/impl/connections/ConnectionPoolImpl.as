@@ -26,11 +26,13 @@
 package org.projectsnooze.impl.connections
 {
 	import flash.data.SQLConnection;
+	import flash.filesystem.File;
 	
 	import org.projectsnooze.connections.ConnectionPool;
 
 	public class ConnectionPoolImpl implements ConnectionPool
 	{
+		private var _file : File;
 		private var _maxConnections : uint = 0;
 		private var _minConnections : uint = 1;
 		private var _connections : Array;
@@ -87,6 +89,16 @@ package org.projectsnooze.impl.connections
 				return true;
 			}
 			return false;
+		}
+		
+		public function setFile ( file : File ) : void
+		{
+			_file = file;
+		}
+		
+		public function getFile () : File
+		{
+			return _file;
 		}
 		
 	}

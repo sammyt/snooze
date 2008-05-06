@@ -6,7 +6,6 @@
 			import mx.logging.ILogger;
 			import mx.logging.Log;
 			import mx.logging.targets.TraceTarget;
-			import cim.fx.logging.targets.LocalConnectionTarget;
 			import flexunit.junit.JUnitTestRunner;
 			import org.projectsnooze.impl.dependency.DependencyTreeCreatorImplTest;
 			import org.projectsnooze.impl.session.SessionImplTest;
@@ -28,13 +27,6 @@
 			
 			private function onCreationComplete() : void
 			{
-				var localTarget:LocalConnectionTarget = new LocalConnectionTarget( "_snooze" );
-                localTarget.filters=["*"];
-                localTarget.level = LogEventLevel.ALL;
-                localTarget.includeDate = true;
-                localTarget.includeTime = true;
-                localTarget.includeCategory = true;
-                localTarget.includeLevel = true;
                 
                 var traceTarget: TraceTarget = new TraceTarget();
                 traceTarget.filters=["*"];

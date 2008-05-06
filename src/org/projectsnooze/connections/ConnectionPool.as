@@ -26,6 +26,7 @@
 package org.projectsnooze.connections
 {
 	import flash.data.SQLConnection;
+	import flash.filesystem.File;
 	
 	public interface ConnectionPool
 	{
@@ -38,5 +39,10 @@ package org.projectsnooze.connections
 		function setMinConnections ( minConnections : uint ) : void;
 		
 		function getMinConnections () : uint; 
+		
+		function setFile ( file : File ) : void;
+		
+		function getFile () : File;
+		
 	}
 }

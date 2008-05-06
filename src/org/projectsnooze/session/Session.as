@@ -25,8 +25,8 @@
  
 package org.projectsnooze.session
 {
-	import org.projectsnooze.StatementCreator;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.generator.StatementCreator;
 	
 	public interface Session
 	{

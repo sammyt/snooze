@@ -25,14 +25,15 @@
  
 package org.projectsnooze.dependency
 {
-	import org.projectsnooze.StatementCreator;
-	import org.projectsnooze.connections.ConnectionPool;
+	import org.projectsnooze.execute.Responder;
+	import org.projectsnooze.execute.StatementExecutor;
+	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.patterns.Command;
 	import org.projectsnooze.patterns.Observer;
 	import org.projectsnooze.patterns.Subject;
 	import org.projectsnooze.scheme.EntityDataMap;
 	
-	public interface DependencyNode extends Subject , Observer , Command
+	public interface DependencyNode extends Subject , Observer , Command, Responder
 	{
 		function isDependent () : Boolean;
 		
@@ -56,10 +57,10 @@ package org.projectsnooze.dependency
 		
 		function getStatementCreator () : StatementCreator;
 		
-		function getConnectionPool () : ConnectionPool;
-		
-		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
-		
 		function addParams () : void;
+		
+		function setStatementExecutor ( statementExecutor : StatementExecutor ) : void;
+		
+		function getStatementExecutor () : StatementExecutor;
 	}
 }

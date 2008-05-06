@@ -28,12 +28,11 @@ package org.projectsnooze.impl.session
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
-	import org.projectsnooze.StatementCreator;
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
-	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.session.Session;
 
 	public class SessionImpl implements Session
