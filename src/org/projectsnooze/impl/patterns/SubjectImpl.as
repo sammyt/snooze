@@ -23,15 +23,48 @@
  * THE SOFTWARE.
  */
  
-package org.projectsnooze.impl.associations
+package org.projectsnooze.impl.patterns
 {
-	public class ManyToMany extends AbstractLinkType
+	import org.projectsnooze.patterns.Iterator;
+	import org.projectsnooze.patterns.Observer;
+	import org.projectsnooze.patterns.Subject;
+
+	public class SubjectImpl implements Subject
 	{
-		public static const Name : String = "ManyToMany";
+		private var _observers : Array;
 		
-		public function ManyToMany()
+		public function SubjectImpl()
 		{
-			super(Name , false);
+			_observers = new Array();
+		}
+
+		public function registerObserver(observer:Observer):void
+		{
+			_observers.push( observer );
+		}
+
+		public function removeObserver(observer:Observer):void
+		{
+			_observers.splice( getIndex( observer) , 1 );
+		}
+		
+		private function getIndex ( observer : Observer ) : int
+		{
+			for ( var i : int = 0 ; i < _observers.length ; i++ )
+			{
+				var o : Observer = _observers[i] as Observer;
+				if ( o == observer ) return i;
+			}
+			return -1;
+		}
+		
+		public function notifyObservers(obj:Object=null):void
+		{
+			for( var iterator : Iterator = new ArrayIterator( _observers ); iterator.hasNext() ; )
+			{
+				var observer : Observer = iterator.next() as Observer;
+				observer.update( this );
+			}
 		}
 		
 	}

@@ -79,8 +79,8 @@ package org.projectsnooze.impl.dependency
    			
    			var list : Array = _treeCreator.getSaveDependencyTree( school )
    			 
-   			logger = SnoozeLog.getLogger( this );
-   			logger.debug( "the dependency tree contains {0} node(s) , there should be 4" , list.length ); 
+   			//logger = SnoozeLog.getLogger( this );
+   			//logger.debug( "the dependency tree contains {0} node(s) , there should be 4" , list.length ); 
    			
    			assertTrue( "has length of 4" , list.length == 4 );
    			

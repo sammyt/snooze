@@ -64,7 +64,7 @@ package org.projectsnooze.impl
 		public function testGetSomeSQL () : void
 		{
 			var data : EntityDataMap = _builder.getEntityDataMapProvider().getEntityDataMap( new SchoolClass () );
-			logger.info( _creator.getInsertSql( data ).getSQL() );
+			//logger.info( _creator.getInsertSql( data ).getSQL() );
 			
 		}
 				

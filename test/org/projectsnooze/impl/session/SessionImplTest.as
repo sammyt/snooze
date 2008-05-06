@@ -9,6 +9,7 @@ package org.projectsnooze.impl.session
 	import flexunit.framework.TestSuite;
 	
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.impl.StatementCreaterImpl;
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
@@ -52,6 +53,7 @@ package org.projectsnooze.impl.session
    			builder.setTypeUtils( new TypeUtilsImpl () );
 			builder.setTypeFactory( new TypeFactoryImpl () );
 			builder.setLinkTypeFactory( new LinkTypeFactoryImpl () );
+			
 			builder.addEntityClass( SchoolClass );
 			builder.addEntityClass( Child );
 			builder.addEntityClass( Mother );
@@ -63,10 +65,24 @@ package org.projectsnooze.impl.session
 			depCreator.setTypeUtils( builder.getTypeUtils() );
 			
 			_session.setDependencyTreeCreator( depCreator );
+			_session.setStatementCreator( new StatementCreaterImpl() );
 			
-			var school : SchoolClass = new SchoolClass ();
+			var school : SchoolClass = new SchoolClass();
+			school.setName( "Big School Place" );
+   			
+   			var child : Child = new Child();
+   			child.setHeight( 55 );
+   			
+   			var mother : Mother = new Mother();
+   			mother.setName( "mummy" );
+   			
+   			var concern : Concern = new Concern();
+   			
+   			mother.addConcern( concern );
+   			child.setMother( mother );
+   			school.addChild( child );
 			
-			//_session.save( school );
+			_session.save( school );
    		}
 		
 	}

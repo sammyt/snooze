@@ -1,8 +1,32 @@
+
+/* 
+ * The MIT License
+ * 
+ * Copyright (c) 2008 Samuel Williams
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+ 
 package org.projectsnooze.impl.dependency
 {
-	import flash.utils.describeType;
-	
 	import mx.logging.ILogger;
+	import mx.logging.Log;
 	
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.datatype.TypeUtils;
@@ -12,26 +36,23 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
-	import org.projectsnooze.utils.SnoozeLog;
 
 	public class DependencyTreeCreatorImpl implements DependencyTreeCreator
 	{
-		private static var logger : ILogger;
+		private static var logger : ILogger = Log.getLogger( "DependencyTreeCreatorImpl" ) ;
+		
 		private var _entityDataMapProvider : EntityDataMapProvider;
 		private var _typeUtils : TypeUtils;
 		
 		public function DependencyTreeCreatorImpl()
 		{
-			logger = SnoozeLog.getLogger ( this );
 		}
 		
 		
 		public function getSaveDependencyTree ( entity : Object ) : Array
 		{
 			var saveTree : Array = new Array();
-			
 			createDataMap( entity , saveTree );
-			
 			return saveTree;
 		}
 		
@@ -54,7 +75,7 @@ package org.projectsnooze.impl.dependency
 				depNode.addDependency( lastDepNode )
 			}
 			
-			tree.push( entity );
+			tree.push( depNode );
 			
 			for ( var iterator : Iterator = dataMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
