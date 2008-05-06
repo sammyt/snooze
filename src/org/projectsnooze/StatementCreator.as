@@ -1,17 +1,16 @@
 package org.projectsnooze
 {
-	import flash.data.SQLStatement;
-	
+	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.scheme.EntityDataMap;
 	
 	public interface StatementCreator
 	{
-		function getSelectSql ( data : EntityDataMap ) : SQLStatement;
+		function getSelectSql ( data : EntityDataMap ) : Statement;
 		
-		function getInsertSql ( data : EntityDataMap ) : SQLStatement;
+		function getInsertSql ( data : EntityDataMap ) : Statement;
 		
-		function getUpdateSql ( data : EntityDataMap ) : SQLStatement;
+		function getUpdateSql ( data : EntityDataMap ) : Statement;
 		
-		function getDeleteSql ( data : EntityDataMap ) : SQLStatement;
+		function getDeleteSql ( data : EntityDataMap ) : Statement;
 	}
 }

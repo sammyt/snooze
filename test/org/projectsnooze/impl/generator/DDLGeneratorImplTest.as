@@ -62,7 +62,7 @@ package org.projectsnooze.impl.generator
    		public function testGetDDL () : void
    		{
    			//trace ( _generator.getDDL().getSQL() );
-   			logger.info( "the DDL {0}" , _generator.getDDL().getSQL() );
+   			//logger.info( "the DDL {0}" , _generator.getDDL().getSQL() );
    			assertTrue( true );
    		}
 	}

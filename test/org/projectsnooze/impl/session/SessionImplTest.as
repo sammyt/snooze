@@ -66,7 +66,7 @@ package org.projectsnooze.impl.session
 			
 			var school : SchoolClass = new SchoolClass ();
 			
-			_session.save( school );
+			//_session.save( school );
    		}
 		
 	}

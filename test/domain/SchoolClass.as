@@ -5,6 +5,7 @@ package domain
 	{
 		private var _id : int;
 		private var _pupils : Array;
+		private var _name : String;
 		
 		public function SchoolClass()
 		{
@@ -36,6 +37,16 @@ package domain
 		public function setPupils ( pupils : Array ) : void
 		{
 			_pupils = pupils;
+		}
+		
+		public function getName () : String
+		{
+			return _name;
+		}
+		
+		public function setName( name : String ) : void
+		{
+			_name = name;
 		}
 
 	}

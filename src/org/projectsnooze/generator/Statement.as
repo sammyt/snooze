@@ -6,6 +6,10 @@ package org.projectsnooze.generator
 		
 		function setSqlSkeleton ( sqlSkelton : String ) : void;
 		
+		function get sqlSkeleton () : String;
+		
+		function set sqlSkeleton ( sql : String ) : void;
+		
 		function getParamaters () : Object;
 		
 		function setParameters ( params : Object ) : void;

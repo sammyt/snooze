@@ -1,12 +1,16 @@
 package org.projectsnooze.impl.generator
 {
-	import mx.utils.StringUtil;
+	
+	import mx.logging.ILogger;
+	import mx.logging.Log;
 	
 	import org.projectsnooze.generator.Statement;
 
 	public class StatementImpl implements Statement
 	{
-		private var _sql : String;
+		private static var logger : ILogger = Log.getLogger( "StatementImpl" );
+		
+		private var _skeleton : String;
 		private var _params : Object;
 		
 		public function StatementImpl()
@@ -16,12 +20,22 @@ package org.projectsnooze.impl.generator
 
 		public function getSqlSkeleton():String
 		{
-			return _sql;
+			return _skeleton;
 		}
 		
 		public function setSqlSkeleton(sqlSkelton:String):void
 		{
-			_sql = sqlSkelton;
+			_skeleton = sqlSkelton;
+		}
+		
+		public function get sqlSkeleton () : String
+		{
+			return _skeleton;
+		}
+		
+		public function set sqlSkeleton ( sql : String ) : void
+		{
+			_skeleton = sql;
 		}
 		
 		public function getParamaters():Object
@@ -36,8 +50,14 @@ package org.projectsnooze.impl.generator
 		
 		public function getSQL () : String
 		{
-			return _sql;
+			return getSqlSkeleton();
+			//return substitute( getSqlSkeleton() , getParamaters() );
 		}
+		
+		private function substitute(str:String, ... rest):String
+    	{
+	        return str;
+	    }
 		
 	}
 }

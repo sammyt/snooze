@@ -1,7 +1,9 @@
 package org.projectsnooze.impl.session
 {
 	import org.projectsnooze.datatype.TypeUtils;
+	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.session.Session;
@@ -18,7 +20,13 @@ package org.projectsnooze.impl.session
 
 		public function save(entity:Object):Object
 		{
-			//var depTree : Array = getDependencyTreeCreator().getSaveDependencyTree( entity );
+			var depTree : Array = getDependencyTreeCreator().getSaveDependencyTree( entity );
+			
+			for( var iterator : Iterator = new SmartIterator( depTree ) ; iterator.hasNext() ; )
+			{
+				var depNode : DependencyNode = iterator.next() as DependencyNode;
+				if ( ! depNode.isDependent() ) depNode.execute();
+			}
 			
 			return null;
 		}

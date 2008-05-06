@@ -8,6 +8,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.projectsnooze.impl.StatementCreatorImplTest;
 			import mx.logging.targets.TraceTarget;
 			import mx.logging.ILogger;
 			import mx.logging.LogEventLevel;
@@ -59,9 +60,11 @@
  				testSuite.addTest( DDLGeneratorImplTest.suite() );
  				testSuite.addTest( SessionImplTest.suite() );
  				testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
+ 				testSuite.addTest( StatementCreatorImplTest.suite() );
  				
  				return testSuite;
  			}
+ 			
 			
 		]]>
 	</mx:Script>
