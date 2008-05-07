@@ -27,17 +27,16 @@ package org.projectsnooze.impl.scheme
 {
 	import flash.utils.describeType;
 	
-	import org.projectsnooze.NameTypeMapping;
 	import org.projectsnooze.associations.LinkTypeFactory;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.constants.MetaData;
 	import org.projectsnooze.datatype.Type;
 	import org.projectsnooze.datatype.TypeFactory;
 	import org.projectsnooze.datatype.TypeUtils;
-	import org.projectsnooze.impl.NameTypeMappingImpl;
 	import org.projectsnooze.impl.associations.RelationshipImpl;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
+	import org.projectsnooze.scheme.NameTypeMapping;
 	import org.projectsnooze.scheme.SchemeBuilder;
 	
 	public class SchemeBuilderImpl implements SchemeBuilder

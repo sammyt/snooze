@@ -23,25 +23,27 @@
  * THE SOFTWARE.
  */
  
-package org.projectsnooze.execute
+package org.projectsnooze.scheme
 {
-	import org.projectsnooze.connections.ConnectionPool;
-	import org.projectsnooze.generator.Statement;
+	import org.projectsnooze.datatype.Type;
 	
-	public interface StatementExecutor
+	public interface NameTypeMapping
 	{
-		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
+		function isPrimaryKey () : Boolean;
 		
-		function getConnectionPool () : ConnectionPool;
+		function setIsPrimaryKey ( value : Boolean ) : void;
 		
-		function setStatement ( statement : Statement ) : void;
+		function getIsPrimaryKey () : Boolean;
 		
-		function getStatement () : Statement;
+		function setName ( name : String ) : void;
 		
-		function setResponder ( responder : Responder ) : void;
+		function getName () : String;
 		
-		function getResponder () : Responder;
+		function setType ( type : Type ) : void;
 		
-		function execute () : void; 
+		function getType () : Type;
+		
+		function getLowerCaseName () : String;
+	
 	}
 }

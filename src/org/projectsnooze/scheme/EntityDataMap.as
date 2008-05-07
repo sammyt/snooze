@@ -25,7 +25,7 @@
  
 package org.projectsnooze.scheme
 {
-	import org.projectsnooze.NameTypeMapping;
+	import org.projectsnooze.scheme.NameTypeMapping;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.patterns.Iterator;
 	

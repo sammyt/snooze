@@ -23,73 +23,56 @@
  * THE SOFTWARE.
  */
  
-package org.projectsnooze.impl
+package org.projectsnooze.impl.execute
 {
-	import org.projectsnooze.NameTypeMapping;
-	import org.projectsnooze.datatype.Type;
-	
-	
-	public class NameTypeMappingImpl implements NameTypeMapping 
+	import org.projectsnooze.connections.ConnectionPool;
+	import org.projectsnooze.execute.Responder;
+	import org.projectsnooze.execute.StatementExecutor;
+	import org.projectsnooze.generator.Statement;
+
+	public class StatementExecutorImpl implements StatementExecutor
 	{
-		private var _name : String;
-		private var _type : Type;
-		private var _value : Object;
-		private var _isPrimaryKey : Boolean = false;
+		private var _connectionPool : ConnectionPool;
+		private var _responder : Responder;
+		private var _statement : Statement;
 		
-		public function NameTypeMappingImpl ()
+		public function StatementExecutorImpl()
 		{
 		}
-		
-		public function isPrimaryKey () : Boolean
+
+		public function setConnectionPool(connectionPool:ConnectionPool):void
 		{
-			return _isPrimaryKey;
+			_connectionPool = connectionPool;
 		}
 		
-		public function setIsPrimaryKey ( value : Boolean ) : void
+		public function getConnectionPool():ConnectionPool
 		{
-			_isPrimaryKey = value;
+			return _connectionPool;
 		}
 		
-		public function getIsPrimaryKey () : Boolean
+		public function setStatement(statement:Statement):void
 		{
-			return _isPrimaryKey;
+			_statement = statement;
 		}
 		
-		public function setName ( name : String ) : void
+		public function getStatement():Statement
 		{
-			_name = name;
+			return _statement;
 		}
 		
-		public function getName () : String
+		public function setResponder(responder:Responder):void
 		{
-			return _name;
+			_responder = responder;
 		}
 		
-		public function setType ( type : Type ) : void
+		public function getResponder():Responder
 		{
-			_type = type;
+			return _responder;
 		}
 		
-		public function getType () : Type
+		public function execute():void
 		{
-			return _type;
-		}
-		
-		public function getValue () : Object
-		{
-			return _value;
-		}
-		
-		public function setValue ( value : Object ) : void
-		{
-			_value = value;
-		}
-		
-		public function getLowerCaseName () : String
-		{
-			return getName().toLowerCase();
 		}
 		
 	}
-
 }

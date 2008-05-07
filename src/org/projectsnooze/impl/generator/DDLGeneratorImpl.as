@@ -25,7 +25,7 @@
  
 package org.projectsnooze.impl.generator
 {
-	import org.projectsnooze.NameTypeMapping;
+	import org.projectsnooze.scheme.NameTypeMapping;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.Statement;

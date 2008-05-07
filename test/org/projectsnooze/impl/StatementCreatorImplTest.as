@@ -13,6 +13,7 @@ package org.projectsnooze.impl
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
+	import org.projectsnooze.impl.generator.StatementCreaterImpl;
 	import org.projectsnooze.impl.scheme.EntityDataMapProviderImpl;
 	import org.projectsnooze.impl.scheme.SchemeBuilderImpl;
 	import org.projectsnooze.scheme.EntityDataMap;

@@ -23,12 +23,12 @@
  * THE SOFTWARE.
  */
  
-package org.projectsnooze.impl
+package org.projectsnooze.impl.generator
 {
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
-	import org.projectsnooze.NameTypeMapping;
+	import org.projectsnooze.scheme.NameTypeMapping;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;

@@ -28,7 +28,6 @@ package org.projectsnooze.impl.dependency
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
-	import org.projectsnooze.NameTypeMapping;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.execute.StatementExecutor;
@@ -38,6 +37,7 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.impl.patterns.SubjectImpl;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
+	import org.projectsnooze.scheme.NameTypeMapping;
 
 	public class DependancyNodeImpl extends SubjectImpl implements DependencyNode
 	{

@@ -9,11 +9,11 @@ package org.projectsnooze.impl.session
 	import flexunit.framework.TestSuite;
 	
 	import org.projectsnooze.dependency.DependencyTreeCreator;
-	import org.projectsnooze.impl.StatementCreaterImpl;
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.impl.dependency.DependencyTreeCreatorImpl;
+	import org.projectsnooze.impl.generator.StatementCreaterImpl;
 	import org.projectsnooze.impl.scheme.EntityDataMapProviderImpl;
 	import org.projectsnooze.impl.scheme.SchemeBuilderImpl;
 	import org.projectsnooze.scheme.SchemeBuilder;
