@@ -8,6 +8,8 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.projectsnooze.impl.ArrayIteratorTest;
+			import org.projectsnooze.impl.EntityFacadeTest;
 			import mx.logging.ILoggingTarget;
 			import mx.logging.ILogger;
 			import mx.logging.Log;
@@ -37,7 +39,6 @@
                 traceTarget.includeLevel = true;
                 
                 var logger : ILogger = Log.getLogger(this.className);
-				this.className
 				
  				testRunner.test = createSuite();
  				testRunner.startTest();
@@ -54,6 +55,8 @@
  				testSuite.addTest( SessionImplTest.suite() );
  				testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
  				testSuite.addTest( StatementCreatorImplTest.suite() );
+ 				testSuite.addTest( EntityFacadeTest.suite() );
+ 				testSuite.addTest( ArrayIteratorTest.suite() );
  				
  				return testSuite;
  			}

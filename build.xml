@@ -19,6 +19,7 @@
 				<include name="${snooze.out}" />
 			</library-path>
 		</mxmlc>
+		<!-- 
 		<mxmlc file="${test.dir}/JUnitTest.mxml" output="${deploy.unit}/${unit.out}" locale="en_US">
 			<load-config filename="${flex.sdk}/frameworks/air-config.xml" />
 			<source-path path-element="${test.dir}" />
@@ -30,7 +31,8 @@
 			<library-path dir="${deploy.swc}/" append="true">
 				<include name="${snooze.out}" />
 			</library-path>
-		</mxmlc>
+		</mxmlc> 
+		-->
 	</target>
 
 

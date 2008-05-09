@@ -25,6 +25,7 @@
  
 package org.projectsnooze.session
 {
+	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
 	import org.projectsnooze.generator.StatementCreator;
 	
@@ -37,10 +38,6 @@ package org.projectsnooze.session
 		function getDependencyTreeCreator (  ) : DependencyTreeCreator;
 		
 		function setDependencyTreeCreator ( dependencyTreeCreator : DependencyTreeCreator ) : void;
-		
-		function setStatementCreator ( statementCreator : StatementCreator ) : void;
-		
-		function getStatementCreator () : StatementCreator;
-		
+
 	}
 }

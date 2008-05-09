@@ -46,10 +46,12 @@ package org.projectsnooze.impl.scheme
 		private var _typeUtils : TypeUtils;
 		private var _linkTypeFactory : LinkTypeFactory;
 		private var _entityDataMapProvider : EntityDataMapProvider;
+		private var _mapsAreGenerated : Boolean;
 		
 		public function SchemeBuilderImpl()
 		{
 			_classes = new Array ();
+			_mapsAreGenerated = false;
 		}
 
 		public function addEntityClass ( clazz : Class ) : void
@@ -61,6 +63,7 @@ package org.projectsnooze.impl.scheme
 		{
 			createNonRelatedDataMaps();
 			relateDataMaps();
+			_mapsAreGenerated = true;
 		}
 		
 		private function relateDataMaps () : void
@@ -164,6 +167,11 @@ package org.projectsnooze.impl.scheme
 					entityDataMap.addProperty( mapping );
 				} 
 			}
+		}
+		
+		public function areEntityDataMapsGenerated () : Boolean
+		{
+			return _mapsAreGenerated;
 		}
 		
 		public function setTypeFactory ( typeFactory : TypeFactory ) : void

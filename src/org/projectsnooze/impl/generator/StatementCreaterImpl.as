@@ -28,13 +28,12 @@ package org.projectsnooze.impl.generator
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
-	import org.projectsnooze.scheme.NameTypeMapping;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
-	import org.projectsnooze.impl.generator.StatementImpl;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
+	import org.projectsnooze.scheme.NameTypeMapping;
 
 	public class StatementCreaterImpl implements StatementCreator
 	{
@@ -105,8 +104,9 @@ package org.projectsnooze.impl.generator
 				var relationship : Relationship = iterator.next() as Relationship;
 				if ( relationship.getType().getForeignKeyContainer() )
 				{
-					var name : String = relationship.getEntityDataMap().getTableName().toLowerCase() + "_" + relationship.getPropertyName().toLowerCase();
-					values.push( preFix + name );
+					var tableName : String = relationship.getEntityDataMap().getTableName().toLowerCase(); 
+					var idName : String = relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
+					values.push( preFix + tableName + "_" + idName );
 				}
 			}
 			return getCsvFromArray( values );

@@ -62,5 +62,9 @@ package org.projectsnooze.dependency
 		function setStatementExecutor ( statementExecutor : StatementExecutor ) : void;
 		
 		function getStatementExecutor () : StatementExecutor;
+		
+		function getActionType () : String;
+		
+		function setActionType ( actionType : String ) : void;
 	}
 }

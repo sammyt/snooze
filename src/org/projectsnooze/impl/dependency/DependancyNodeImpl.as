@@ -33,6 +33,7 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
+	import org.projectsnooze.impl.datatypes.StringType;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SubjectImpl;
 	import org.projectsnooze.patterns.Iterator;
@@ -49,15 +50,18 @@ package org.projectsnooze.impl.dependency
 		private var _dependencies : Array;
 		private var _entityDataMap : EntityDataMap;
 		private var _entity : Object;
+		private var _isComplete : Boolean;
+		private var _actionType : String;
 		
 		public function DependancyNodeImpl()
 		{
+			_isComplete = false;
 			_dependencies = new Array();
 		}
 		
 		public function update( obj : Object = null ) : void
 		{
-			var dependencyNode : DependencyNode = obj as DependencyNode;
+			execute();
 		}
 		
 		// ---
@@ -87,9 +91,12 @@ package org.projectsnooze.impl.dependency
 				var mapping : NameTypeMapping = iterator.next() as NameTypeMapping;
 				
 				var getter : Function = _entity[ "get" + mapping.getName() ] as Function;
-				var data : * = getter.apply( _entity );
-				_statement.addValue( ":" + mapping.getLowerCaseName() , data );
 				
+				var data : * = getter.apply( _entity );
+				
+				var mark : String = mapping.getType().getSQLType() == "TEXT" ? '"' : "";
+				
+				_statement.addValue( ":" + mapping.getLowerCaseName() , mark + data + mark );
 			}
 		}
 		
@@ -99,7 +106,7 @@ package org.projectsnooze.impl.dependency
 			
 			var getter : Function = _entity[ "get" + mapping.getName() ] as Function;
 			var data : * = getter.apply( _entity );
-			_statement.addValue( mapping.getLowerCaseName() + "_value" , data );
+			_statement.addValue( ":" + mapping.getLowerCaseName() + "_value" , data );
 		}
 		
 		private function addForeignKeyParams () : void
@@ -118,9 +125,9 @@ package org.projectsnooze.impl.dependency
 						var data : * = getter.apply( depNode.getEntity() );
 						
 						var tableName : String =  relationship.getEntityDataMap().getTableName().toLowerCase();
-						var idName : String = relationship.getEntityDataMap().getPrimaryKey().getName();
+						var idName : String = relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
 						
-						_statement.addValue( tableName + "_" + idName , data );
+						_statement.addValue( ":" + tableName + "_" + idName , data );
 					}
 				}
 			}
@@ -139,8 +146,7 @@ package org.projectsnooze.impl.dependency
 					
 		public function execute( data : * = null ):void
 		{
-			var crudType : String = data as String;
-			_statement = getStatementCreator().getStatementByType( crudType , getEntityDataMap() );
+			_statement = getStatementCreator().getStatementByType( getActionType() , getEntityDataMap() );
 			
 			if ( dependenciesAreMet() )
 			{
@@ -153,16 +159,22 @@ package org.projectsnooze.impl.dependency
 		
 		public function result( data : Object ):void
 		{
+			_isComplete = true;
+			// set the new id
+			getEntity().setId ( Math.round( Math.random() * 10 ) );
+			
+			// notify observers
+			notifyObservers();
 		}
 	
 		public function fault( info : Object ):void
 		{
-			
+			// throw some kind of snooze error
 		}
 		
 		public function isComplete () : Boolean
 		{
-			return false;
+			return _isComplete;
 		}
 		
 		public function isDependent() : Boolean
@@ -173,7 +185,7 @@ package org.projectsnooze.impl.dependency
 		public function dependenciesAreMet() : Boolean
 		{
 			var depsMet : Boolean = true;
-			for ( var iterator : Iterator = new ArrayIterator( _dependencies ) ; iterator.next() ; )
+			for ( var iterator : Iterator = new ArrayIterator( _dependencies ) ; iterator.hasNext() ; )
 			{
 				var depNode : DependencyNode = iterator.next() as DependencyNode;
 				if ( ! depNode.isComplete() ) depsMet = false;
@@ -224,6 +236,16 @@ package org.projectsnooze.impl.dependency
 		public function getStatementExecutor () : StatementExecutor
 		{
 			return _statementExecutor;	
+		}
+		
+		public function getActionType () : String
+		{
+			return _actionType;
+		}
+		
+		public function setActionType ( actionType : String ) : void
+		{
+			_actionType = actionType;
 		}
 	}
 }

@@ -28,9 +28,12 @@ package org.projectsnooze.impl.session
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
+	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.generator.StatementCreator;
+	import org.projectsnooze.impl.execute.StatementExecutorImpl;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.session.Session;
@@ -40,7 +43,6 @@ package org.projectsnooze.impl.session
 		private static var logger : ILogger = Log.getLogger( "SessionImpl" );
 		
 		private var _dependencyTreeCreator : DependencyTreeCreator;
-		private var _statementCreator : StatementCreator;
 		
 		public function SessionImpl()
 		{
@@ -53,8 +55,7 @@ package org.projectsnooze.impl.session
 			for( var iterator : Iterator = new SmartIterator( depTree ) ; iterator.hasNext() ; )
 			{
 				var depNode : DependencyNode = iterator.next() as DependencyNode;
-				depNode.setStatementCreator( getStatementCreator() );
-				if ( ! depNode.isDependent() ) depNode.execute( "insert" );
+				if ( ! depNode.isDependent() ) depNode.execute();
 			}
 			
 			return null;
@@ -75,15 +76,7 @@ package org.projectsnooze.impl.session
 			_dependencyTreeCreator = dependencyTreeCreator;
 		}
 		
-		public function setStatementCreator ( statementCreator : StatementCreator ) : void
-		{
-			_statementCreator = statementCreator
-		}
 		
-		public function getStatementCreator () : StatementCreator
-		{
-			return _statementCreator;
-		}
 		
 	}
 }

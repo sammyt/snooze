@@ -72,6 +72,8 @@ package org.projectsnooze.impl.execute
 		
 		public function execute():void
 		{
+			trace( _statement.getSQL() );
+			getResponder().result( this );
 		}
 		
 	}

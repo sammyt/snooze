@@ -50,5 +50,7 @@ package org.projectsnooze.scheme
 		function addEntityClass ( clazz : Class ) : void;
 		
 		function generateEntityDataMaps () : void;
+		
+		function areEntityDataMapsGenerated () : Boolean;
 	}
 }

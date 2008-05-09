@@ -60,16 +60,10 @@ package org.projectsnooze.impl
 		private var _dependencyTreeCreator : DependencyTreeCreator;
 		private var _ddlGenerator : DDLGenerator;
 		
-		public function EntityFacadeImpl( init : Boolean = true )
+		public function EntityFacadeImpl()
 		{
-			if ( init )
-			{
-				initialise();
-			}
-		}
-		
-		private function initialise () : void
-		{
+			_createDDL = false;
+			
 			_entityDataMapProvider = new EntityDataMapProviderImpl();
 			_typeUtils = new TypeUtilsImpl();
 			_typeFactory = new TypeFactoryImpl();
@@ -80,6 +74,7 @@ package org.projectsnooze.impl
 			_dependencyTreeCreator = new DependencyTreeCreatorImpl();
 			_dependencyTreeCreator.setTypeUtils( getTypeUtils() );
 			_dependencyTreeCreator.setEntityDataMapProvider( getEntityDataMapProvider() );
+			_dependencyTreeCreator.setStatementCreator( getStatementCreator() );
 			
 			_ddlGenerator = new DDLGeneratorImpl();
 			_ddlGenerator.setEntityDataMapProvider( getEntityDataMapProvider() );
@@ -90,7 +85,7 @@ package org.projectsnooze.impl
 			_schemeBuilder.setTypeFactory( getTypeFactory() );
 			_schemeBuilder.setTypeUtils( getTypeUtils() );
 		}
-
+		
 		public function setCreateDDL(createDDL:Boolean):void
 		{
 			_createDDL = createDDL
@@ -198,9 +193,10 @@ package org.projectsnooze.impl
 		
 		public function getSession():Session
 		{
+			if ( ! getSchemeBuilder().areEntityDataMapsGenerated() ) getSchemeBuilder().generateEntityDataMaps();
+			
 			var session : Session = new SessionImpl();
 			session.setDependencyTreeCreator( getDependencyTreeCreator() );
-			session.setStatementCreator( getStatementCreator() );
 			return session;
 		}
 		

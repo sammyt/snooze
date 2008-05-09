@@ -30,7 +30,7 @@ package org.projectsnooze.impl.session
 		public static function suite():TestSuite 
 		{
    			var ts:TestSuite = new TestSuite();
-   			ts.addTest( new SessionImplTest( "testCreateDependencyTree" ) );
+   			//ts.addTest( new SessionImplTest( "testCreateDependencyTree" ) );
    			return ts;
    		}
    		
@@ -65,7 +65,7 @@ package org.projectsnooze.impl.session
 			depCreator.setTypeUtils( builder.getTypeUtils() );
 			
 			_session.setDependencyTreeCreator( depCreator );
-			_session.setStatementCreator( new StatementCreaterImpl() );
+			//_session.setStatementCreator( new StatementCreaterImpl() );
 			
 			var school : SchoolClass = new SchoolClass();
 			school.setName( "Big School Place" );

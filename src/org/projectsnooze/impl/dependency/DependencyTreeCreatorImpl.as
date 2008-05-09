@@ -29,9 +29,14 @@ package org.projectsnooze.impl.dependency
 	import mx.logging.Log;
 	
 	import org.projectsnooze.associations.Relationship;
+	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.execute.StatementExecutor;
+	import org.projectsnooze.generator.StatementCreator;
+	import org.projectsnooze.impl.execute.StatementExecutorImpl;
+	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
@@ -43,6 +48,8 @@ package org.projectsnooze.impl.dependency
 		
 		private var _entityDataMapProvider : EntityDataMapProvider;
 		private var _typeUtils : TypeUtils;
+		private var _statementCreator : StatementCreator;
+		private var _connectionPool : ConnectionPool;
 		
 		public function DependencyTreeCreatorImpl()
 		{
@@ -63,14 +70,24 @@ package org.projectsnooze.impl.dependency
 			var depNode : DependencyNode = new DependancyNodeImpl();
 			depNode.setEnity( entity );
 			depNode.setEntityDataMap( dataMap );
+			depNode.setStatementCreator( getStatementCreator() );
+			depNode.setActionType( "insert" );
+			
+			var executor : StatementExecutor = new StatementExecutorImpl();
+			executor.setConnectionPool( getConnectionPool() );
+			depNode.setStatementExecutor( executor );
 			
 			if ( isPrevEntityFKContiner && lastDepNode )
 			{
+				//logger.debug( "depNode = {0} , lastDepNode = {1}" , depNode.getEntity() , lastDepNode.getEntity() );
+				
 				depNode.addDependentNode( lastDepNode );
 				lastDepNode.addDependency( depNode )
 			}
 			else if ( lastDepNode )
 			{
+				//logger.debug( "depNode = {0} , lastDepNode = {1}" , depNode.getEntity() , lastDepNode.getEntity() );
+				
 				lastDepNode.addDependentNode( depNode );
 				depNode.addDependency( lastDepNode )
 			}
@@ -121,6 +138,25 @@ package org.projectsnooze.impl.dependency
 		{
 			return _typeUtils;
 		}
-
+	
+		public function setStatementCreator ( statementCreator : StatementCreator ) : void
+		{
+			_statementCreator = statementCreator
+		}
+		
+		public function getStatementCreator () : StatementCreator
+		{
+			return _statementCreator;
+		}
+		
+		public function setConnectionPool ( connectionPool : ConnectionPool ) : void
+		{
+			_connectionPool = connectionPool;
+		}
+		
+		public function getConnectionPool () : ConnectionPool
+		{
+			return _connectionPool;
+		}
 	}
 }

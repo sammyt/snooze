@@ -25,8 +25,9 @@
  
 package org.projectsnooze.dependency
 {
+	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.datatype.TypeUtils;
-	import org.projectsnooze.patterns.Iterator;
+	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	
 	public interface DependencyTreeCreator
@@ -40,5 +41,13 @@ package org.projectsnooze.dependency
 		function setTypeUtils ( typeUtils : TypeUtils ) : void
 		
 		function getTypeUtils () : TypeUtils;
+		
+		function setStatementCreator ( statementCreator : StatementCreator ) : void;
+		
+		function getStatementCreator () : StatementCreator;
+		
+		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
+		
+		function getConnectionPool () : ConnectionPool;
 	}
 }
