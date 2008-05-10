@@ -28,12 +28,8 @@ package org.projectsnooze.impl.session
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
-	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
-	import org.projectsnooze.execute.StatementExecutor;
-	import org.projectsnooze.generator.StatementCreator;
-	import org.projectsnooze.impl.execute.StatementExecutorImpl;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.session.Session;

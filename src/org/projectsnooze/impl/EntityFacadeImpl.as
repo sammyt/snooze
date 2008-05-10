@@ -60,6 +60,17 @@ package org.projectsnooze.impl
 		private var _dependencyTreeCreator : DependencyTreeCreator;
 		private var _ddlGenerator : DDLGenerator;
 		
+		
+		/**
+		 * Plan for connections
+		 * - use one connection for a whole dependency tree session
+		 * - this gives a easy way to rollback actions on fail!
+		 * - also makes everthing much faster as only need to
+		 * - open one connection - WRONG
+		 * 
+		 */ 
+		
+		
 		public function EntityFacadeImpl()
 		{
 			_createDDL = false;
@@ -75,6 +86,7 @@ package org.projectsnooze.impl
 			_dependencyTreeCreator.setTypeUtils( getTypeUtils() );
 			_dependencyTreeCreator.setEntityDataMapProvider( getEntityDataMapProvider() );
 			_dependencyTreeCreator.setStatementCreator( getStatementCreator() );
+			_dependencyTreeCreator.setConnectionPool( getConnectionPool() );
 			
 			_ddlGenerator = new DDLGeneratorImpl();
 			_ddlGenerator.setEntityDataMapProvider( getEntityDataMapProvider() );

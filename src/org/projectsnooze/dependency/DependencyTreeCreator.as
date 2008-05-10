@@ -49,5 +49,6 @@ package org.projectsnooze.dependency
 		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
 		
 		function getConnectionPool () : ConnectionPool;
+		
 	}
 }

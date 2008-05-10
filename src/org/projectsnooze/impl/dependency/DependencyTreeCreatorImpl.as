@@ -36,7 +36,6 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.execute.StatementExecutorImpl;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
@@ -74,7 +73,7 @@ package org.projectsnooze.impl.dependency
 			depNode.setActionType( "insert" );
 			
 			var executor : StatementExecutor = new StatementExecutorImpl();
-			executor.setConnectionPool( getConnectionPool() );
+			executor.setConnection( getConnectionPool().getConnection() );
 			depNode.setStatementExecutor( executor );
 			
 			if ( isPrevEntityFKContiner && lastDepNode )

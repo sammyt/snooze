@@ -33,7 +33,6 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
-	import org.projectsnooze.impl.datatypes.StringType;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SubjectImpl;
 	import org.projectsnooze.patterns.Iterator;
@@ -53,7 +52,7 @@ package org.projectsnooze.impl.dependency
 		private var _isComplete : Boolean;
 		private var _actionType : String;
 		
-		public function DependancyNodeImpl()
+		public function DependencyNodeImpl()
 		{
 			_isComplete = false;
 			_dependencies = new Array();

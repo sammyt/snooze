@@ -63,8 +63,8 @@ package org.projectsnooze.impl.generator
 				sqlSkeleton += "\n CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
 				
 				addPrimaryKey ( entityDataMap , values );
-				addForignKeys ( entityDataMap , values );
-				addNatrualProperties( entityDataMap , values );
+				addForeignKeys ( entityDataMap , values );
+				addNaturalProperties( entityDataMap , values );
 				
 				sqlSkeleton += getCsvFromArray( values );
 				
@@ -83,7 +83,7 @@ package org.projectsnooze.impl.generator
 			values.push( mapping.getLowerCaseName() + " " + mapping.getType().getSQLType() + " PRIMARY KEY AUTOINCREMENT" ) ;
 		}
 		
-		private function addForignKeys ( entityDataMap : EntityDataMap , values : Array ) : void
+		private function addForeignKeys ( entityDataMap : EntityDataMap , values : Array ) : void
 		{
 			
 			for ( var iterator : Iterator = entityDataMap.getRelationshipIterator() ; iterator.hasNext() ; )
@@ -99,7 +99,7 @@ package org.projectsnooze.impl.generator
 			
 		}
 		
-		private function addNatrualProperties ( entityDataMap : EntityDataMap , values : Array ) : void
+		private function addNaturalProperties ( entityDataMap : EntityDataMap , values : Array ) : void
 		{
 			for ( var iterator : Iterator = entityDataMap.getPropertyIterator() ; iterator.hasNext() ; )
 			{

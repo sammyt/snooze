@@ -25,6 +25,8 @@
  
 package org.projectsnooze.impl.execute
 {
+	import flash.data.SQLConnection;
+	
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.execute.Responder;
 	import org.projectsnooze.execute.StatementExecutor;
@@ -35,19 +37,24 @@ package org.projectsnooze.impl.execute
 		private var _connectionPool : ConnectionPool;
 		private var _responder : Responder;
 		private var _statement : Statement;
+		private var _conection : SQLConnection;
 		
 		public function StatementExecutorImpl()
 		{
 		}
-
-		public function setConnectionPool(connectionPool:ConnectionPool):void
+		
+		public function execute():void
 		{
-			_connectionPool = connectionPool;
 		}
 		
-		public function getConnectionPool():ConnectionPool
+		public function setConnection ( connection : SQLConnection ) : void
 		{
-			return _connectionPool;
+			_conection = connection;
+		}
+		
+		public function getConnection () : SQLConnection
+		{
+			return _conection;
 		}
 		
 		public function setStatement(statement:Statement):void
@@ -68,12 +75,6 @@ package org.projectsnooze.impl.execute
 		public function getResponder():Responder
 		{
 			return _responder;
-		}
-		
-		public function execute():void
-		{
-			trace( _statement.getSQL() );
-			getResponder().result( this );
 		}
 		
 	}

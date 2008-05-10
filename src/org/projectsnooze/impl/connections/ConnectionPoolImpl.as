@@ -29,7 +29,19 @@ package org.projectsnooze.impl.connections
 	import flash.filesystem.File;
 	
 	import org.projectsnooze.connections.ConnectionPool;
-
+	
+	
+	/*
+	 * Should the connection pool return open connections, and 
+	 * manage the life cycle of those connection or should it be the 
+	 * job of the statements that execute using them?
+	 *
+	 * If the connection pool manages the lifecycle then statements
+	 * can execute faster (if some open connections are available)
+	 *
+	 * are there downsides, such as connections being left open
+	 * causing issues? do they close after execution?
+	 */
 	public class ConnectionPoolImpl implements ConnectionPool
 	{
 		private var _file : File;
@@ -42,7 +54,7 @@ package org.projectsnooze.impl.connections
 			_connections = new Array();
 		}
 
-		public function getConnection():SQLConnection
+		public function getConnection() : SQLConnection
 		{
 			for ( var i : int = 0 ; i < _connections.length ; i ++ )
 			{
