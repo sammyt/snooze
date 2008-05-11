@@ -25,32 +25,31 @@
  
 package org.projectsnooze.impl.dependency
 {
+	import flash.net.Responder;
+	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.dependency.DependencyNode;
-	import org.projectsnooze.execute.StatementExecutor;
+	import org.projectsnooze.execute.StatementExecutionManager;
 	import org.projectsnooze.generator.Statement;
-	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SubjectImpl;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.NameTypeMapping;
 
-	public class DependancyNodeImpl extends SubjectImpl implements DependencyNode
+	public class DependencyNodeImpl extends SubjectImpl implements DependencyNode
 	{
 		private static var logger : ILogger = Log.getLogger( "DependancyNodeImpl" );
 		
-		private var _statementExecutor : StatementExecutor;
-		private var _statementCreator : StatementCreator;
+		private var _statementExecutionManager : StatementExecutionManager;
 		private var _statement : Statement;
 		private var _dependencies : Array;
 		private var _entityDataMap : EntityDataMap;
 		private var _entity : Object;
 		private var _isComplete : Boolean;
-		private var _actionType : String;
 		
 		public function DependencyNodeImpl()
 		{
@@ -145,21 +144,18 @@ package org.projectsnooze.impl.dependency
 					
 		public function execute( data : * = null ):void
 		{
-			_statement = getStatementCreator().getStatementByType( getActionType() , getEntityDataMap() );
-			
 			if ( dependenciesAreMet() )
 			{
 				addParams();
-				getStatementExecutor().setStatement( _statement );
-				getStatementExecutor().setResponder( this );
-				getStatementExecutor().execute();
+				getStatementExecutionManager().addToExecutionQueue( getStatement() , new Responder( result , fault ) );
 			}
 		}
 		
 		public function result( data : Object ):void
 		{
 			_isComplete = true;
-			// set the new id
+			
+			// set the new id TMP
 			getEntity().setId ( Math.round( Math.random() * 10 ) );
 			
 			// notify observers
@@ -217,34 +213,24 @@ package org.projectsnooze.impl.dependency
 			return _entityDataMap;			
 		}
 		
-		public function setStatementCreator ( statementCreator : StatementCreator ) : void
+		public function setStatementExecutionManager ( statementExecutionManager : StatementExecutionManager ) : void
 		{
-			_statementCreator = statementCreator;
+			_statementExecutionManager = statementExecutionManager;
 		}
 		
-		public function getStatementCreator () : StatementCreator
+		public function getStatementExecutionManager () : StatementExecutionManager
 		{
-			return _statementCreator;
+			return _statementExecutionManager;
 		}
 		
-		public function setStatementExecutor ( statementExecutor : StatementExecutor ) : void
+		public function setStatement ( statement : Statement ) : void
 		{
-			_statementExecutor = statementExecutor
+			_statement = statement;
 		}
 		
-		public function getStatementExecutor () : StatementExecutor
+		public function getStatement () : Statement
 		{
-			return _statementExecutor;	
-		}
-		
-		public function getActionType () : String
-		{
-			return _actionType;
-		}
-		
-		public function setActionType ( actionType : String ) : void
-		{
-			_actionType = actionType;
+			return _statement;
 		}
 	}
 }

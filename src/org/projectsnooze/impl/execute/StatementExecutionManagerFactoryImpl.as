@@ -23,43 +23,36 @@
  * THE SOFTWARE.
  */
  
-package org.projectsnooze.dependency
+package org.projectsnooze.impl.execute
 {
+	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.execute.StatementExecutionManager;
-	import org.projectsnooze.generator.Statement;
-	import org.projectsnooze.patterns.Command;
-	import org.projectsnooze.patterns.Observer;
-	import org.projectsnooze.patterns.Subject;
-	import org.projectsnooze.scheme.EntityDataMap;
-	
-	public interface DependencyNode extends Subject , Observer , Command
+	import org.projectsnooze.execute.StatementExecutionManagerFactory;
+
+	public class StatementExecutionManagerFactoryImpl implements StatementExecutionManagerFactory
 	{
-		function isDependent () : Boolean;
+		private var _connectionPool : ConnectionPool;
 		
-		function dependenciesAreMet () : Boolean;
+		public function StatementExecutionManagerFactoryImpl()
+		{
+		}
+
+		public function getStatementExecutionManager():StatementExecutionManager
+		{
+			var manager : StatementExecutionManager = new StatementExecutionManagerImpl();
+			manager.setConnectionPool( getConnectionPool() );
+			return manager;
+		}
+
+		public function setConnectionPool( connectionPool : ConnectionPool ) : void
+		{
+			_connectionPool = connectionPool;
+		}
 		
-		function isComplete () : Boolean;
+		public function getConnectionPool () : ConnectionPool
+		{
+			return _connectionPool;
+		}
 		
-		function setEnity ( entity : Object ) : void;
-		
-		function getEntity () : Object;
-		
-		function setEntityDataMap ( entityDataMap : EntityDataMap ) : void;
-		
-		function getEntityDataMap () : EntityDataMap;
-		
-		function addDependentNode ( dependencyNode : DependencyNode ) : void;
-		
-		function addDependency ( dependencyNode : DependencyNode ) : void;
-		
-		function setStatement ( statement : Statement ) : void;
-		
-		function getStatement () : Statement;
-		
-		function addParams () : void;
-		
-		function setStatementExecutionManager ( statementExecutionManager : StatementExecutionManager ) : void;
-		
-		function getStatementExecutionManager () : StatementExecutionManager;
 	}
 }

@@ -26,18 +26,21 @@
 package org.projectsnooze.impl.execute
 {
 	import flash.data.SQLConnection;
+	import flash.data.SQLStatement;
+	import flash.events.SQLErrorEvent;
+	import flash.events.SQLEvent;
+	import flash.net.Responder;
 	
 	import org.projectsnooze.connections.ConnectionPool;
-	import org.projectsnooze.execute.Responder;
 	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.generator.Statement;
 
 	public class StatementExecutorImpl implements StatementExecutor
 	{
 		private var _connectionPool : ConnectionPool;
-		private var _responder : Responder;
 		private var _statement : Statement;
 		private var _conection : SQLConnection;
+		private var _responder : Responder
 		
 		public function StatementExecutorImpl()
 		{
@@ -45,6 +48,36 @@ package org.projectsnooze.impl.execute
 		
 		public function execute():void
 		{
+			var sqlStatement : SQLStatement = new SQLStatement();
+			
+			sqlStatement.addEventListener( SQLEvent.RESULT , onResult );
+			sqlStatement.addEventListener( SQLErrorEvent.ERROR , onFault );
+			
+			sqlStatement.sqlConnection = getConnection();
+			sqlStatement.text = getStatement().getSQL();
+			
+			sqlStatement.execute( -1 );
+		}
+		
+		private function onResult ( event : SQLEvent ) : void
+		{
+			
+			
+		}
+		
+		private function onFault ( event : SQLErrorEvent ) : void
+		{
+			
+		}
+		
+		public function setResponder ( responder : Responder ) : void
+		{
+			_responder = responder;
+		}
+		
+		public function getResponder () : Responder
+		{
+			return _responder;
 		}
 		
 		public function setConnection ( connection : SQLConnection ) : void
@@ -65,16 +98,6 @@ package org.projectsnooze.impl.execute
 		public function getStatement():Statement
 		{
 			return _statement;
-		}
-		
-		public function setResponder(responder:Responder):void
-		{
-			_responder = responder;
-		}
-		
-		public function getResponder():Responder
-		{
-			return _responder;
 		}
 		
 	}

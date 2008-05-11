@@ -31,6 +31,7 @@ package org.projectsnooze.impl
 	import org.projectsnooze.datatype.TypeFactory;
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.execute.StatementExecutionManagerFactory;
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
@@ -38,6 +39,7 @@ package org.projectsnooze.impl
 	import org.projectsnooze.impl.datatypes.TypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.impl.dependency.DependencyTreeCreatorImpl;
+	import org.projectsnooze.impl.execute.StatementExecutionManagerFactoryImpl;
 	import org.projectsnooze.impl.generator.DDLGeneratorImpl;
 	import org.projectsnooze.impl.generator.StatementCreaterImpl;
 	import org.projectsnooze.impl.scheme.EntityDataMapProviderImpl;
@@ -59,17 +61,7 @@ package org.projectsnooze.impl
 		private var _connectionPool : ConnectionPool;
 		private var _dependencyTreeCreator : DependencyTreeCreator;
 		private var _ddlGenerator : DDLGenerator;
-		
-		
-		/**
-		 * Plan for connections
-		 * - use one connection for a whole dependency tree session
-		 * - this gives a easy way to rollback actions on fail!
-		 * - also makes everthing much faster as only need to
-		 * - open one connection - WRONG
-		 * 
-		 */ 
-		
+		private var _statementExecutionManagerFactory : StatementExecutionManagerFactory;
 		
 		public function EntityFacadeImpl()
 		{
@@ -82,11 +74,14 @@ package org.projectsnooze.impl
 			_statementCreator = new StatementCreaterImpl();
 			_connectionPool = new ConnectionPoolImpl();
 			
+			_statementExecutionManagerFactory = new StatementExecutionManagerFactoryImpl();
+			_statementExecutionManagerFactory.setConnectionPool( getConnectionPool() );
+			
 			_dependencyTreeCreator = new DependencyTreeCreatorImpl();
 			_dependencyTreeCreator.setTypeUtils( getTypeUtils() );
 			_dependencyTreeCreator.setEntityDataMapProvider( getEntityDataMapProvider() );
 			_dependencyTreeCreator.setStatementCreator( getStatementCreator() );
-			_dependencyTreeCreator.setConnectionPool( getConnectionPool() );
+			_dependencyTreeCreator.setStatementExecutionManagerFactory( getStatementExecutionManagerFactory() ); 
 			
 			_ddlGenerator = new DDLGeneratorImpl();
 			_ddlGenerator.setEntityDataMapProvider( getEntityDataMapProvider() );
@@ -201,6 +196,16 @@ package org.projectsnooze.impl
 		public function getDDLgenerator():DDLGenerator
 		{
 			return _ddlGenerator;
+		}
+		
+		public function setStatementExecutionManagerFactory ( statementExecutionManagerFactory : StatementExecutionManagerFactory ) : void
+		{
+			_statementExecutionManagerFactory = statementExecutionManagerFactory;
+		}
+		
+		public function getStatementExecutionManagerFactory () : StatementExecutionManagerFactory
+		{
+			return _statementExecutionManagerFactory;
 		}
 		
 		public function getSession():Session

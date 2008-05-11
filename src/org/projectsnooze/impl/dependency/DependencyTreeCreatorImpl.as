@@ -29,13 +29,12 @@ package org.projectsnooze.impl.dependency
 	import mx.logging.Log;
 	
 	import org.projectsnooze.associations.Relationship;
-	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
-	import org.projectsnooze.execute.StatementExecutor;
+	import org.projectsnooze.execute.StatementExecutionManager;
+	import org.projectsnooze.execute.StatementExecutionManagerFactory;
 	import org.projectsnooze.generator.StatementCreator;
-	import org.projectsnooze.impl.execute.StatementExecutorImpl;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
@@ -48,7 +47,7 @@ package org.projectsnooze.impl.dependency
 		private var _entityDataMapProvider : EntityDataMapProvider;
 		private var _typeUtils : TypeUtils;
 		private var _statementCreator : StatementCreator;
-		private var _connectionPool : ConnectionPool;
+		private var _statementExecutionManagerFactory : StatementExecutionManagerFactory;
 		
 		public function DependencyTreeCreatorImpl()
 		{
@@ -57,36 +56,32 @@ package org.projectsnooze.impl.dependency
 		
 		public function getSaveDependencyTree ( entity : Object ) : Array
 		{
-			var saveTree : Array = new Array();
-			createDataMap( entity , saveTree );
-			return saveTree;
+			var insertTree : Array = new Array();
+			var statementExecutionManager : StatementExecutionManager = getStatementExecutionManagerFactory().getStatementExecutionManager();
+			
+			createInsertTree( entity , insertTree , statementExecutionManager );
+			
+			return insertTree;
 		}
 		
-		private function createDataMap ( entity : Object , tree : Array , lastDepNode : DependencyNode = null , isPrevEntityFKContiner : Boolean = true ) : void
+		private function createInsertTree ( entity : Object , tree : Array , manager : StatementExecutionManager , lastDepNode : DependencyNode = null , isPrevEntityFKContiner : Boolean = true ) : void
 		{
 			var dataMap : EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
 			
-			var depNode : DependencyNode = new DependancyNodeImpl();
+			var depNode : DependencyNode = new DependencyNodeImpl();
 			depNode.setEnity( entity );
 			depNode.setEntityDataMap( dataMap );
-			depNode.setStatementCreator( getStatementCreator() );
-			depNode.setActionType( "insert" );
+			depNode.setStatement( getStatementCreator().getStatementByType( "insert" , dataMap ) );
+			depNode.setStatementExecutionManager( manager );
 			
-			var executor : StatementExecutor = new StatementExecutorImpl();
-			executor.setConnection( getConnectionPool().getConnection() );
-			depNode.setStatementExecutor( executor );
 			
 			if ( isPrevEntityFKContiner && lastDepNode )
 			{
-				//logger.debug( "depNode = {0} , lastDepNode = {1}" , depNode.getEntity() , lastDepNode.getEntity() );
-				
 				depNode.addDependentNode( lastDepNode );
 				lastDepNode.addDependency( depNode )
 			}
 			else if ( lastDepNode )
 			{
-				//logger.debug( "depNode = {0} , lastDepNode = {1}" , depNode.getEntity() , lastDepNode.getEntity() );
-				
 				lastDepNode.addDependentNode( depNode );
 				depNode.addDependency( lastDepNode )
 			}
@@ -106,12 +101,12 @@ package org.projectsnooze.impl.dependency
 					{
 						for ( var i : Iterator = new SmartIterator( data ) ; i.hasNext() ; )
 						{
-							createDataMap( i.next() , tree , depNode , relationship.getType().getForeignKeyContainer() );
+							createInsertTree( i.next() , tree , manager , depNode , relationship.getType().getForeignKeyContainer() );
 						}
 					}
 					else
 					{
-						createDataMap( data , tree , depNode , relationship.getType().getForeignKeyContainer() );
+						createInsertTree( data , tree , manager , depNode , relationship.getType().getForeignKeyContainer() );
 					}
 				}
 			}
@@ -148,14 +143,14 @@ package org.projectsnooze.impl.dependency
 			return _statementCreator;
 		}
 		
-		public function setConnectionPool ( connectionPool : ConnectionPool ) : void
+		public function setStatementExecutionManagerFactory ( statementExecutionManagerFactory : StatementExecutionManagerFactory ) : void
 		{
-			_connectionPool = connectionPool;
+			_statementExecutionManagerFactory = statementExecutionManagerFactory;
 		}
 		
-		public function getConnectionPool () : ConnectionPool
+		public function getStatementExecutionManagerFactory () : StatementExecutionManagerFactory
 		{
-			return _connectionPool;
+			return _statementExecutionManagerFactory;
 		}
 	}
 }

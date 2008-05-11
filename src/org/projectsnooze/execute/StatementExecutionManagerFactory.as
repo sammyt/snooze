@@ -23,32 +23,16 @@
  * THE SOFTWARE.
  */
  
-package org.projectsnooze.dependency
+package org.projectsnooze.execute
 {
-	import org.projectsnooze.datatype.TypeUtils;
-	import org.projectsnooze.execute.StatementExecutionManagerFactory;
-	import org.projectsnooze.generator.StatementCreator;
-	import org.projectsnooze.scheme.EntityDataMapProvider;
+	import org.projectsnooze.connections.ConnectionPool;
 	
-	public interface DependencyTreeCreator
+	public interface StatementExecutionManagerFactory
 	{
-		function getSaveDependencyTree ( entity : Object ) : Array;
+		function getStatementExecutionManager () : StatementExecutionManager;
 		
-		function setEntityDataMapProvider ( entityDataMap : EntityDataMapProvider ) : void
+		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
 		
-		function getEntitDataMapProvider ( ) : EntityDataMapProvider
-		
-		function setTypeUtils ( typeUtils : TypeUtils ) : void
-		
-		function getTypeUtils () : TypeUtils;
-		
-		function setStatementCreator ( statementCreator : StatementCreator ) : void;
-		
-		function getStatementCreator () : StatementCreator;
-		
-		function setStatementExecutionManagerFactory ( statementExecutionManagerFactory : StatementExecutionManagerFactory ) : void;
-		
-		function getStatementExecutionManagerFactory () : StatementExecutionManagerFactory;
-		
+		function getConnectionPool () : ConnectionPool;
 	}
 }

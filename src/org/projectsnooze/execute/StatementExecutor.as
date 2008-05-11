@@ -26,6 +26,7 @@
 package org.projectsnooze.execute
 {
 	import flash.data.SQLConnection;
+	import flash.net.Responder;
 	
 	import org.projectsnooze.generator.Statement;
 	
@@ -35,13 +36,13 @@ package org.projectsnooze.execute
 		
 		function getStatement () : Statement;
 		
-		function setResponder ( responder : Responder ) : void;
-		
-		function getResponder () : Responder;
-		
 		function setConnection ( connection : SQLConnection ) : void;
 		
 		function getConnection () : SQLConnection;
+		
+		function setResponder ( responder : Responder ) : void;
+		
+		function getResponder () : Responder; 
 		
 		function execute () : void; 
 	}

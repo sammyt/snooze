@@ -25,10 +25,21 @@
  
 package org.projectsnooze.execute
 {
-	public interface Responder
-	{
-		function result( data : Object ):void;
+	import flash.net.Responder;
 	
-		function fault( info : Object ):void;
+	import org.projectsnooze.connections.ConnectionPool;
+	import org.projectsnooze.generator.Statement;
+	
+	public interface StatementExecutionManager
+	{
+		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
+		
+		function getConnectionPool () : ConnectionPool;
+		
+		function addToExecutionQueue ( statement : Statement , responder : Responder ) : void;
+		
+		function prepare () : void;
+		
+		function processQueue () : void;
 	}
 }

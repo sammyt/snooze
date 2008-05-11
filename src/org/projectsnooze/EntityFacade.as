@@ -30,6 +30,7 @@ package org.projectsnooze
 	import org.projectsnooze.datatype.TypeFactory;
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.execute.StatementExecutionManagerFactory;
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
@@ -80,6 +81,10 @@ package org.projectsnooze
 		function setDDLGenerator ( ddlGenerator : DDLGenerator ) : void;
 		
 		function getDDLgenerator () : DDLGenerator;
+		
+		function setStatementExecutionManagerFactory ( statementExecutionManagerFactory : StatementExecutionManagerFactory ) : void;
+		
+		function getStatementExecutionManagerFactory () : StatementExecutionManagerFactory;
 		
 		function getSession () : Session;
 				
