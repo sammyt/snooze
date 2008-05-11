@@ -29,9 +29,9 @@ package org.projectsnooze.impl.execute
 	import flash.data.SQLStatement;
 	import flash.events.SQLErrorEvent;
 	import flash.events.SQLEvent;
-	import flash.net.Responder;
 	
 	import org.projectsnooze.connections.ConnectionPool;
+	import org.projectsnooze.execute.Responder;
 	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.generator.Statement;
 
@@ -40,7 +40,7 @@ package org.projectsnooze.impl.execute
 		private var _connectionPool : ConnectionPool;
 		private var _statement : Statement;
 		private var _conection : SQLConnection;
-		private var _responder : Responder
+		private var _responder : Responder;
 		
 		public function StatementExecutorImpl()
 		{

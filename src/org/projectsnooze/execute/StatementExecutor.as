@@ -26,7 +26,6 @@
 package org.projectsnooze.execute
 {
 	import flash.data.SQLConnection;
-	import flash.net.Responder;
 	
 	import org.projectsnooze.generator.Statement;
 	

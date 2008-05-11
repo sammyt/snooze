@@ -147,7 +147,7 @@ package org.projectsnooze.impl.dependency
 			if ( dependenciesAreMet() )
 			{
 				addParams();
-				getStatementExecutionManager().addToExecutionQueue( getStatement() , new Responder( result , fault ) );
+				getStatementExecutionManager().addToExecutionQueue( getStatement() , this );
 			}
 		}
 		

@@ -25,8 +25,6 @@
  
 package org.projectsnooze.execute
 {
-	import flash.net.Responder;
-	
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.generator.Statement;
 	

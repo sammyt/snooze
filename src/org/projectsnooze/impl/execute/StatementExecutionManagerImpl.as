@@ -27,9 +27,9 @@ package org.projectsnooze.impl.execute
 {
 	import flash.data.SQLConnection;
 	import flash.events.SQLEvent;
-	import flash.net.Responder;
 	
 	import org.projectsnooze.connections.ConnectionPool;
+	import org.projectsnooze.execute.Responder;
 	import org.projectsnooze.execute.StatementExecutionManager;
 	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.generator.Statement;
@@ -105,9 +105,9 @@ package org.projectsnooze.impl.execute
 	}
 }
 
-import flash.net.Responder;
 
 import org.projectsnooze.generator.Statement;
+import org.projectsnooze.execute.Responder;
 	
 class StatementAndResponder
 {
