@@ -27,16 +27,22 @@ package org.projectsnooze.impl.execute
 {
 	import flash.data.SQLConnection;
 	import flash.data.SQLStatement;
+	import flash.events.EventDispatcher;
 	import flash.events.SQLErrorEvent;
 	import flash.events.SQLEvent;
+	
+	import mx.logging.ILogger;
+	import mx.logging.Log;
 	
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.execute.Responder;
 	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.generator.Statement;
 
-	public class StatementExecutorImpl implements StatementExecutor
+	public class StatementExecutorImpl extends EventDispatcher implements StatementExecutor
 	{
+		private static var logger : ILogger = Log.getLogger( "StatementExecutorImpl" );
+		
 		private var _connectionPool : ConnectionPool;
 		private var _statement : Statement;
 		private var _conection : SQLConnection;
@@ -56,18 +62,23 @@ package org.projectsnooze.impl.execute
 			sqlStatement.sqlConnection = getConnection();
 			sqlStatement.text = getStatement().getSQL();
 			
-			sqlStatement.execute( -1 );
+			sqlStatement.execute();
+			
+			logger.info( "execute this sql {0}" , getStatement().getSQL() );
 		}
 		
 		private function onResult ( event : SQLEvent ) : void
 		{
-			
-			
+			logger.debug( "onResult {0}" , event );
+			dispatchEvent( new StatementExecutorEvent ( StatementExecutorEvent.RESULT , this ) );
+			if ( getResponder() ) getResponder().result( event );
 		}
 		
 		private function onFault ( event : SQLErrorEvent ) : void
 		{
-			
+			logger.debug( "onFault {0}" , event );
+			dispatchEvent( new StatementExecutorEvent ( StatementExecutorEvent.FAULT , this ) );
+			if ( getResponder() ) getResponder().fault( event );
 		}
 		
 		public function setResponder ( responder : Responder ) : void

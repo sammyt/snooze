@@ -44,7 +44,7 @@ package org.projectsnooze.impl.session
 		{
 		}
 
-		public function save(entity:Object):Object
+		public function save(entity:Object):void
 		{
 			var depTree : Array = getDependencyTreeCreator().getSaveDependencyTree( entity );
 			
@@ -54,12 +54,10 @@ package org.projectsnooze.impl.session
 				if ( ! depNode.isDependent() ) depNode.execute();
 			}
 			
-			return null;
 		}
 		
-		public function retrieve(entity:Object):Object
+		public function retrieve(entity:Object):void
 		{
-			return null;
 		}
 		
 		public function getDependencyTreeCreator (  ) : DependencyTreeCreator

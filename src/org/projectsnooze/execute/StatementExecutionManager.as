@@ -34,7 +34,7 @@ package org.projectsnooze.execute
 		
 		function getConnectionPool () : ConnectionPool;
 		
-		function addToExecutionQueue ( statement : Statement , responder : Responder ) : void;
+		function addToExecutionQueue ( statement : Statement , responder : Responder = null ) : void;
 		
 		function prepare () : void;
 		

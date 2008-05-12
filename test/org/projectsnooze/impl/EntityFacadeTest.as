@@ -26,7 +26,6 @@ package org.projectsnooze.impl
 			var ts : TestSuite = new TestSuite();
 			ts.addTest( new EntityFacadeTest( "testGetSession" ) );
 			ts.addTest( new EntityFacadeTest( "testBuildDataMap" ) );
-			ts.addTest( new EntityFacadeTest( "testArray" ) );
 			
 			return ts;
 		}
@@ -41,29 +40,6 @@ package org.projectsnooze.impl
 			facade = null;
 		}
 		
-		public function testArray () : void
-		{
-			var person : Mother = new Mother();
-			
-			var list1 : Array = new Array();
-			var list2 : Array = new Array();
-			
-			list1.push( person );
-			list2.push( person );
-			list2.push( person );
-			list2.push( person );
-			list2.push( person );
-			
-			for ( var i : Iterator = new ArrayIterator( list1 ) ; i.hasNext() ; )
-			{
-				assertNotNull( i.next() ); 
-			}
-			for ( var j : Iterator = new ArrayIterator( list2 ) ; j.hasNext() ; )
-			{
-				assertNotNull( j.next() ); 
-			}
-			
-		}
 		
 		public function testGetSession () : void
 		{

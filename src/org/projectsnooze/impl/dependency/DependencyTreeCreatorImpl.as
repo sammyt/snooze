@@ -34,7 +34,9 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.dependency.DependencyTreeCreator;
 	import org.projectsnooze.execute.StatementExecutionManager;
 	import org.projectsnooze.execute.StatementExecutionManagerFactory;
+	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.StatementCreator;
+	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
@@ -48,6 +50,7 @@ package org.projectsnooze.impl.dependency
 		private var _typeUtils : TypeUtils;
 		private var _statementCreator : StatementCreator;
 		private var _statementExecutionManagerFactory : StatementExecutionManagerFactory;
+		private var _ddlGenerator : DDLGenerator;
 		
 		public function DependencyTreeCreatorImpl()
 		{
@@ -57,7 +60,9 @@ package org.projectsnooze.impl.dependency
 		public function getSaveDependencyTree ( entity : Object ) : Array
 		{
 			var insertTree : Array = new Array();
+			
 			var statementExecutionManager : StatementExecutionManager = getStatementExecutionManagerFactory().getStatementExecutionManager();
+			statementExecutionManager.prepare();
 			
 			createInsertTree( entity , insertTree , statementExecutionManager );
 			
@@ -152,5 +157,6 @@ package org.projectsnooze.impl.dependency
 		{
 			return _statementExecutionManagerFactory;
 		}
+		
 	}
 }

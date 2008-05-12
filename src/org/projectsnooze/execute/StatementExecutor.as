@@ -26,10 +26,11 @@
 package org.projectsnooze.execute
 {
 	import flash.data.SQLConnection;
+	import flash.events.IEventDispatcher;
 	
 	import org.projectsnooze.generator.Statement;
 	
-	public interface StatementExecutor
+	public interface StatementExecutor extends IEventDispatcher
 	{
 		function setStatement ( statement : Statement ) : void;
 		

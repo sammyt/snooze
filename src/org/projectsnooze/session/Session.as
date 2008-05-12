@@ -29,9 +29,9 @@ package org.projectsnooze.session
 	
 	public interface Session
 	{
-		function save ( entity : Object ) : Object;
+		function save ( entity : Object ) : void;
 		
-		function retrieve ( entity : Object  ) : Object;
+		function retrieve ( entity : Object  ) : void;
 		
 		function getDependencyTreeCreator (  ) : DependencyTreeCreator;
 		

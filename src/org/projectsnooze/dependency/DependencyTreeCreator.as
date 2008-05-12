@@ -27,6 +27,7 @@ package org.projectsnooze.dependency
 {
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.execute.StatementExecutionManagerFactory;
+	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	

@@ -25,16 +25,21 @@
  
 package org.projectsnooze.impl.generator
 {
-	import org.projectsnooze.scheme.NameTypeMapping;
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
+	import org.projectsnooze.scheme.NameTypeMapping;
 
 	public class DDLGeneratorImpl implements DDLGenerator
 	{
+		private static var logger : ILogger = Log.getLogger( "DDLGeneratorImpl" );
+		
 		private var _entityDataMapProvider : EntityDataMapProvider;
 		
 		public function DDLGeneratorImpl()
@@ -49,6 +54,38 @@ package org.projectsnooze.impl.generator
 		public function getEntityDataMapProvider():EntityDataMapProvider
 		{
 			return _entityDataMapProvider;
+		}
+		
+		public function getDDLStatements () : Array
+		{
+			var statements : Array = new Array();
+			
+			for ( var iterator : Iterator = getEntityDataMapProvider().getIterator() ; iterator.hasNext() ; )
+			{
+				logger.debug( "iterating" );
+				var values : Array = new Array();
+				var entityDataMap : EntityDataMap = iterator.next() as EntityDataMap;
+				
+				var sqlSkeleton : String = "";
+				
+				sqlSkeleton += "\n CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
+				
+				addPrimaryKey ( entityDataMap , values );
+				addForeignKeys ( entityDataMap , values );
+				addNaturalProperties( entityDataMap , values );
+				
+				sqlSkeleton += getCsvFromArray( values );
+				
+				sqlSkeleton += " );";
+				
+				var statement : Statement = new StatementImpl();
+				statement.setSqlSkeleton( sqlSkeleton );
+				statements.push( statement );
+				
+			}
+			
+			logger.debug( "{0} statement involved in DDL" , statements.length );
+			return statements;
 		}
 		
 		public function getDDL():Statement

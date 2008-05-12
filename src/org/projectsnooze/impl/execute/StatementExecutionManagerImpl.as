@@ -28,6 +28,9 @@ package org.projectsnooze.impl.execute
 	import flash.data.SQLConnection;
 	import flash.events.SQLEvent;
 	
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.execute.Responder;
 	import org.projectsnooze.execute.StatementExecutionManager;
@@ -36,14 +39,18 @@ package org.projectsnooze.impl.execute
 
 	public class StatementExecutionManagerImpl implements StatementExecutionManager
 	{
+		private static var logger : ILogger = Log.getLogger( "StatementExecutionManagerImpl" );
+		
 		private var _connectionPool : ConnectionPool;
 		private var _queue : Array;
 		private var _connection : SQLConnection;
 		private var _prepared : Boolean;
+		private var _executing : Boolean;
 		
 		public function StatementExecutionManagerImpl()
 		{
 			_prepared = false;
+			_executing = false;
 			_queue = new Array();
 		}
 
@@ -57,7 +64,7 @@ package org.projectsnooze.impl.execute
 			return _connectionPool;
 		}
 		
-		public function addToExecutionQueue( statement : Statement, responder : Responder ) : void
+		public function addToExecutionQueue( statement : Statement, responder : Responder = null ) : void
 		{
 			_queue.push( new StatementAndResponder( statement , responder ) );
 			processQueue();
@@ -72,14 +79,38 @@ package org.projectsnooze.impl.execute
 		
 		public function processQueue () : void
 		{
-			if ( _prepared )
+			if ( _prepared && ! _executing && _queue.length > 0 )
 			{
 				var statementAndResponder : StatementAndResponder = getNext();
-				var executor : StatementExecutor = new StatementExecutorImpl();  
+				
+				var executor : StatementExecutor = new StatementExecutorImpl();
+				executor.addEventListener( StatementExecutorEvent.RESULT , onExecuteResult );
+				executor.addEventListener( StatementExecutorEvent.FAULT , onExecuteFault );
+				
 				executor.setConnection( _connection );
 				executor.setStatement( statementAndResponder.getStatement() );
 				executor.setResponder( statementAndResponder.getResponder() );
+				
+				_executing = true;
+				executor.execute();
 			}
+		}
+		
+		private function onExecuteResult ( event : StatementExecutorEvent ) : void
+		{
+			_executing = false;
+			removeExecutorListeners( event.getStatementExecutor() );
+		}
+		
+		private function onExecuteFault ( event : StatementExecutorEvent ) : void
+		{
+			removeExecutorListeners( event.getStatementExecutor() );
+		}
+		
+		private function removeExecutorListeners ( executor : StatementExecutor ) : void
+		{
+			executor.removeEventListener( StatementExecutorEvent.RESULT , onExecuteResult );
+			executor.removeEventListener( StatementExecutorEvent.FAULT , onExecuteFault );
 		}
 		
 		private function onConnectionOpen ( event : SQLEvent ) : void
@@ -90,6 +121,7 @@ package org.projectsnooze.impl.execute
 		
 		private function onBegin ( event : SQLEvent ) : void
 		{
+			logger.info( "onBegin" );
 			_prepared = true;
 			processQueue();
 		}
