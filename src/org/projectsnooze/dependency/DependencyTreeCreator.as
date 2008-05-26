@@ -26,14 +26,17 @@
 package org.projectsnooze.dependency
 {
 	import org.projectsnooze.datatype.TypeUtils;
-	import org.projectsnooze.execute.StatementExecutionManagerFactory;
-	import org.projectsnooze.generator.DDLGenerator;
+	import org.projectsnooze.execute.QueueManager;
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	
 	public interface DependencyTreeCreator
 	{
-		function getSaveDependencyTree ( entity : Object ) : Array;
+		function setQueueManager ( queueManager : QueueManager ) : void;
+		
+		function getQueueManager () : QueueManager;
+		
+		function getSaveDependencyTree ( entity : Object ) : DependencyTree;
 		
 		function setEntityDataMapProvider ( entityDataMap : EntityDataMapProvider ) : void
 		
@@ -46,10 +49,6 @@ package org.projectsnooze.dependency
 		function setStatementCreator ( statementCreator : StatementCreator ) : void;
 		
 		function getStatementCreator () : StatementCreator;
-		
-		function setStatementExecutionManagerFactory ( statementExecutionManagerFactory : StatementExecutionManagerFactory ) : void;
-		
-		function getStatementExecutionManagerFactory () : StatementExecutionManagerFactory;
 		
 	}
 }

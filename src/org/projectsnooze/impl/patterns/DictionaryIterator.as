@@ -56,5 +56,11 @@ package org.projectsnooze.impl.patterns
 			return _dict[ _iterator.next() ];
 		}
 		
+		public function remove () : void
+		{
+			_iterator.remove();
+			trace( "this doesnt work!" )
+		}
+		
 	}
 }

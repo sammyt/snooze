@@ -22,22 +22,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- 
+
 package org.projectsnooze.execute
 {
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.generator.Statement;
 	
-	public interface StatementExecutionManager
+	public interface StatementQueue
 	{
 		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
 		
 		function getConnectionPool () : ConnectionPool;
 		
-		function addToExecutionQueue ( statement : Statement , responder : Responder = null ) : void;
+		function setTransactional ( transactional : Boolean ) : void;
 		
-		function prepare () : void;
+		function getTransactional ( ) : Boolean;
 		
-		function processQueue () : void;
+		function addToExecutionQueue( wrapper : StatementWrapper ):void
+		
+		function isInQueue ( statement : Statement ) : Boolean;
+		
+		function openConnection () : void;
+		
+		function beginProcessingQueue () : void;
+		
+		function finishProcessingQueue () : void;
+		
+		function processNext () : void;
+		
+		function beginTransaction () : void;
+		
+		function commitTransaction () : void;
+		
+		function rollbackTransaction () : void;
 	}
 }

@@ -60,5 +60,10 @@ package org.projectsnooze.impl.patterns
 			return _iterator.next();
 		}
 		
+		public function remove () : void
+		{
+			_iterator.remove();
+		}
+		
 	}
 }

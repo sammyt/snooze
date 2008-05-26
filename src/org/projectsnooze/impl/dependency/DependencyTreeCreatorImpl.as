@@ -31,12 +31,11 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.dependency.DependencyNode;
+	import org.projectsnooze.dependency.DependencyTree;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
-	import org.projectsnooze.execute.StatementExecutionManager;
-	import org.projectsnooze.execute.StatementExecutionManagerFactory;
+	import org.projectsnooze.execute.QueueManager;
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.StatementCreator;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
@@ -46,52 +45,74 @@ package org.projectsnooze.impl.dependency
 	{
 		private static var logger : ILogger = Log.getLogger( "DependencyTreeCreatorImpl" ) ;
 		
-		private var _entityDataMapProvider : EntityDataMapProvider;
-		private var _typeUtils : TypeUtils;
-		private var _statementCreator : StatementCreator;
-		private var _statementExecutionManagerFactory : StatementExecutionManagerFactory;
-		private var _ddlGenerator : DDLGenerator;
+		protected var _entityDataMapProvider : EntityDataMapProvider;
+		protected var _typeUtils : TypeUtils;
+		protected var _statementCreator : StatementCreator;
+		protected var _ddlGenerator : DDLGenerator;
+		protected var _queueManager : QueueManager; 
 		
 		public function DependencyTreeCreatorImpl()
 		{
 		}
 		
-		
-		public function getSaveDependencyTree ( entity : Object ) : Array
+		public function setQueueManager ( queueManager : QueueManager ) : void
 		{
-			var insertTree : Array = new Array();
-			
-			var statementExecutionManager : StatementExecutionManager = getStatementExecutionManagerFactory().getStatementExecutionManager();
-			statementExecutionManager.prepare();
-			
-			createInsertTree( entity , insertTree , statementExecutionManager );
-			
-			return insertTree;
+			_queueManager = queueManager;
 		}
 		
-		private function createInsertTree ( entity : Object , tree : Array , manager : StatementExecutionManager , lastDepNode : DependencyNode = null , isPrevEntityFKContiner : Boolean = true ) : void
+		public function getQueueManager () : QueueManager
+		{
+			return _queueManager;
+		}
+		
+		public function getSaveDependencyTree ( entity : Object ) : DependencyTree
+		{
+			var depTree : DependencyTree = new DependencyTreeImpl();
+			
+			createInsertTree( entity , depTree );
+			
+			return depTree;
+		}
+		
+		private function createInsertTree ( entity : Object , depTree : DependencyTree , lastDepNode : DependencyNode = null , isPrevEntityFKContiner : Boolean = true ) : void
 		{
 			var dataMap : EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
 			
-			var depNode : DependencyNode = new DependencyNodeImpl();
-			depNode.setEnity( entity );
-			depNode.setEntityDataMap( dataMap );
-			depNode.setStatement( getStatementCreator().getStatementByType( "insert" , dataMap ) );
-			depNode.setStatementExecutionManager( manager );
+			var depNode : DependencyNode;
+			
+			// has this entity already been wrapped in a node
+			if ( depTree.doesTreeContain( entity ) )
+			{
+				depNode = depTree.getNodeByEntity( entity );
+			}
+			
+			// if this is the first the depTree has heard of
+			// this entity, then a new node is needed
+			else
+			{
+				depNode = new DependencyNodeImpl();
+				depNode.setEnity( entity );
+				depNode.setEntityDataMap( dataMap );
+				depNode.setStatement( getStatementCreator().getStatementByType( "insert" , dataMap ) );
+				depNode.setStatementQueue( getQueueManager().getQueue() );
+				depTree.addDependencyNode( depNode );
+			}
 			
 			
+			// if the last entity was the foreign key container
+			// then it is dependent on this node
 			if ( isPrevEntityFKContiner && lastDepNode )
 			{
 				depNode.addDependentNode( lastDepNode );
 				lastDepNode.addDependency( depNode )
 			}
-			else if ( lastDepNode )
+			// if the last entity was not the foreign key container
+			// then this entity node depends on the previous one
+			else if ( lastDepNode && ! isPrevEntityFKContiner )
 			{
 				lastDepNode.addDependentNode( depNode );
 				depNode.addDependency( lastDepNode )
 			}
-			
-			tree.push( depNode );
 			
 			for ( var iterator : Iterator = dataMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
@@ -106,16 +127,15 @@ package org.projectsnooze.impl.dependency
 					{
 						for ( var i : Iterator = new SmartIterator( data ) ; i.hasNext() ; )
 						{
-							createInsertTree( i.next() , tree , manager , depNode , relationship.getType().getForeignKeyContainer() );
+							createInsertTree( i.next() , depTree , depNode , relationship.getType().getForeignKeyContainer() );
 						}
 					}
 					else
 					{
-						createInsertTree( data , tree , manager , depNode , relationship.getType().getForeignKeyContainer() );
+						createInsertTree( data , depTree , depNode , relationship.getType().getForeignKeyContainer() );
 					}
 				}
 			}
-			
 		}
 		
 		public function setEntityDataMapProvider ( entityDataMap : EntityDataMapProvider ) : void
@@ -147,16 +167,5 @@ package org.projectsnooze.impl.dependency
 		{
 			return _statementCreator;
 		}
-		
-		public function setStatementExecutionManagerFactory ( statementExecutionManagerFactory : StatementExecutionManagerFactory ) : void
-		{
-			_statementExecutionManagerFactory = statementExecutionManagerFactory;
-		}
-		
-		public function getStatementExecutionManagerFactory () : StatementExecutionManagerFactory
-		{
-			return _statementExecutionManagerFactory;
-		}
-		
 	}
 }

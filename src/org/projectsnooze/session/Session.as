@@ -31,8 +31,6 @@ package org.projectsnooze.session
 	{
 		function save ( entity : Object ) : void;
 		
-		function retrieve ( entity : Object  ) : void;
-		
 		function getDependencyTreeCreator (  ) : DependencyTreeCreator;
 		
 		function setDependencyTreeCreator ( dependencyTreeCreator : DependencyTreeCreator ) : void;

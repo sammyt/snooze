@@ -43,10 +43,11 @@ package org.projectsnooze.impl.execute
 	{
 		private static var logger : ILogger = Log.getLogger( "StatementExecutorImpl" );
 		
-		private var _connectionPool : ConnectionPool;
-		private var _statement : Statement;
-		private var _conection : SQLConnection;
-		private var _responder : Responder;
+		protected var _connectionPool : ConnectionPool;
+		protected var _statement : Statement;
+		protected var _sqlStatement : SQLStatement;
+		protected var _conection : SQLConnection;
+		protected var _responder : Responder;
 		
 		public function StatementExecutorImpl()
 		{
@@ -54,29 +55,29 @@ package org.projectsnooze.impl.execute
 		
 		public function execute():void
 		{
-			var sqlStatement : SQLStatement = new SQLStatement();
+			_sqlStatement = new SQLStatement();
 			
-			sqlStatement.addEventListener( SQLEvent.RESULT , onResult );
-			sqlStatement.addEventListener( SQLErrorEvent.ERROR , onFault );
+			_sqlStatement.addEventListener( SQLEvent.RESULT , onResult );
+			_sqlStatement.addEventListener( SQLErrorEvent.ERROR , onFault );
 			
-			sqlStatement.sqlConnection = getConnection();
-			sqlStatement.text = getStatement().getSQL();
+			_sqlStatement.sqlConnection = getConnection();
+			_sqlStatement.text = getStatement().getSQL();
 			
-			sqlStatement.execute();
+			_sqlStatement.execute();
 			
 			logger.info( "execute this sql {0}" , getStatement().getSQL() );
 		}
 		
 		private function onResult ( event : SQLEvent ) : void
 		{
-			logger.debug( "onResult {0}" , event );
+			//logger.debug( "onResult {0}" , event );
 			dispatchEvent( new StatementExecutorEvent ( StatementExecutorEvent.RESULT , this ) );
-			if ( getResponder() ) getResponder().result( event );
+			if ( getResponder() ) getResponder().result( _sqlStatement.getResult() );
 		}
 		
 		private function onFault ( event : SQLErrorEvent ) : void
 		{
-			logger.debug( "onFault {0}" , event );
+			//logger.debug( "onFault {0}" , event );
 			dispatchEvent( new StatementExecutorEvent ( StatementExecutorEvent.FAULT , this ) );
 			if ( getResponder() ) getResponder().fault( event );
 		}

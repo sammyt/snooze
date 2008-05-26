@@ -25,6 +25,8 @@
 
 package org.projectsnooze.impl
 {
+	import flash.filesystem.File;
+	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
@@ -34,17 +36,15 @@ package org.projectsnooze.impl
 	import org.projectsnooze.datatype.TypeFactory;
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
-	import org.projectsnooze.execute.StatementExecutionManager;
-	import org.projectsnooze.execute.StatementExecutionManagerFactory;
+	import org.projectsnooze.execute.QueueManager;
 	import org.projectsnooze.generator.DDLGenerator;
-	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
 	import org.projectsnooze.impl.connections.ConnectionPoolImpl;
 	import org.projectsnooze.impl.datatypes.TypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.impl.dependency.DependencyTreeCreatorImpl;
-	import org.projectsnooze.impl.execute.StatementExecutionManagerFactoryImpl;
+	import org.projectsnooze.impl.execute.QueueManagerImpl;
 	import org.projectsnooze.impl.generator.DDLGeneratorImpl;
 	import org.projectsnooze.impl.generator.StatementCreaterImpl;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
@@ -60,17 +60,17 @@ package org.projectsnooze.impl
 	{
 		private static var logger : ILogger = Log.getLogger( "EntityFacadeImpl" );
 		
-		private var _createDDL : Boolean;
-		private var _schemeBuilder : SchemeBuilder;
-		private var _entityDataMapProvider : EntityDataMapProvider;
-		private var _typeUtils : TypeUtils;
-		private var _typeFactory : TypeFactory;
-		private var _linkTypeFactory : LinkTypeFactory;
-		private var _statementCreator : StatementCreator;
-		private var _connectionPool : ConnectionPool;
-		private var _dependencyTreeCreator : DependencyTreeCreator;
-		private var _ddlGenerator : DDLGenerator;
-		private var _statementExecutionManagerFactory : StatementExecutionManagerFactory;
+		protected var _createDDL : Boolean;
+		protected var _schemeBuilder : SchemeBuilder;
+		protected var _entityDataMapProvider : EntityDataMapProvider;
+		protected var _typeUtils : TypeUtils;
+		protected var _typeFactory : TypeFactory;
+		protected var _linkTypeFactory : LinkTypeFactory;
+		protected var _statementCreator : StatementCreator;
+		protected var _connectionPool : ConnectionPool;
+		protected var _dependencyTreeCreator : DependencyTreeCreator;
+		protected var _ddlGenerator : DDLGenerator;
+		protected var _queueManager : QueueManager;
 		
 		public function EntityFacadeImpl( createDDL : Boolean = true )
 		{
@@ -82,9 +82,10 @@ package org.projectsnooze.impl
 			_linkTypeFactory = new LinkTypeFactoryImpl();
 			_statementCreator = new StatementCreaterImpl();
 			_connectionPool = new ConnectionPoolImpl();
+			_connectionPool.setFile( File.applicationDirectory.resolvePath( "snooze.db" ) );
 			
-			_statementExecutionManagerFactory = new StatementExecutionManagerFactoryImpl();
-			_statementExecutionManagerFactory.setConnectionPool( getConnectionPool() );
+			_queueManager = new QueueManagerImpl(); 
+			_queueManager.setConnectionPool( getConnectionPool() );
 			
 			_ddlGenerator = new DDLGeneratorImpl();
 			_ddlGenerator.setEntityDataMapProvider( getEntityDataMapProvider() );
@@ -93,7 +94,7 @@ package org.projectsnooze.impl
 			_dependencyTreeCreator.setTypeUtils( getTypeUtils() );
 			_dependencyTreeCreator.setEntityDataMapProvider( getEntityDataMapProvider() );
 			_dependencyTreeCreator.setStatementCreator( getStatementCreator() );
-			_dependencyTreeCreator.setStatementExecutionManagerFactory( getStatementExecutionManagerFactory() ); 
+			_dependencyTreeCreator.setQueueManager( getQueueManager() );
 			
 			_schemeBuilder = new SchemeBuilderImpl();
 			_schemeBuilder.setEntityDataMapProvider( getEntityDataMapProvider() );
@@ -107,14 +108,24 @@ package org.projectsnooze.impl
 		{
 			prepare();
 			
-			var executionManager : StatementExecutionManager = getStatementExecutionManagerFactory().getStatementExecutionManager();
-			executionManager.prepare();
+			//var executionManager : StatementExecutionManager = getStatementExecutionManagerFactory().getStatementExecutionManager();
+			//executionManager.prepare();
 			
-			for ( var iterator : Iterator = new ArrayIterator( getDDLgenerator().getDDLStatements() ) ;iterator.hasNext() ; )
+			for ( var iterator : Iterator = new ArrayIterator( getDDLgenerator().getDDLStatements() ) ; iterator.hasNext() ; )
 			{
-				executionManager.addToExecutionQueue( iterator.next() as Statement );
+				//executionManager.addToExecutionQueue( iterator.next() as Statement );
 			}
-			executionManager.processQueue();
+			//executionManager.processQueue();
+		}
+		
+		public function setQueueManager ( queueManager : QueueManager ) : void
+		{
+			_queueManager = queueManager;
+		}
+		
+		public function getQueueManager () : QueueManager
+		{
+			return _queueManager;
 		}
 		
 		public function setCreateDDL(createDDL:Boolean):void
@@ -221,16 +232,6 @@ package org.projectsnooze.impl
 		public function getDDLgenerator():DDLGenerator
 		{
 			return _ddlGenerator;
-		}
-		
-		public function setStatementExecutionManagerFactory ( statementExecutionManagerFactory : StatementExecutionManagerFactory ) : void
-		{
-			_statementExecutionManagerFactory = statementExecutionManagerFactory;
-		}
-		
-		public function getStatementExecutionManagerFactory () : StatementExecutionManagerFactory
-		{
-			return _statementExecutionManagerFactory;
 		}
 		
 		public function prepare () : void

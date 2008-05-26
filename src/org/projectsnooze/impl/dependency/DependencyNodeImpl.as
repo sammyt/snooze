@@ -25,15 +25,17 @@
  
 package org.projectsnooze.impl.dependency
 {
-	import flash.net.Responder;
+	import flash.data.SQLResult;
 	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.dependency.DependencyNode;
-	import org.projectsnooze.execute.StatementExecutionManager;
+	import org.projectsnooze.execute.StatementQueue;
+	import org.projectsnooze.execute.StatementWrapper;
 	import org.projectsnooze.generator.Statement;
+	import org.projectsnooze.impl.execute.StatementWrapperImpl;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SubjectImpl;
 	import org.projectsnooze.patterns.Iterator;
@@ -44,27 +46,26 @@ package org.projectsnooze.impl.dependency
 	{
 		private static var logger : ILogger = Log.getLogger( "DependancyNodeImpl" );
 		
-		private var _statementExecutionManager : StatementExecutionManager;
-		private var _statement : Statement;
-		private var _dependencies : Array;
-		private var _entityDataMap : EntityDataMap;
-		private var _entity : Object;
-		private var _isComplete : Boolean;
+		protected var _statement : Statement;
+		protected var _dependencies : Array;
+		protected var _entityDataMap : EntityDataMap;
+		protected var _entity : Object;
+		protected var _hasStarted : Boolean;
+		protected var _isComplete : Boolean;
+		protected var _statementQueue : StatementQueue; 
 		
 		public function DependencyNodeImpl()
 		{
+			_hasStarted = false;
 			_isComplete = false;
 			_dependencies = new Array();
 		}
 		
 		public function update( obj : Object = null ) : void
 		{
-			execute();
+			execute( obj );
 		}
 		
-		// ---
-		// wrappers around observer functions for clarity
-		// --
 		public function addDependentNode ( dependencyNode : DependencyNode ) : void
 		{
 			registerObserver( dependencyNode );
@@ -131,7 +132,6 @@ package org.projectsnooze.impl.dependency
 			}
 		}
 		
-		
 		private function getDependencyNodeByDataMap ( entityDataMap : EntityDataMap ) : DependencyNode
 		{
 			for ( var iterator : Iterator = new ArrayIterator( _dependencies ) ; iterator.hasNext() ; )
@@ -144,22 +144,34 @@ package org.projectsnooze.impl.dependency
 					
 		public function execute( data : * = null ):void
 		{
-			if ( dependenciesAreMet() )
+			if ( dependenciesAreMet() && ! _hasStarted )
 			{
-				addParams();
-				getStatementExecutionManager().addToExecutionQueue( getStatement() , this );
+				begin ();
 			}
+		}
+		
+		public function begin () : void
+		{
+			_hasStarted = true;
+			addParams();
+			
+			var wrapper : StatementWrapper = new StatementWrapperImpl( getStatement() , this );
+			getStatementQueue().addToExecutionQueue( wrapper );
 		}
 		
 		public function result( data : Object ):void
 		{
+			// this need to be abstracted out into a statement 
+			// type specific responder
 			_isComplete = true;
 			
 			// set the new id TMP
-			getEntity().setId ( Math.round( Math.random() * 10 ) );
+			var e : SQLResult = data as SQLResult;
+			getEntity().setId ( e.lastInsertRowID );
 			
 			// notify observers
 			notifyObservers();
+			
 		}
 	
 		public function fault( info : Object ):void
@@ -188,11 +200,6 @@ package org.projectsnooze.impl.dependency
 			return depsMet;
 		}
 		
-		
-		
-		// -----
-		// getters and setters
-		// -----
 		public function setEnity ( entity : Object ) : void
 		{
 			_entity = entity;
@@ -213,16 +220,6 @@ package org.projectsnooze.impl.dependency
 			return _entityDataMap;			
 		}
 		
-		public function setStatementExecutionManager ( statementExecutionManager : StatementExecutionManager ) : void
-		{
-			_statementExecutionManager = statementExecutionManager;
-		}
-		
-		public function getStatementExecutionManager () : StatementExecutionManager
-		{
-			return _statementExecutionManager;
-		}
-		
 		public function setStatement ( statement : Statement ) : void
 		{
 			_statement = statement;
@@ -231,6 +228,16 @@ package org.projectsnooze.impl.dependency
 		public function getStatement () : Statement
 		{
 			return _statement;
+		}
+
+		public function setStatementQueue ( statementQueue : StatementQueue ) : void
+		{
+			_statementQueue = statementQueue;
+		}
+		
+		public function getStatementQueue () : StatementQueue
+		{
+			return _statementQueue;
 		}
 	}
 }

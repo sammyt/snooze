@@ -29,6 +29,8 @@ package org.projectsnooze.patterns
 	{
  		function hasNext() : Boolean;
  		
-		function next() : Object; 		
+		function next() : Object;
+		
+		function remove () : void;
 	}
 }

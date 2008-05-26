@@ -62,13 +62,12 @@ package org.projectsnooze.impl.generator
 			
 			for ( var iterator : Iterator = getEntityDataMapProvider().getIterator() ; iterator.hasNext() ; )
 			{
-				logger.debug( "iterating" );
 				var values : Array = new Array();
 				var entityDataMap : EntityDataMap = iterator.next() as EntityDataMap;
 				
 				var sqlSkeleton : String = "";
 				
-				sqlSkeleton += "\n CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
+				sqlSkeleton += " CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
 				
 				addPrimaryKey ( entityDataMap , values );
 				addForeignKeys ( entityDataMap , values );
@@ -84,7 +83,6 @@ package org.projectsnooze.impl.generator
 				
 			}
 			
-			logger.debug( "{0} statement involved in DDL" , statements.length );
 			return statements;
 		}
 		
@@ -97,7 +95,7 @@ package org.projectsnooze.impl.generator
 				var values : Array = new Array();
 				var entityDataMap : EntityDataMap = iterator.next() as EntityDataMap;
 				
-				sqlSkeleton += "\n CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
+				sqlSkeleton += " CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
 				
 				addPrimaryKey ( entityDataMap , values );
 				addForeignKeys ( entityDataMap , values );

@@ -26,7 +26,7 @@
 package org.projectsnooze.dependency
 {
 	import org.projectsnooze.execute.Responder;
-	import org.projectsnooze.execute.StatementExecutionManager;
+	import org.projectsnooze.execute.StatementQueue;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.patterns.Command;
 	import org.projectsnooze.patterns.Observer;
@@ -35,6 +35,10 @@ package org.projectsnooze.dependency
 	
 	public interface DependencyNode extends Subject , Observer , Command , Responder
 	{
+		function setStatementQueue ( statementQueue : StatementQueue ) : void;
+		
+		function getStatementQueue () : StatementQueue;
+		
 		function isDependent () : Boolean;
 		
 		function dependenciesAreMet () : Boolean;
@@ -59,8 +63,7 @@ package org.projectsnooze.dependency
 		
 		function addParams () : void;
 		
-		function setStatementExecutionManager ( statementExecutionManager : StatementExecutionManager ) : void;
+		function begin () : void;
 		
-		function getStatementExecutionManager () : StatementExecutionManager;
 	}
 }

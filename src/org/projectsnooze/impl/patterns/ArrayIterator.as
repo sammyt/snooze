@@ -48,5 +48,10 @@ package org.projectsnooze.impl.patterns
 			return _list[ _index ];
 		}
 		
+		public function remove () : void
+		{
+			_list.splice( _index , 1 );
+			_index --;
+		}
 	}
 }

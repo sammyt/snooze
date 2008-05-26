@@ -29,6 +29,7 @@ package org.projectsnooze.impl.session
 	import mx.logging.Log;
 	
 	import org.projectsnooze.dependency.DependencyNode;
+	import org.projectsnooze.dependency.DependencyTree;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
@@ -38,7 +39,7 @@ package org.projectsnooze.impl.session
 	{
 		private static var logger : ILogger = Log.getLogger( "SessionImpl" );
 		
-		private var _dependencyTreeCreator : DependencyTreeCreator;
+		protected var _dependencyTreeCreator : DependencyTreeCreator;
 		
 		public function SessionImpl()
 		{
@@ -46,18 +47,8 @@ package org.projectsnooze.impl.session
 
 		public function save(entity:Object):void
 		{
-			var depTree : Array = getDependencyTreeCreator().getSaveDependencyTree( entity );
-			
-			for( var iterator : Iterator = new SmartIterator( depTree ) ; iterator.hasNext() ; )
-			{
-				var depNode : DependencyNode = iterator.next() as DependencyNode;
-				if ( ! depNode.isDependent() ) depNode.execute();
-			}
-			
-		}
-		
-		public function retrieve(entity:Object):void
-		{
+			var depTree : DependencyTree = getDependencyTreeCreator().getSaveDependencyTree( entity );
+			depTree.begin();
 		}
 		
 		public function getDependencyTreeCreator (  ) : DependencyTreeCreator
