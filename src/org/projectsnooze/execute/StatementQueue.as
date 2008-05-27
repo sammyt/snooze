@@ -42,6 +42,10 @@ package org.projectsnooze.execute
 		
 		function addToExecutionQueue( wrapper : StatementWrapper ):void
 		
+		function setAllStatementsAdded ( allAdded : Boolean ) : void;
+		
+		function areAllStatementsAdded () : Boolean;
+		
 		function isInQueue ( statement : Statement ) : Boolean;
 		
 		function openConnection () : void;

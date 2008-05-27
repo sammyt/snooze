@@ -37,7 +37,9 @@ package org.projectsnooze.impl
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
 	import org.projectsnooze.execute.QueueManager;
+	import org.projectsnooze.execute.StatementQueue;
 	import org.projectsnooze.generator.DDLGenerator;
+	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
 	import org.projectsnooze.impl.connections.ConnectionPoolImpl;
@@ -45,6 +47,7 @@ package org.projectsnooze.impl
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.impl.dependency.DependencyTreeCreatorImpl;
 	import org.projectsnooze.impl.execute.QueueManagerImpl;
+	import org.projectsnooze.impl.execute.StatementWrapperImpl;
 	import org.projectsnooze.impl.generator.DDLGeneratorImpl;
 	import org.projectsnooze.impl.generator.StatementCreaterImpl;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
@@ -104,18 +107,36 @@ package org.projectsnooze.impl
 			
 		}
 		
-		private function createDataBase ( ) : void
+		public function createDatabase () : void
 		{
 			prepare();
 			
-			//var executionManager : StatementExecutionManager = getStatementExecutionManagerFactory().getStatementExecutionManager();
-			//executionManager.prepare();
+			var queue : StatementQueue = getQueueManager().getQueue();
+			queue.setTransactional( true );
+			queue.openConnection();
 			
 			for ( var iterator : Iterator = new ArrayIterator( getDDLgenerator().getDDLStatements() ) ; iterator.hasNext() ; )
 			{
-				//executionManager.addToExecutionQueue( iterator.next() as Statement );
+				queue.addToExecutionQueue( new StatementWrapperImpl( iterator.next() as Statement ) );
 			}
-			//executionManager.processQueue();
+			
+			queue.setAllStatementsAdded( true );
+		}
+		
+		public function dropDatabase () : void
+		{
+			prepare();
+			
+			var queue : StatementQueue = getQueueManager().getQueue();
+			queue.setTransactional( true );
+			queue.openConnection();
+			
+			for ( var iterator : Iterator = new ArrayIterator( getDDLgenerator().getDropStatements() ) ; iterator.hasNext() ; )
+			{
+				queue.addToExecutionQueue( new StatementWrapperImpl( iterator.next() as Statement ) );
+			}
+			
+			queue.setAllStatementsAdded( true );
 		}
 		
 		public function setQueueManager ( queueManager : QueueManager ) : void
@@ -131,7 +152,7 @@ package org.projectsnooze.impl
 		public function setCreateDDL(createDDL:Boolean):void
 		{
 			_createDDL = createDDL
-			if ( createDDL ) createDataBase();
+			if ( createDDL ) createDatabase();
 		}
 		
 		public function getCreateDDL():Boolean

@@ -1,6 +1,10 @@
 package org.projectsnooze.dependency
 {
-	public interface DependencyTree
+	import flash.events.IEventDispatcher;
+	
+	import org.projectsnooze.execute.StatementQueue;
+	
+	public interface DependencyTree extends IEventDispatcher
 	{
 		function getNodeCount () : int;
 		
@@ -13,5 +17,9 @@ package org.projectsnooze.dependency
 		function nodeHasCompleted ( node : DependencyNode ) : void;
 		
 		function begin () : void;
+		
+		function setStatementQueue ( statementQueue : StatementQueue ) : void;
+		
+		function getStatementQueue () : StatementQueue;
 	}
 }

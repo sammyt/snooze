@@ -86,6 +86,29 @@ package org.projectsnooze.impl.generator
 			return statements;
 		}
 		
+		public function getDropStatements () : Array
+		{
+			var statements : Array = new Array();
+			
+			for ( var iterator : Iterator = getEntityDataMapProvider().getIterator() ; iterator.hasNext() ; )
+			{
+				var entityDataMap : EntityDataMap = iterator.next() as EntityDataMap;
+				
+				var sqlSkeleton : String = "";
+				
+				sqlSkeleton += " DROP TABLE IF EXISTS " + entityDataMap.getTableName(); 
+				
+				sqlSkeleton += "; ";
+				
+				var statement : Statement = new StatementImpl();
+				statement.setSqlSkeleton( sqlSkeleton );
+				statements.push( statement );
+				
+			}
+			
+			return statements;
+		}
+		
 		public function getDDL():Statement
 		{
 			var sqlSkeleton : String = "";

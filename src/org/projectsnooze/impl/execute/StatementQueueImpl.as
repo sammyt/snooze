@@ -29,6 +29,9 @@ package org.projectsnooze.impl.execute
 	import flash.events.EventDispatcher;
 	import flash.events.SQLEvent;
 	
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.execute.StatementQueue;
@@ -39,6 +42,8 @@ package org.projectsnooze.impl.execute
 
 	public class StatementQueueImpl extends EventDispatcher implements StatementQueue
 	{
+		private var logger : ILogger = Log.getLogger( "StatementQueueImpl" );
+		
 		protected var _queue : Array;
 		protected var _transactional : Boolean;
 		protected var _iterator : Iterator;
@@ -46,6 +51,7 @@ package org.projectsnooze.impl.execute
 		protected var _connection : SQLConnection;
 		protected var _processing : Boolean;
 		protected var _executing : Boolean;
+		protected var _allStatementsAdded : Boolean;
 		
 		public function StatementQueueImpl()
 		{
@@ -55,8 +61,13 @@ package org.projectsnooze.impl.execute
 			// nothing is yet excuting
 			_executing = false;
 			
+			// true when the queue can expect no more
+			_allStatementsAdded = false;
+			
 			// create the array to hold the queue
 			_queue = new Array();
+			
+			_iterator = new ArrayIterator( _queue ); 
 		}
 		
 
@@ -65,8 +76,22 @@ package org.projectsnooze.impl.execute
 			// add the wrapper to the queue
 			_queue.push( wrapper );
 			
-			// begin processing 
-			beginProcessingQueue();
+			if ( _processing ) processNext();
+		}
+		
+		public function setAllStatementsAdded ( allAdded : Boolean ) : void
+		{
+			_allStatementsAdded = allAdded;
+			
+			if ( areAllStatementsAdded() && ! _iterator.hasNext() && ! _executing )
+			{
+				finishProcessingQueue();
+			}
+		}
+		
+		public function areAllStatementsAdded () : Boolean
+		{
+			return _allStatementsAdded;
 		}
 		
 		public function isInQueue(statement:Statement):Boolean
@@ -90,7 +115,6 @@ package org.projectsnooze.impl.execute
 		{
 			if ( ! _processing )
 			{
-				_iterator = new ArrayIterator( _queue );
 				_processing = true;
 				
 				if ( getTransactional() )
@@ -101,6 +125,10 @@ package org.projectsnooze.impl.execute
 				{
 					processNext();
 				}
+			}
+			else
+			{
+				processNext();
 			}
 		}
 		
@@ -142,6 +170,10 @@ package org.projectsnooze.impl.execute
 				
 				executor.execute();
 			}
+			else if ( ! queueHasNext && areAllStatementsAdded() )
+			{
+				finishProcessingQueue();
+			}
 		}
 		
 		public function beginTransaction () : void
@@ -152,10 +184,11 @@ package org.projectsnooze.impl.execute
 		
 		protected function onBegin ( event : SQLEvent ) : void
 		{
+			logger.debug( "Transaction Started" );
+			
 			// now the transaction has started remove the listener
 			_connection.removeEventListener( SQLEvent.BEGIN , onBegin );
 			
-			// process the first item
 			processNext();
 		}
 		
@@ -167,6 +200,8 @@ package org.projectsnooze.impl.execute
 		
 		protected function onCommit ( event : SQLEvent ) : void
 		{
+			logger.debug( "Transaction Commited" );
+			
 			// remove the event listener now the event has fired
 			_connection.removeEventListener( SQLEvent.COMMIT , onCommit );
 			
@@ -188,11 +223,12 @@ package org.projectsnooze.impl.execute
 		
 		protected function onOpen ( event : SQLEvent ) : void
 		{
+			logger.debug( "Connection Open" );
+			
 			// remove the event as it has now fired
 			_connection.removeEventListener( SQLEvent.OPEN , onOpen );
 			
-			// begin processing
-			beginProcessingQueue();
+			dispatchEvent( new StatementQueueEvent ( StatementQueueEvent.OPEN , this ) );
 		}
 		
 		protected function onExecuteResult ( event : StatementExecutorEvent ) : void

@@ -6,6 +6,7 @@ package org.projectsnooze.impl.execute
 
 	public class StatementQueueEvent extends Event
 	{
+		public static const OPEN : String = "queueConnectionOpen";
 		public static const COMPLETE : String = "queueComplete";
 		
 		private var _queue : StatementQueue

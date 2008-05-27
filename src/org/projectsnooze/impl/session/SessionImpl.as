@@ -28,11 +28,11 @@ package org.projectsnooze.impl.session
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
-	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTree;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
-	import org.projectsnooze.impl.patterns.SmartIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import org.projectsnooze.execute.Responder;
+	import org.projectsnooze.execute.StatementQueue;
+	import org.projectsnooze.impl.execute.StatementQueueEvent;
 	import org.projectsnooze.session.Session;
 
 	public class SessionImpl implements Session
@@ -45,10 +45,20 @@ package org.projectsnooze.impl.session
 		{
 		}
 
-		public function save(entity:Object):void
+		public function save( entity:Object , responder : Responder = null ):void
 		{
 			var depTree : DependencyTree = getDependencyTreeCreator().getSaveDependencyTree( entity );
+			
+			var queue : StatementQueue = depTree.getStatementQueue();
+			queue.addEventListener( StatementQueueEvent.COMPLETE , saveComplete );
+			
 			depTree.begin();
+			
+			function saveComplete ( event : StatementQueueEvent ) : void
+			{
+				event.getStatementQueue().removeEventListener( StatementQueueEvent.COMPLETE , saveComplete );
+				responder.result( entity );
+			}
 		}
 		
 		public function getDependencyTreeCreator (  ) : DependencyTreeCreator
@@ -60,8 +70,5 @@ package org.projectsnooze.impl.session
 		{
 			_dependencyTreeCreator = dependencyTreeCreator;
 		}
-		
-		
-		
 	}
 }

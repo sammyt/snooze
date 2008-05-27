@@ -36,5 +36,7 @@ package org.projectsnooze.generator
 		function getDDL () : Statement;
 		
 		function getDDLStatements () : Array;
+		
+		function getDropStatements () : Array;
 	}
 }

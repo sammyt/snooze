@@ -1,15 +1,24 @@
 package org.projectsnooze.impl.dependency
 {
+	import flash.events.EventDispatcher;
+	
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTree;
+	import org.projectsnooze.execute.StatementQueue;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
 
-	public class DependencyTreeImpl implements DependencyTree
+	public class DependencyTreeImpl extends EventDispatcher implements DependencyTree
 	{
+		private var logger : ILogger = Log.getLogger( "DependencyTreeImpl" );
+		
 		protected var _nodes : Array;
 		protected var _completedCount : uint;
+		protected var _statementQueue : StatementQueue;
 		
 		public function DependencyTreeImpl()
 		{
@@ -29,6 +38,9 @@ package org.projectsnooze.impl.dependency
 		
 		public function begin():void
 		{
+			_statementQueue.setTransactional( true );
+			_statementQueue.openConnection();
+			
 			for( var iterator : Iterator = new SmartIterator( _nodes ) ; iterator.hasNext() ; )
 			{
 				var depNode : DependencyNode = iterator.next() as DependencyNode;
@@ -44,7 +56,10 @@ package org.projectsnooze.impl.dependency
 			_completedCount ++;
 			if ( _completedCount == _nodes.length )
 			{
+				// the result method in all the nodes has been called
+				logger.debug( "the action is complete" );
 				
+				_statementQueue.finishProcessingQueue();
 			}
 		}
 		
@@ -63,5 +78,14 @@ package org.projectsnooze.impl.dependency
 			return null;
 		}
 		
+		public function setStatementQueue ( statementQueue : StatementQueue ) : void
+		{
+			_statementQueue = statementQueue; 
+		}
+		
+		public function getStatementQueue () : StatementQueue
+		{
+			return _statementQueue;
+		}
 	}
 }

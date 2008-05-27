@@ -68,7 +68,7 @@ package org.projectsnooze.impl.dependency
 		public function getSaveDependencyTree ( entity : Object ) : DependencyTree
 		{
 			var depTree : DependencyTree = new DependencyTreeImpl();
-			
+			depTree.setStatementQueue( getQueueManager().getQueue() );
 			createInsertTree( entity , depTree );
 			
 			return depTree;
@@ -94,7 +94,8 @@ package org.projectsnooze.impl.dependency
 				depNode.setEnity( entity );
 				depNode.setEntityDataMap( dataMap );
 				depNode.setStatement( getStatementCreator().getStatementByType( "insert" , dataMap ) );
-				depNode.setStatementQueue( getQueueManager().getQueue() );
+				depNode.setStatementQueue( depTree.getStatementQueue() );
+				depNode.setDependencyTree( depTree );
 				
 				depTree.addDependencyNode( depNode );
 			}

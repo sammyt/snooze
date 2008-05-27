@@ -25,11 +25,13 @@
  
 package org.projectsnooze.session
 {
+	
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.execute.Responder;
 	
 	public interface Session
 	{
-		function save ( entity : Object ) : void;
+		function save ( entity : Object , responder : Responder = null ) : void;
 		
 		function getDependencyTreeCreator (  ) : DependencyTreeCreator;
 		

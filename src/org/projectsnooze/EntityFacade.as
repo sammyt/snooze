@@ -40,6 +40,10 @@ package org.projectsnooze
 	public interface EntityFacade
 	{
 		
+		function createDatabase () : void;
+		
+		function dropDatabase () : void;
+		
 		function setCreateDDL ( createDDL : Boolean ) : void;
 		
 		function getCreateDDL () : Boolean;

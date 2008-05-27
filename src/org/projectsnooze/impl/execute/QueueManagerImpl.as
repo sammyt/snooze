@@ -25,6 +25,9 @@
  
 package org.projectsnooze.impl.execute
 {
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.execute.QueueManager;
 	import org.projectsnooze.execute.StatementQueue;
@@ -33,20 +36,37 @@ package org.projectsnooze.impl.execute
 
 	public class QueueManagerImpl implements QueueManager
 	{
+		private var logger : ILogger = Log.getLogger( "QueueManagerImpl" );
+		
 		protected var _connectionPool : ConnectionPool;
 		protected var _queue : Array;
+		protected var _index : int;
 		protected var _inTransaction : Boolean;
 		
 		public function QueueManagerImpl()
 		{
 			_queue = new Array();
 			
+			_index = - 1;
+			
 			_inTransaction = false;
 		}
 			
 		public function processNext () : void
 		{
+			if ( ! _inTransaction && _queue.length > 0 )
+			{
+				
+				_index ++;
 			
+				var queue : StatementQueue = _queue[ _index ] as StatementQueue;
+				
+				_inTransaction = queue.getTransactional();
+				
+				queue.beginProcessingQueue();
+				
+				processNext();
+			}
 		}
 		
 		public function getQueue():StatementQueue
@@ -55,11 +75,16 @@ package org.projectsnooze.impl.execute
 			var queue : StatementQueue = new StatementQueueImpl();
 			queue.setConnectionPool( getConnectionPool() ); 
 			queue.addEventListener( StatementQueueEvent.COMPLETE , onQueueComplete );
+			queue.addEventListener( StatementQueueEvent.OPEN , onQueueConnectionOpen );
 			
 			// add the statement queue to the parent queue 
 			_queue.push( queue );
-			
 			return queue;
+		}
+		
+		protected function onQueueConnectionOpen ( event : StatementQueueEvent ) : void
+		{
+			processNext();
 		}
 		
 		protected function onQueueComplete ( event : StatementQueueEvent ) : void
@@ -69,6 +94,11 @@ package org.projectsnooze.impl.execute
 			
 			// remove from queue
 			removeFromQueue( event.getStatementQueue() );
+			
+			if ( event.getStatementQueue().getTransactional() )
+			{
+				_inTransaction = false;
+			}
 			
 			// continue processing queue
 			processNext();
@@ -82,6 +112,7 @@ package org.projectsnooze.impl.execute
 				if ( queue == statementQueue )
 				{
 					iterator.remove();
+					_index --;
 					break;
 				}
 			}

@@ -63,9 +63,9 @@ package org.projectsnooze.impl.execute
 			_sqlStatement.sqlConnection = getConnection();
 			_sqlStatement.text = getStatement().getSQL();
 			
-			_sqlStatement.execute();
+			logger.debug( "execute this sql {0}" , getStatement().getSQL() );
 			
-			logger.info( "execute this sql {0}" , getStatement().getSQL() );
+			_sqlStatement.execute();
 		}
 		
 		private function onResult ( event : SQLEvent ) : void
