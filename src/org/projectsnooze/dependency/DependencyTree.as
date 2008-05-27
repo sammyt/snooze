@@ -10,6 +10,8 @@ package org.projectsnooze.dependency
 		
 		function getNodeByEntity ( entity : Object ) : DependencyNode;
 		
+		function nodeHasCompleted ( node : DependencyNode ) : void;
+		
 		function begin () : void;
 	}
 }

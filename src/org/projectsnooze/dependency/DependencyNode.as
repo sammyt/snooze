@@ -35,6 +35,10 @@ package org.projectsnooze.dependency
 	
 	public interface DependencyNode extends Subject , Observer , Command , Responder
 	{
+		function setDependencyTree ( dependencyTree : DependencyTree ) : void;
+		
+		function getDependencyTree () : DependencyTree;
+		
 		function setStatementQueue ( statementQueue : StatementQueue ) : void;
 		
 		function getStatementQueue () : StatementQueue;

@@ -25,10 +25,12 @@
 
 package org.projectsnooze.execute
 {
+	import flash.events.IEventDispatcher;
+	
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.generator.Statement;
 	
-	public interface StatementQueue
+	public interface StatementQueue extends IEventDispatcher
 	{
 		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
 		
@@ -47,6 +49,8 @@ package org.projectsnooze.execute
 		function beginProcessingQueue () : void;
 		
 		function finishProcessingQueue () : void;
+		
+		function errorProcessingQueue () : void;
 		
 		function processNext () : void;
 		

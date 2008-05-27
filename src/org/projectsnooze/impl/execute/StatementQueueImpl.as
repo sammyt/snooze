@@ -26,6 +26,7 @@
 package org.projectsnooze.impl.execute
 {
 	import flash.data.SQLConnection;
+	import flash.events.EventDispatcher;
 	import flash.events.SQLEvent;
 	
 	import org.projectsnooze.connections.ConnectionPool;
@@ -36,17 +37,189 @@ package org.projectsnooze.impl.execute
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.patterns.Iterator;
 
-	public class StatementQueueImpl implements StatementQueue
+	public class StatementQueueImpl extends EventDispatcher implements StatementQueue
 	{
 		protected var _queue : Array;
 		protected var _transactional : Boolean;
 		protected var _iterator : Iterator;
 		protected var _connectionPool : ConnectionPool;
 		protected var _connection : SQLConnection;
+		protected var _processing : Boolean;
+		protected var _executing : Boolean;
 		
 		public function StatementQueueImpl()
 		{
+			// the queue has not yet begun processing
+			_processing = false;
+			
+			// nothing is yet excuting
+			_executing = false;
+			
+			// create the array to hold the queue
 			_queue = new Array();
+		}
+		
+
+		public function addToExecutionQueue( wrapper : StatementWrapper ):void
+		{
+			// add the wrapper to the queue
+			_queue.push( wrapper );
+			
+			// begin processing 
+			beginProcessingQueue();
+		}
+		
+		public function isInQueue(statement:Statement):Boolean
+		{
+			for ( var iterator : Iterator = new ArrayIterator ( _queue ) ; iterator.hasNext() ; )
+			{
+				var wrapper : StatementWrapper = iterator.next() as StatementWrapper;
+				if ( wrapper.getStatement() == statement ) return true;
+			}
+			return false;
+		}
+		
+		public function openConnection () : void
+		{
+			_connection = getConnectionPool().getConnection();
+			_connection.addEventListener( SQLEvent.OPEN , onOpen );
+			_connection.open( getConnectionPool().getFile() );
+		}
+		
+		public function beginProcessingQueue():void
+		{
+			if ( ! _processing )
+			{
+				_iterator = new ArrayIterator( _queue );
+				_processing = true;
+				
+				if ( getTransactional() )
+				{
+					beginTransaction();
+				}
+				else
+				{
+					processNext();
+				}
+			}
+		}
+		
+		public function finishProcessingQueue () : void
+		{
+			if ( getTransactional() )
+			{
+				commitTransaction();
+			}
+			else
+			{
+				dispatchEvent( new StatementQueueEvent ( StatementQueueEvent.COMPLETE , this ) );
+			}
+		}
+		
+		public function errorProcessingQueue () : void
+		{
+			rollbackTransaction();
+		}
+		
+		public function processNext () : void
+		{
+			var queueHasNext : Boolean = _iterator.hasNext();
+			var connectionOpen : Boolean = _connection.connected;
+			
+			if ( queueHasNext && connectionOpen && ! _executing )
+			{
+				_executing = true;
+				
+				var wrapper : StatementWrapper = _iterator.next() as StatementWrapper;
+				var executor : StatementExecutor = new StatementExecutorImpl();
+				
+				executor.setResponder( wrapper.getResponder() );
+				executor.setStatement( wrapper.getStatement() );
+				executor.setConnection( _connection );
+				
+				executor.addEventListener( StatementExecutorEvent.RESULT , onExecuteResult );
+				executor.addEventListener( StatementExecutorEvent.FAULT , onExecuteFault );
+				
+				executor.execute();
+			}
+		}
+		
+		public function beginTransaction () : void
+		{
+			_connection.addEventListener( SQLEvent.BEGIN , onBegin );
+			_connection.begin();
+		}
+		
+		protected function onBegin ( event : SQLEvent ) : void
+		{
+			// now the transaction has started remove the listener
+			_connection.removeEventListener( SQLEvent.BEGIN , onBegin );
+			
+			// process the first item
+			processNext();
+		}
+		
+		public function commitTransaction () : void
+		{
+			_connection.addEventListener( SQLEvent.COMMIT , onCommit );
+			_connection.commit()	
+		}
+		
+		protected function onCommit ( event : SQLEvent ) : void
+		{
+			// remove the event listener now the event has fired
+			_connection.removeEventListener( SQLEvent.COMMIT , onCommit );
+			
+			dispatchEvent( new StatementQueueEvent ( StatementQueueEvent.COMPLETE , this ) );
+		}
+		
+		public function rollbackTransaction () : void
+		{
+			_connection.addEventListener( SQLEvent.ROLLBACK , onRollback );
+			_connection.rollback()
+		}
+		
+		protected function onRollback ( event : SQLEvent ) : void
+		{
+			_connection.removeEventListener( SQLEvent.ROLLBACK , onRollback );
+			
+			// perform some ending/canceling action
+		}
+		
+		protected function onOpen ( event : SQLEvent ) : void
+		{
+			// remove the event as it has now fired
+			_connection.removeEventListener( SQLEvent.OPEN , onOpen );
+			
+			// begin processing
+			beginProcessingQueue();
+		}
+		
+		protected function onExecuteResult ( event : StatementExecutorEvent ) : void
+		{
+			// remove the executor event listeners
+			removeEventListeners( event.getStatementExecutor() );
+			
+			// executing statement complete
+			_executing = false;
+			
+			// proccess the next item in the queue
+			processNext()
+		}
+		
+		protected function onExecuteFault ( event : StatementExecutorEvent ) : void
+		{
+			// remove the executor event listeners
+			removeEventListeners( event.getStatementExecutor() );
+			
+			// cancel operation
+			errorProcessingQueue();
+		}
+		
+		protected function removeEventListeners ( executor : StatementExecutor ) : void
+		{ 
+			executor.removeEventListener( StatementExecutorEvent.RESULT , onExecuteResult );
+			executor.removeEventListener( StatementExecutorEvent.FAULT , onExecuteFault );
 		}
 		
 		public function setConnectionPool ( connectionPool : ConnectionPool ) : void
@@ -67,88 +240,6 @@ package org.projectsnooze.impl.execute
 		public function getTransactional ( ) : Boolean
 		{
 			return _transactional;
-		}
-
-		public function addToExecutionQueue( wrapper : StatementWrapper ):void
-		{
-			_queue.push( wrapper );
-		}
-		
-		public function isInQueue(statement:Statement):Boolean
-		{
-			for ( var iterator : Iterator = new ArrayIterator ( _queue ) ; iterator.hasNext() ; )
-			{
-				var wrapper : StatementWrapper = iterator.next() as StatementWrapper;
-				if ( wrapper.getStatement() == statement ) return true;
-			}
-			return false;
-		}
-		
-		public function openConnection () : void
-		{
-			_connection = getConnectionPool().getConnection();
-			_connection.addEventListener( SQLEvent.OPEN , onConnectionOpen );
-			_connection.open( getConnectionPool().getFile() );
-		}
-		
-		public function beginProcessingQueue():void
-		{
-			_iterator = new ArrayIterator( _queue );
-		}
-		
-		public function finishProcessingQueue () : void
-		{
-			
-		}
-		
-		public function processNext () : void
-		{
-			var wrapper : StatementWrapper = _iterator.next() as StatementWrapper;
-			var executor : StatementExecutor = new StatementExecutorImpl();
-			
-			executor.setResponder( wrapper.getResponder() );
-			executor.setStatement( wrapper.getStatement() );
-			
-			executor.addEventListener( StatementExecutorEvent.RESULT , onExecuteResult );
-			executor.addEventListener( StatementExecutorEvent.FAULT , onExecuteFault );
-			
-			executor.execute();
-		}
-		
-		public function beginTransaction () : void
-		{
-			
-		}
-		
-		public function commitTransaction () : void
-		{
-			
-		}
-		
-		public function rollbackTransaction () : void
-		{
-			
-		}
-		
-		private function onConnectionOpen ( event : SQLEvent ) : void
-		{
-			beginProcessingQueue();
-		}
-		
-		private function onExecuteResult ( event : StatementExecutorEvent ) : void
-		{
-			removeEventListeners( event.getStatementExecutor() );
-		}
-		
-		private function onExecuteFault ( event : StatementExecutorEvent ) : void
-		{
-			removeEventListeners( event.getStatementExecutor() );
-		}
-		
-		private function removeEventListeners ( executor : StatementExecutor ) : void
-		{ 
-			executor.removeEventListener( StatementExecutorEvent.RESULT , onExecuteResult );
-			executor.removeEventListener( StatementExecutorEvent.RESULT , onExecuteResult );
 		}
 	}
 }

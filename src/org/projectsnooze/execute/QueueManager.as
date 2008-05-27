@@ -10,5 +10,9 @@ package org.projectsnooze.execute
 		
 		function getConnectionPool () : ConnectionPool;
 		
+		function processNext () : void;
+		
+		function removeFromQueue ( statementQueue : StatementQueue ) : void;
+		
 	}
 }

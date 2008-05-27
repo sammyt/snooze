@@ -43,7 +43,7 @@ package org.projectsnooze.impl.dependency
 
 	public class DependencyTreeCreatorImpl implements DependencyTreeCreator
 	{
-		private static var logger : ILogger = Log.getLogger( "DependencyTreeCreatorImpl" ) ;
+		protected static var logger : ILogger = Log.getLogger( "DependencyTreeCreatorImpl" ) ;
 		
 		protected var _entityDataMapProvider : EntityDataMapProvider;
 		protected var _typeUtils : TypeUtils;
@@ -95,6 +95,7 @@ package org.projectsnooze.impl.dependency
 				depNode.setEntityDataMap( dataMap );
 				depNode.setStatement( getStatementCreator().getStatementByType( "insert" , dataMap ) );
 				depNode.setStatementQueue( getQueueManager().getQueue() );
+				
 				depTree.addDependencyNode( depNode );
 			}
 			

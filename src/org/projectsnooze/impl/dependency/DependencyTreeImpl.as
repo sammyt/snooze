@@ -9,10 +9,12 @@ package org.projectsnooze.impl.dependency
 	public class DependencyTreeImpl implements DependencyTree
 	{
 		protected var _nodes : Array;
+		protected var _completedCount : uint;
 		
 		public function DependencyTreeImpl()
 		{
 			_nodes = new Array();
+			_completedCount = 0;
 		}
 		
 		public function getNodeCount () : int
@@ -30,7 +32,19 @@ package org.projectsnooze.impl.dependency
 			for( var iterator : Iterator = new SmartIterator( _nodes ) ; iterator.hasNext() ; )
 			{
 				var depNode : DependencyNode = iterator.next() as DependencyNode;
+				depNode.setDependencyTree( this );
+				
+				// the node has no unfilled dependencies, so can begin
 				if ( ! depNode.isDependent() ) depNode.begin();
+			}
+		}
+		
+		public function nodeHasCompleted ( node : DependencyNode ) : void
+		{
+			_completedCount ++;
+			if ( _completedCount == _nodes.length )
+			{
+				
 			}
 		}
 		

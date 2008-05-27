@@ -32,6 +32,7 @@ package org.projectsnooze.impl.dependency
 	
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.dependency.DependencyNode;
+	import org.projectsnooze.dependency.DependencyTree;
 	import org.projectsnooze.execute.StatementQueue;
 	import org.projectsnooze.execute.StatementWrapper;
 	import org.projectsnooze.generator.Statement;
@@ -52,7 +53,8 @@ package org.projectsnooze.impl.dependency
 		protected var _entity : Object;
 		protected var _hasStarted : Boolean;
 		protected var _isComplete : Boolean;
-		protected var _statementQueue : StatementQueue; 
+		protected var _statementQueue : StatementQueue;
+		protected var _dependencyTree : DependencyTree; 
 		
 		public function DependencyNodeImpl()
 		{
@@ -83,7 +85,7 @@ package org.projectsnooze.impl.dependency
 			addForeignKeyParams();
 		}
 		
-		private function addNaturalParams () : void
+		protected function addNaturalParams () : void
 		{
 			for ( var iterator : Iterator = getEntityDataMap().getPropertyIterator() ; iterator.hasNext() ; )
 			{
@@ -99,7 +101,7 @@ package org.projectsnooze.impl.dependency
 			}
 		}
 		
-		private function addPrimaryKeyParams () : void
+		protected function addPrimaryKeyParams () : void
 		{
 			var mapping : NameTypeMapping = getEntityDataMap().getPrimaryKey();
 			
@@ -108,7 +110,7 @@ package org.projectsnooze.impl.dependency
 			_statement.addValue( ":" + mapping.getLowerCaseName() + "_value" , data );
 		}
 		
-		private function addForeignKeyParams () : void
+		protected function addForeignKeyParams () : void
 		{
 			for ( var iterator : Iterator = getEntityDataMap().getRelationshipIterator() ; iterator.hasNext() ; )
 			{
@@ -132,7 +134,7 @@ package org.projectsnooze.impl.dependency
 			}
 		}
 		
-		private function getDependencyNodeByDataMap ( entityDataMap : EntityDataMap ) : DependencyNode
+		protected function getDependencyNodeByDataMap ( entityDataMap : EntityDataMap ) : DependencyNode
 		{
 			for ( var iterator : Iterator = new ArrayIterator( _dependencies ) ; iterator.hasNext() ; )
 			{
@@ -161,8 +163,8 @@ package org.projectsnooze.impl.dependency
 		
 		public function result( data : Object ):void
 		{
-			// this need to be abstracted out into a statement 
-			// type specific responder
+			// TODO: this need to be abstracted out into a statement type specific responder 
+
 			_isComplete = true;
 			
 			// set the new id TMP
@@ -172,11 +174,13 @@ package org.projectsnooze.impl.dependency
 			// notify observers
 			notifyObservers();
 			
+			getDependencyTree().nodeHasCompleted( this );
 		}
 	
 		public function fault( info : Object ):void
 		{
-			// throw some kind of snooze error
+			
+			getDependencyTree().nodeHasCompleted( this );
 		}
 		
 		public function isComplete () : Boolean
@@ -198,6 +202,16 @@ package org.projectsnooze.impl.dependency
 				if ( ! depNode.isComplete() ) depsMet = false;
 			}
 			return depsMet;
+		}
+		
+		public function setDependencyTree ( dependencyTree : DependencyTree ) : void
+		{
+			_dependencyTree = dependencyTree;
+		}
+		
+		public function getDependencyTree () : DependencyTree
+		{
+			return _dependencyTree;
 		}
 		
 		public function setEnity ( entity : Object ) : void
