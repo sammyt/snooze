@@ -33,7 +33,10 @@ package org.projectsnooze.impl.scheme
 	import org.projectsnooze.datatype.Type;
 	import org.projectsnooze.datatype.TypeFactory;
 	import org.projectsnooze.datatype.TypeUtils;
+	import org.projectsnooze.impl.associations.ManyToMany;
 	import org.projectsnooze.impl.associations.RelationshipImpl;
+	import org.projectsnooze.impl.patterns.ArrayIterator;
+	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.scheme.NameTypeMapping;
@@ -68,9 +71,9 @@ package org.projectsnooze.impl.scheme
 		
 		private function relateDataMaps () : void
 		{
-			for ( var i : int = 0 ; i < _classes.length ; i ++ )
+			for ( var iterator : Iterator = new ArrayIterator ( _classes ) ; iterator.hasNext() ; )
 			{
-				var entity : * = new ( _classes[i] as Class )();
+				var entity : * = new ( iterator.next() as Class )();
 				var reflection : XML = describeType( entity );
 				
 				addRelationships( reflection , getEntityDataMapProvider().getEntityDataMapByClassName( reflection.@name ) );
@@ -106,23 +109,27 @@ package org.projectsnooze.impl.scheme
 					var name : String = getter.substr( 3 , getter.length );
 					
 					var hasMetadata : Relationship = new RelationshipImpl();
-					var describedByMetadata : Relationship = new RelationshipImpl();
-						
+					
 					var describedClazz : String = getTypeUtils().getTypeFromMetadata( method );
 					var describedEntityDataMap : EntityDataMap = getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
 					
-					describedByMetadata.setEntityDataMap( entityDataMap );
-					describedByMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , false ) );
-					describedByMetadata.setPropertyName( name );
-					describedByMetadata.setIsEntityContainer( false );
-					describedEntityDataMap.addRelationship( describedByMetadata ); 
-
+					if ( getLinkTypeFactory().getLinkType( method.metadata.@name , false ).getName() != new ManyToMany().getName() )
+					{
+						var describedByMetadata : Relationship = new RelationshipImpl();
+						describedByMetadata.setEntityDataMap( entityDataMap );
+						describedByMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , false ) );
+						describedByMetadata.setPropertyName( name );
+						describedByMetadata.setIsEntityContainer( false );
+						describedEntityDataMap.addRelationship( describedByMetadata ); 
+					}
+					
 					hasMetadata.setEntityDataMap( describedEntityDataMap );
 					hasMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , true ) );
 					hasMetadata.setPropertyName( name );
 					hasMetadata.setIsEntityContainer( true );
 					entityDataMap.addRelationship( hasMetadata );
 					
+					//trace( "creating : " , hasMetadata.getType().getName() , describedByMetadata.getType().getName() , name );
 				}
 			}
 		}

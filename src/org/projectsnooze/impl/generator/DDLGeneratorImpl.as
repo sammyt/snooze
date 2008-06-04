@@ -64,7 +64,6 @@ package org.projectsnooze.impl.generator
 			{
 				var values : Array = new Array();
 				var entityDataMap : EntityDataMap = iterator.next() as EntityDataMap;
-				
 				var sqlSkeleton : String = "";
 				
 				sqlSkeleton += " CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
@@ -74,14 +73,14 @@ package org.projectsnooze.impl.generator
 				addNaturalProperties( entityDataMap , values );
 				
 				sqlSkeleton += getCsvFromArray( values );
-				
 				sqlSkeleton += " );";
 				
 				var statement : Statement = new StatementImpl();
 				statement.setSqlSkeleton( sqlSkeleton );
 				statements.push( statement );
-				
 			}
+			
+			addManyToManyTables( statements : Array ); 
 			
 			return statements;
 		}
@@ -109,30 +108,15 @@ package org.projectsnooze.impl.generator
 			return statements;
 		}
 		
-		public function getDDL():Statement
+		
+		private function addManyToManyTables ( statements : Array ) : void
 		{
-			var sqlSkeleton : String = "";
-			 
-			for ( var iterator : Iterator = getEntityDataMapProvider().getIterator() ; iterator.hasNext() ; )
-			{
-				var values : Array = new Array();
-				var entityDataMap : EntityDataMap = iterator.next() as EntityDataMap;
-				
-				sqlSkeleton += " CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
-				
-				addPrimaryKey ( entityDataMap , values );
-				addForeignKeys ( entityDataMap , values );
-				addNaturalProperties( entityDataMap , values );
-				
-				sqlSkeleton += getCsvFromArray( values );
-				
-				sqlSkeleton += " );";
-			}
 			
-			var statement : Statement = new StatementImpl()
-			statement.setSqlSkeleton( sqlSkeleton );
+		}
+		
+		private function addIndexes () : void
+		{
 			
-			return statement;
 		}
 		
 		private function addPrimaryKey ( entityDataMap : EntityDataMap , values : Array ) : void
@@ -143,7 +127,6 @@ package org.projectsnooze.impl.generator
 		
 		private function addForeignKeys ( entityDataMap : EntityDataMap , values : Array ) : void
 		{
-			
 			for ( var iterator : Iterator = entityDataMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
 				var relationship : Relationship = iterator.next() as Relationship;
@@ -154,7 +137,6 @@ package org.projectsnooze.impl.generator
 					values.push( tableName + "_" + idName + " " + relationship.getEntityDataMap().getPrimaryKey().getType().getSQLType() );
 				}
 			}
-			
 		}
 		
 		private function addNaturalProperties ( entityDataMap : EntityDataMap , values : Array ) : void
@@ -177,6 +159,5 @@ package org.projectsnooze.impl.generator
 			}
 			return csv;
 		}
-		
 	}
 }

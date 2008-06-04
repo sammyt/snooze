@@ -75,10 +75,14 @@ package org.projectsnooze.impl
 		protected var _ddlGenerator : DDLGenerator;
 		protected var _queueManager : QueueManager;
 		
-		public function EntityFacadeImpl( createDDL : Boolean = true )
+		public function EntityFacadeImpl( createDDL : Boolean = true , initilise : Boolean = true )
 		{
 			_createDDL = createDDL;
-			
+			if ( initilise ) init();
+		}
+		
+		public function init () : void
+		{
 			_entityDataMapProvider = new EntityDataMapProviderImpl();
 			_typeUtils = new TypeUtilsImpl();
 			_typeFactory = new TypeFactoryImpl();
@@ -104,7 +108,6 @@ package org.projectsnooze.impl
 			_schemeBuilder.setLinkTypeFactory( getLinkTypeFactory() );
 			_schemeBuilder.setTypeFactory( getTypeFactory() );
 			_schemeBuilder.setTypeUtils( getTypeUtils() );
-			
 		}
 		
 		public function createDatabase () : void

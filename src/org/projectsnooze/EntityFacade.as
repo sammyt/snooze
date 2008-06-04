@@ -40,6 +40,8 @@ package org.projectsnooze
 	public interface EntityFacade
 	{
 		
+		function init () : void;
+		
 		function createDatabase () : void;
 		
 		function dropDatabase () : void;
