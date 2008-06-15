@@ -29,55 +29,110 @@ package org.projectsnooze.impl.associations
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.scheme.EntityDataMap;
 
+	/**
+	*	@inheritDoc
+	*/	
 	public class RelationshipImpl implements Relationship
 	{
+		// what type of relationship is it
 		private var _type : LinkType;
+		
+		// the entity data map of the entity who
+		// relationship this describes
 		private var _dataMap : EntityDataMap;
-		private var _name : String;
+		
+		// the name of the property getter and setter
+		private var _propertyName : String;
+		
+		// is this entity the one which contains the other
+		// ie. entity.setOtherEntity( otherEntity );
 		private var _isEntityContainer : Boolean;
+		
+		// if a join table i needed its name is stored here
+		private var _joinTableName : String;
 		
 		public function RelationshipImpl()
 		{
 		}
-
+		
+		/**
+		*	@inheritDoc	
+		*/
 		public function setType(type:LinkType):void
 		{
 			_type = type;
 		}
 		
+		/**
+		*	@inheritDoc	
+		*/
 		public function getType():LinkType
 		{
 			return _type;
 		}
 		
+		/**
+		*	@inheritDoc	
+		*/
 		public function setEntityDataMap(dataMap:EntityDataMap):void
 		{
 			_dataMap = dataMap;
 		}
 		
+		/**
+		*	@inheritDoc	
+		*/
 		public function getEntityDataMap():EntityDataMap
 		{
 			return _dataMap;
 		}
 		
-		public function setPropertyName ( name : String ) : void
+		/**
+		*	@inheritDoc	
+		*/
+		public function setPropertyName ( propertyName : String ) : void
 		{
-			_name = name;
+			_propertyName = propertyName;
 		}
 		
+		/**
+		*	@inheritDoc	
+		*/
 		public function getPropertyName () : String
 		{
-			return _name;
+			return _propertyName;
 		}
 		
+		/**
+		*	@inheritDoc	
+		*/
 		public function setIsEntityContainer ( isEntityContainer : Boolean ) : void
 		{
 			_isEntityContainer = isEntityContainer;
 		}
 		
+		/**
+		*	@inheritDoc	
+		*/
 		public function getIsEntityContainer () : Boolean
 		{
 			return _isEntityContainer;
+		}
+		
+		/**
+		*	@inheritDoc	
+		*/	
+		public function getJoinTableName () : String
+		{
+			return _joinTableName;
+		}
+		
+		/**
+		*	@inheritDoc	
+		*/	
+		public function setJoinTableName ( joinTableName : String ) : void
+		{
+			_joinTableName = joinTableName;
 		}
 	}
 }

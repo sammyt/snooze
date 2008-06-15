@@ -27,6 +27,7 @@ package org.projectsnooze.impl.scheme
 {
 	import flash.utils.describeType;
 	
+	import org.projectsnooze.associations.LinkType;
 	import org.projectsnooze.associations.LinkTypeFactory;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.constants.MetaData;
@@ -76,7 +77,8 @@ package org.projectsnooze.impl.scheme
 				var entity : * = new ( iterator.next() as Class )();
 				var reflection : XML = describeType( entity );
 				
-				addRelationships( reflection , getEntityDataMapProvider().getEntityDataMapByClassName( reflection.@name ) );
+				addRelationships( reflection , 
+					getEntityDataMapProvider().getEntityDataMapByClassName( reflection.@name ) );
 			}
 		}
 		
@@ -89,7 +91,8 @@ package org.projectsnooze.impl.scheme
 				var entityDataMap : EntityMapDataImp = new EntityMapDataImp();
 				
 				var name : String = reflection.@name;
-				var tableName : String = name.substr( name.indexOf( "::" ) + 2 , name.length - name.indexOf("::") );
+				var tableName : String = name.substr( 
+					name.indexOf( "::" ) + 2 , name.length - name.indexOf("::") );
 				
 				entityDataMap.setTableName( tableName );
 				
@@ -101,42 +104,71 @@ package org.projectsnooze.impl.scheme
 		
 		private function addRelationships (  reflection : XML , entityDataMap : EntityDataMap ) : void
 		{
+			// looping through all the method signatures in the reflection
 			for each ( var method : XML in reflection.method )
 			{
+				// the isRelationship method detremines if the method is  
+				// question describes a relationship between two entities
 				if ( isRelationship( method.metadata.@name ) )
 				{
+					// the name of the getter method being inspected
 					var getter : String = method.@name;
+					
+					// the name of the property, getName --> Name
 					var name : String = getter.substr( 3 , getter.length );
 					
+					// create a Relationship object to describe the relationship from
+					// the perspective of the annotated class
 					var hasMetadata : Relationship = new RelationshipImpl();
 					
+					// use the type utils to return the full class path of the entity
+					// that is related view the above relationship
 					var describedClazz : String = getTypeUtils().getTypeFromMetadata( method );
-					var describedEntityDataMap : EntityDataMap = getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
 					
-					if ( getLinkTypeFactory().getLinkType( method.metadata.@name , false ).getName() != new ManyToMany().getName() )
+					// get the entity data map for the entity on the other side of the relationship
+					var describedEntityDataMap : EntityDataMap = 
+						getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
+					
+					// is the relationship many-to-many
+					var isManyToMany : Boolean = method.metadata.@name != new ManyToMany().getName();
+					
+					// both entity data maps need to know about any relationship they are in
+					// so relationship objects are added to both the datamaps, the one which contained
+					// the metadata and the one described by the metadata.  The exception is for ManyToMany
+					// relationships, since both sides of the relationship need to be annotated in the metadata
+					// we only add a relationships to the one data map, otherwise the datamaps would contain
+					// two description of the relationship
+					if ( isManyToMany )
 					{
+						// create the relationship
 						var describedByMetadata : Relationship = new RelationshipImpl();
 						describedByMetadata.setEntityDataMap( entityDataMap );
 						describedByMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , false ) );
 						describedByMetadata.setPropertyName( name );
 						describedByMetadata.setIsEntityContainer( false );
+						
+						// add the relationship
 						describedEntityDataMap.addRelationship( describedByMetadata ); 
 					}
 					
+					// add the necessary properties to the relationship
 					hasMetadata.setEntityDataMap( describedEntityDataMap );
 					hasMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , true ) );
 					hasMetadata.setPropertyName( name );
 					hasMetadata.setIsEntityContainer( true );
+					
+					// add the relationship to the metadata
 					entityDataMap.addRelationship( hasMetadata );
 					
-					//trace( "creating : " , hasMetadata.getType().getName() , describedByMetadata.getType().getName() , name );
 				}
 			}
 		}
 		
 		private function isRelationship ( metaDataName : String ) : Boolean
 		{
-			return ( metaDataName == MetaData.MANY_TO_ONE || metaDataName == MetaData.MANY_TO_MANY || metaDataName == MetaData.ONE_TO_MANY );
+			return ( metaDataName == MetaData.MANY_TO_ONE || 
+					metaDataName == MetaData.MANY_TO_MANY || 
+					metaDataName == MetaData.ONE_TO_MANY );
 		}
 		
 		private function addId ( reflection : XML , entityDataMap : EntityDataMap ) : void

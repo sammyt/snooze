@@ -15,12 +15,17 @@ package org.projectsnooze.impl.generator
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.impl.scheme.EntityDataMapProviderImpl;
 	import org.projectsnooze.impl.scheme.SchemeBuilderImpl;
-	import org.projectsnooze.scheme.SchemeBuilder;
 	import org.projectsnooze.utils.SnoozeLog;
+	
+	import some.other.domain.Club;
+	import some.other.domain.Player;
+	import some.other.domain.Tournament;
 
 	public class DDLGeneratorImplTest extends TestCase
 	{
 		private var _generator : DDLGeneratorImpl;
+		private var _builder : SchemeBuilderImpl;
+		
 		private static var logger : ILogger;
 		
 		public function DDLGeneratorImplTest(methodName:String=null)
@@ -32,26 +37,22 @@ package org.projectsnooze.impl.generator
 		public static function suite():TestSuite 
 		{
    			var ts:TestSuite = new TestSuite();
-   			ts.addTest( new DDLGeneratorImplTest( "testGetDDL" ) );
+   			//ts.addTest( new DDLGeneratorImplTest( "testGetDDL" ) );
+   			ts.addTest( new DDLGeneratorImplTest( "testGetDDL2" ) );
    			return ts;
    		}
    		
    		override public function setUp():void
    		{
-   			var builder : SchemeBuilder = new SchemeBuilderImpl()
-   			builder.setEntityDataMapProvider( new EntityDataMapProviderImpl() );
-   			builder.setTypeUtils( new TypeUtilsImpl () );
-			builder.setTypeFactory( new TypeFactoryImpl () );
-			builder.setLinkTypeFactory( new LinkTypeFactoryImpl () );
+   			_builder = new SchemeBuilderImpl()
+   			_builder.setEntityDataMapProvider( new EntityDataMapProviderImpl() );
+   			_builder.setTypeUtils( new TypeUtilsImpl () );
+			_builder.setTypeFactory( new TypeFactoryImpl () );
+			_builder.setLinkTypeFactory( new LinkTypeFactoryImpl () );
 			
-			builder.addEntityClass( SchoolClass );
-			builder.addEntityClass( Child );
-			builder.addEntityClass( Mother );
-			builder.addEntityClass( Concern );
-			builder.generateEntityDataMaps();
 			
    			_generator = new DDLGeneratorImpl();
-   			_generator.setEntityDataMapProvider( builder.getEntityDataMapProvider() );
+   			_generator.setEntityDataMapProvider( _builder.getEntityDataMapProvider() );
    		}
    		
    		override public function tearDown():void
@@ -61,9 +62,42 @@ package org.projectsnooze.impl.generator
    		
    		public function testGetDDL () : void
    		{
+   			
+			_builder.addEntityClass( SchoolClass );
+			_builder.addEntityClass( Child );
+			_builder.addEntityClass( Mother );
+			_builder.addEntityClass( Concern );
+			_builder.generateEntityDataMaps();
+			
    			//trace ( _generator.getDDL().getSQL() );
+   			//logger.info( "the DDL {0}" , _generator.getDDL().getSQL() );
+   			//assertTrue( "humm" , " CREATE TABLE IF NOT EXISTS Concern ( id INTEGER PRIMARY KEY AUTOINCREMENT,mother_id INTEGER,concern TEXT ); CREATE TABLE IF NOT EXISTS SchoolClass ( id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT ); CREATE TABLE IF NOT EXISTS Child ( id INTEGER PRIMARY KEY AUTOINCREMENT,schoolclass_id INTEGER,mother_id INTEGER,height NUMBER ); CREATE TABLE IF NOT EXISTS Mother ( id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT );" == _generator.getDDL().getSQL() );
+   		}
+   		
+   		public function testGetDDL2 () : void
+   		{
+   			
+			_builder.addEntityClass( Tournament );
+			_builder.addEntityClass( Player );
+			_builder.addEntityClass( Club );
+			_builder.generateEntityDataMaps();
+   			trace ( _generator.getDDLStatements() );
    			//logger.info( "the DDL {0}" , _generator.getDDL().getSQL() );
    			//assertTrue( "humm" , " CREATE TABLE IF NOT EXISTS Concern ( id INTEGER PRIMARY KEY AUTOINCREMENT,mother_id INTEGER,concern TEXT ); CREATE TABLE IF NOT EXISTS SchoolClass ( id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT ); CREATE TABLE IF NOT EXISTS Child ( id INTEGER PRIMARY KEY AUTOINCREMENT,schoolclass_id INTEGER,mother_id INTEGER,height NUMBER ); CREATE TABLE IF NOT EXISTS Mother ( id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT );" == _generator.getDDL().getSQL() );
    		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

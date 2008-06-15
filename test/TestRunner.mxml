@@ -31,7 +31,7 @@
 			{
                 
                 var traceTarget: TraceTarget = new TraceTarget();
-                traceTarget.filters=[ "*" ];
+                traceTarget.filters=[ "DDLGeneratorImplTest" ];
                 traceTarget.level = LogEventLevel.ALL;
                 traceTarget.includeDate = true;
                 traceTarget.includeTime = true;
@@ -51,13 +51,12 @@
  				//testSuite.addTest( SchemeBuilderImplTest.suite() );
  				//testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
  				//testSuite.addTest( TypeUtilsImplTest.suite() );
- 				//testSuite.addTest( DDLGeneratorImplTest.suite() );
+ 				testSuite.addTest( DDLGeneratorImplTest.suite() );
  				//testSuite.addTest( SessionImplTest.suite() );
  				//testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
  				//testSuite.addTest( StatementCreatorImplTest.suite() );
  				//testSuite.addTest( ArrayIteratorTest.suite() );
-
- 				testSuite.addTest( EntityFacadeTest.suite() );
+ 				//testSuite.addTest( EntityFacadeTest.suite() );
  				
  				return testSuite;
  			}

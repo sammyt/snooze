@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="${project.name}" basedir="." default="unittest">
+<project name="${project.name}" basedir="." default="run">
 
 	<taskdef resource="flexTasks.tasks" classpath="${basedir}/flex_ant_tasks/lib/flexTasks.jar" />
 	<taskdef resource="com/adobe/ac/ant/tasks/tasks.properties" />
@@ -19,20 +19,6 @@
 				<include name="${snooze.out}" />
 			</library-path>
 		</mxmlc>
-		<!-- 
-		<mxmlc file="${test.dir}/JUnitTest.mxml" output="${deploy.unit}/${unit.out}" locale="en_US">
-			<load-config filename="${flex.sdk}/frameworks/air-config.xml" />
-			<source-path path-element="${test.dir}" />
-			<library-path dir="${lib.dir}" append="true">
-				<include name="flexunit.swc" />
-				<include name="FlexUnitOptional.swc" />
-				<include name="LocalConnectionTarget.swc" />
-			</library-path>
-			<library-path dir="${deploy.swc}/" append="true">
-				<include name="${snooze.out}" />
-			</library-path>
-		</mxmlc> 
-		-->
 	</target>
 
 

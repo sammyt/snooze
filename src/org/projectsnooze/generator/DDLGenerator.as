@@ -33,8 +33,6 @@ package org.projectsnooze.generator
 		
 		function getEntityDataMapProvider () : EntityDataMapProvider;
 		
-		//function getDDL () : Statement;
-		
 		function getDDLStatements () : Array;
 		
 		function getDropStatements () : Array;

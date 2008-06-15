@@ -31,8 +31,16 @@ package org.projectsnooze.associations
 		
 		function setName ( name : String ) : void;
 		
+		/**
+		*	is this entity's table one that contains a foreign key
+		*	to describe this relationship
+		*/	
 		function getForeignKeyContainer () : Boolean;
 		
+		/**
+		*	used to set whether or not the entities table contains 
+		*	a forien key to describe the relationship
+		*/	
 		function setForeignKeyContainer ( foreignKeyContainer : Boolean ) : void;
 	}
 }

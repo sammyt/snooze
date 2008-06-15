@@ -60,27 +60,50 @@ package org.projectsnooze.impl.generator
 		{
 			var statements : Array = new Array();
 			
-			for ( var iterator : Iterator = getEntityDataMapProvider().getIterator() ; iterator.hasNext() ; )
+			// for each entity data map create the necessary tables
+			for ( var iterator : Iterator = getEntityDataMapProvider().getIterator() ; 
+				iterator.hasNext() ; )
 			{
+				// a list cotaining the line of sql that make up the 
+				// create table command for the given entity
 				var values : Array = new Array();
+				
+				// the entity data map being inspected 
 				var entityDataMap : EntityDataMap = iterator.next() as EntityDataMap;
+				
+				// the string that will contain the sql
 				var sqlSkeleton : String = "";
 				
+				// create the table from the table name in the entity data map
 				sqlSkeleton += " CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
 				
+				// add the primary key for the table
 				addPrimaryKey ( entityDataMap , values );
+				
+				// add any foreign keys required by the relationships 
+				// described in the entity data map
 				addForeignKeys ( entityDataMap , values );
+				
+				// add all the properties that map directly to 
+				// columns in the database (the natural properties)
 				addNaturalProperties( entityDataMap , values );
 				
+				// add the values created above to the sql
 				sqlSkeleton += getCsvFromArray( values );
 				sqlSkeleton += " );";
 				
+				// create a Statement object from the generated sql
+				// and add it to the statements array to be returned 
 				var statement : Statement = new StatementImpl();
 				statement.setSqlSkeleton( sqlSkeleton );
 				statements.push( statement );
 			}
 			
-			addManyToManyTables( statements : Array ); 
+			// creating tables for each entity data map is not enough
+			// as manay to many relationships cannot be descibed without
+			// a seperate joining table.  Statements to create such joining
+			// tables are added now
+			addManyToManyTables( statements ); 
 			
 			return statements;
 		}
@@ -89,7 +112,8 @@ package org.projectsnooze.impl.generator
 		{
 			var statements : Array = new Array();
 			
-			for ( var iterator : Iterator = getEntityDataMapProvider().getIterator() ; iterator.hasNext() ; )
+			for ( var iterator : Iterator = getEntityDataMapProvider().getIterator() ; 
+				iterator.hasNext() ; )
 			{
 				var entityDataMap : EntityDataMap = iterator.next() as EntityDataMap;
 				
@@ -111,7 +135,18 @@ package org.projectsnooze.impl.generator
 		
 		private function addManyToManyTables ( statements : Array ) : void
 		{
-			
+			for ( var i : Iterator = getEntityDataMapProvider().getIterator() ; i.hasNext() ; )
+			{
+				var entityDataMap : EntityDataMap = i.next() as EntityDataMap;
+				
+				for ( var j : Iterator = entityDataMap.getRelationshipIterator() ; j.hasNext() ; )
+				{
+					var relationship : Relationship = j.next() as Relationship;
+					
+					logger.info( "{0} , {1}" , relationship.getType().getName() , 
+						relationship.getEntityDataMap().getTableName() );
+				}
+			}
 		}
 		
 		private function addIndexes () : void
@@ -122,19 +157,22 @@ package org.projectsnooze.impl.generator
 		private function addPrimaryKey ( entityDataMap : EntityDataMap , values : Array ) : void
 		{
 			var mapping : NameTypeMapping = entityDataMap.getPrimaryKey();
-			values.push( mapping.getLowerCaseName() + " " + mapping.getType().getSQLType() + " PRIMARY KEY AUTOINCREMENT" ) ;
+			values.push( mapping.getLowerCaseName() + " " + 
+				mapping.getType().getSQLType() + " PRIMARY KEY AUTOINCREMENT" ) ;
 		}
 		
 		private function addForeignKeys ( entityDataMap : EntityDataMap , values : Array ) : void
 		{
-			for ( var iterator : Iterator = entityDataMap.getRelationshipIterator() ; iterator.hasNext() ; )
+			for ( var iterator : Iterator = entityDataMap.getRelationshipIterator() ; 
+				iterator.hasNext() ; )
 			{
 				var relationship : Relationship = iterator.next() as Relationship;
 				if ( relationship.getType().getForeignKeyContainer() )
 				{
 					var tableName : String = relationship.getEntityDataMap().getTableName().toLowerCase();
 					var idName : String = relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
-					values.push( tableName + "_" + idName + " " + relationship.getEntityDataMap().getPrimaryKey().getType().getSQLType() );
+					values.push( tableName + "_" + idName + " " + 
+						relationship.getEntityDataMap().getPrimaryKey().getType().getSQLType() );
 				}
 			}
 		}

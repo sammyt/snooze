@@ -5,10 +5,13 @@ package org.projectsnooze.impl.scheme
 	import domain.Mother;
 	import domain.SchoolClass;
 	
+	import flash.utils.describeType;
+	
 	import flexunit.framework.TestCase;
 	import flexunit.framework.TestSuite;
 	
 	import mx.logging.ILogger;
+	import mx.logging.Log;
 	
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
@@ -20,17 +23,20 @@ package org.projectsnooze.impl.scheme
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
-	import org.projectsnooze.utils.SnoozeLog;
+	
+	import some.other.domain.Club;
+	import some.other.domain.Player;
+	import some.other.domain.Tournament;
 
 	public class SchemeBuilderImplTest extends TestCase
 	{
 		private var _builder : SchemeBuilderImpl;
-		private static var logger : ILogger;
+		private static var logger : ILogger = Log.getLogger( "SchemeBuilderImplTest" );
 		
 		public function SchemeBuilderImplTest(methodName:String=null)
 		{
 			super(methodName);
-			logger = SnoozeLog.getLogger ( this );
+			
 		}
 		
 		public static function suite():TestSuite 
@@ -43,6 +49,7 @@ package org.projectsnooze.impl.scheme
      		ts.addTest( new SchemeBuilderImplTest( "testSchoolClassRelationships" ) );
      		ts.addTest( new SchemeBuilderImplTest( "testChildRelationships" ) );
      		ts.addTest( new SchemeBuilderImplTest( "testMotherChildRelationships" ) );
+     		ts.addTest( new SchemeBuilderImplTest( "testClubDomain" ) );
      		
    			return ts;
    		}
@@ -161,5 +168,35 @@ package org.projectsnooze.impl.scheme
 				} 
 			}
 		}
+		
+		public function testClubDomain () : void
+		{
+			_builder.addEntityClass( Club );
+			_builder.addEntityClass( Player );
+			_builder.addEntityClass( Tournament );
+			_builder.generateEntityDataMaps();
+			
+			var playerMap : EntityDataMap = _builder.getEntityDataMapProvider().getEntityDataMap( new Player() );
+			
+			//trace ( describeType( new Player() ) );
+			
+			for ( var i : Iterator = playerMap.getRelationshipIterator() ; i.hasNext() ; )
+			{
+				var relationship : Relationship = i.next() as Relationship;
+				//trace( relationship.getType() , relationship.getPropertyName() );
+			}
+			
+			assertFalse( true );			
+			
+		}
 	}
 }
+
+
+
+
+
+
+
+
+
