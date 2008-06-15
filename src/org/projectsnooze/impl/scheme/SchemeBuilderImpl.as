@@ -77,8 +77,11 @@ package org.projectsnooze.impl.scheme
 				var entity : * = new ( iterator.next() as Class )();
 				var reflection : XML = describeType( entity );
 				
-				addRelationships( reflection , 
+				addForeignKeyRelationships( reflection , 
 					getEntityDataMapProvider().getEntityDataMapByClassName( reflection.@name ) );
+					
+				addManyToManyRelationships( reflection ,
+				 	getEntityDataMapProvider().getEntityDataMapByClassName( reflection.@name ) );
 			}
 		}
 		
@@ -102,14 +105,20 @@ package org.projectsnooze.impl.scheme
 			}	
 		}
 		
-		private function addRelationships (  reflection : XML , entityDataMap : EntityDataMap ) : void
+		private function addForeignKeyRelationships (  reflection : XML , entityDataMap : EntityDataMap ) : void
+		{
+			
+			
+		}
+		
+		private function addForeignKeyRelationships (  reflection : XML , entityDataMap : EntityDataMap ) : void
 		{
 			// looping through all the method signatures in the reflection
 			for each ( var method : XML in reflection.method )
 			{
 				// the isRelationship method detremines if the method is  
 				// question describes a relationship between two entities
-				if ( isRelationship( method.metadata.@name ) )
+				if ( isForeignKeyRelationship( method.metadata.@name ) )
 				{
 					// the name of the getter method being inspected
 					var getter : String = method.@name;
@@ -129,28 +138,16 @@ package org.projectsnooze.impl.scheme
 					var describedEntityDataMap : EntityDataMap = 
 						getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
 					
-					// is the relationship many-to-many
-					var isManyToMany : Boolean = method.metadata.@name != new ManyToMany().getName();
+					// create the relationship
+					var describedByMetadata : Relationship = new RelationshipImpl();
+					describedByMetadata.setEntityDataMap( entityDataMap );
+					describedByMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , false ) );
+					describedByMetadata.setPropertyName( name );
+					describedByMetadata.setIsEntityContainer( false );
 					
-					// both entity data maps need to know about any relationship they are in
-					// so relationship objects are added to both the datamaps, the one which contained
-					// the metadata and the one described by the metadata.  The exception is for ManyToMany
-					// relationships, since both sides of the relationship need to be annotated in the metadata
-					// we only add a relationships to the one data map, otherwise the datamaps would contain
-					// two description of the relationship
-					if ( isManyToMany )
-					{
-						// create the relationship
-						var describedByMetadata : Relationship = new RelationshipImpl();
-						describedByMetadata.setEntityDataMap( entityDataMap );
-						describedByMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , false ) );
-						describedByMetadata.setPropertyName( name );
-						describedByMetadata.setIsEntityContainer( false );
-						
-						// add the relationship
-						describedEntityDataMap.addRelationship( describedByMetadata ); 
-					}
-					
+					// add the relationship
+					describedEntityDataMap.addRelationship( describedByMetadata ); 
+				    
 					// add the necessary properties to the relationship
 					hasMetadata.setEntityDataMap( describedEntityDataMap );
 					hasMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , true ) );
@@ -164,10 +161,10 @@ package org.projectsnooze.impl.scheme
 			}
 		}
 		
-		private function isRelationship ( metaDataName : String ) : Boolean
+		private function isForeignKeyRelationship ( metaDataName : String ) : Boolean
 		{
 			return ( metaDataName == MetaData.MANY_TO_ONE || 
-					metaDataName == MetaData.MANY_TO_MANY || 
+					//metaDataName == MetaData.MANY_TO_MANY || 
 					metaDataName == MetaData.ONE_TO_MANY );
 		}
 		
