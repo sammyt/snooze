@@ -43,8 +43,13 @@ package org.projectsnooze.impl.scheme
 	import org.projectsnooze.scheme.NameTypeMapping;
 	import org.projectsnooze.scheme.SchemeBuilder;
 	
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	
 	public class SchemeBuilderImpl implements SchemeBuilder
 	{
+		private var logger : ILogger = Log.getLogger( "SchemeBuilderImpl" );
+		
 		private var _classes : Array;
 		private var _typeFactory : TypeFactory;
 		private var _typeUtils : TypeUtils;
@@ -101,17 +106,64 @@ package org.projectsnooze.impl.scheme
 				
 				addNatralProperties( reflection , entityDataMap );
 				addId( reflection , entityDataMap );
-				getEntityDataMapProvider().setEntityDataMap( reflection.@name , entityDataMap );
+				getEntityDataMapProvider().setEntityDataMap( reflection.@name , 
+					entityDataMap );
 			}	
 		}
 		
-		private function addForeignKeyRelationships (  reflection : XML , entityDataMap : EntityDataMap ) : void
+		private function addManyToManyRelationships (  reflection : XML ,
+		 	entityDataMap : EntityDataMap ) : void
 		{
-			
+			// looping through all the methods
+			for each( var method : XML in reflection.method )
+			{
+				// only do the following for many to many relationships
+				if ( isManyToManyRelationship( method.metadata.@name ) )
+				{	
+					// the name of the getter method being inspected
+					var getter : String = method.@name;
+                    
+					// the name of the property, getName --> Name
+					var name : String = getter.substr( 3 , getter.length );
+                    
+					// create a Relationship object to describe the relationship from
+					// the perspective of the annotated class
+					var hasMetadata : Relationship = new RelationshipImpl();
+					
+					// use the type utils to return the full class path of the entity
+					// that is related view the above relationship
+					var describedClazz : String = getTypeUtils().getTypeFromMetadata( method );
+					
+					// get the entity data map for the entity on the 
+					// other side of the relationship
+					var describedEntityDataMap : EntityDataMap = 
+						getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
+					
+					// add the necessary properties to the relationship
+					hasMetadata.setEntityDataMap( describedEntityDataMap );
+					hasMetadata.setType( getLinkTypeFactory().getLinkType( 
+						method.metadata.@name , true ) );
+					hasMetadata.setPropertyName( name );
+					hasMetadata.setIsEntityContainer( true );
+					
+					// add the two table names to an array for sorting
+					var tableNames : Array = [ entityDataMap.getTableName() , 
+						describedEntityDataMap.getTableName() ];
+					
+					// sort the names
+					tableNames.sort();
+					
+					// create the table names from the sorted tables names
+					hasMetadata.setJoinTableName( tableNames[0] + "_" + tableNames[1] );
+					
+					entityDataMap.addRelationship( hasMetadata );
+				}
+			}
 			
 		}
 		
-		private function addForeignKeyRelationships (  reflection : XML , entityDataMap : EntityDataMap ) : void
+		private function addForeignKeyRelationships (  reflection : XML , 
+			entityDataMap : EntityDataMap ) : void
 		{
 			// looping through all the method signatures in the reflection
 			for each ( var method : XML in reflection.method )
@@ -134,14 +186,16 @@ package org.projectsnooze.impl.scheme
 					// that is related view the above relationship
 					var describedClazz : String = getTypeUtils().getTypeFromMetadata( method );
 					
-					// get the entity data map for the entity on the other side of the relationship
+					// get the entity data map for the entity on the 
+					// other side of the relationship
 					var describedEntityDataMap : EntityDataMap = 
 						getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
 					
 					// create the relationship
 					var describedByMetadata : Relationship = new RelationshipImpl();
 					describedByMetadata.setEntityDataMap( entityDataMap );
-					describedByMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , false ) );
+					describedByMetadata.setType( getLinkTypeFactory().getLinkType(
+					 	method.metadata.@name , false ) );
 					describedByMetadata.setPropertyName( name );
 					describedByMetadata.setIsEntityContainer( false );
 					
@@ -150,7 +204,8 @@ package org.projectsnooze.impl.scheme
 				    
 					// add the necessary properties to the relationship
 					hasMetadata.setEntityDataMap( describedEntityDataMap );
-					hasMetadata.setType( getLinkTypeFactory().getLinkType( method.metadata.@name , true ) );
+					hasMetadata.setType( getLinkTypeFactory().getLinkType( 
+						method.metadata.@name , true ) );
 					hasMetadata.setPropertyName( name );
 					hasMetadata.setIsEntityContainer( true );
 					
@@ -161,10 +216,14 @@ package org.projectsnooze.impl.scheme
 			}
 		}
 		
+		private function isManyToManyRelationship ( metaDataName : String ) : Boolean
+		{
+			return ( metaDataName == MetaData.MANY_TO_MANY );
+		}
+		
 		private function isForeignKeyRelationship ( metaDataName : String ) : Boolean
 		{
 			return ( metaDataName == MetaData.MANY_TO_ONE || 
-					//metaDataName == MetaData.MANY_TO_MANY || 
 					metaDataName == MetaData.ONE_TO_MANY );
 		}
 		

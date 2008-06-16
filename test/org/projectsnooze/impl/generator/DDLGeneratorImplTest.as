@@ -81,7 +81,8 @@ package org.projectsnooze.impl.generator
 			_builder.addEntityClass( Player );
 			_builder.addEntityClass( Club );
 			_builder.generateEntityDataMaps();
-   			trace ( _generator.getDDLStatements() );
+			
+   			logger.debug( "the returned statements {0}" , _generator.getDDLStatements() );
    			//logger.info( "the DDL {0}" , _generator.getDDL().getSQL() );
    			//assertTrue( "humm" , " CREATE TABLE IF NOT EXISTS Concern ( id INTEGER PRIMARY KEY AUTOINCREMENT,mother_id INTEGER,concern TEXT ); CREATE TABLE IF NOT EXISTS SchoolClass ( id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT ); CREATE TABLE IF NOT EXISTS Child ( id INTEGER PRIMARY KEY AUTOINCREMENT,schoolclass_id INTEGER,mother_id INTEGER,height NUMBER ); CREATE TABLE IF NOT EXISTS Mother ( id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT );" == _generator.getDDL().getSQL() );
    		}

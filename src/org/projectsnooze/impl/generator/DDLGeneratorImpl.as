@@ -29,12 +29,14 @@ package org.projectsnooze.impl.generator
 	import mx.logging.Log;
 	
 	import org.projectsnooze.associations.Relationship;
+	import org.projectsnooze.constants.MetaData;
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.scheme.NameTypeMapping;
+	
 
 	public class DDLGeneratorImpl implements DDLGenerator
 	{
@@ -42,20 +44,32 @@ package org.projectsnooze.impl.generator
 		
 		private var _entityDataMapProvider : EntityDataMapProvider;
 		
+		/**
+		*	@inheritDoc
+		*/
 		public function DDLGeneratorImpl()
 		{
 		}
-
+		
+		/**
+		*	@inheritDoc
+		*/
 		public function setEntityDataMapProvider(entityDataMapProvider:EntityDataMapProvider):void
 		{
 			_entityDataMapProvider = entityDataMapProvider;
 		}
 		
+		/**
+		*	@inheritDoc
+		*/
 		public function getEntityDataMapProvider():EntityDataMapProvider
 		{
 			return _entityDataMapProvider;
 		}
 		
+		/**
+		*	@inheritDoc
+		*/
 		public function getDDLStatements () : Array
 		{
 			var statements : Array = new Array();
@@ -108,6 +122,9 @@ package org.projectsnooze.impl.generator
 			return statements;
 		}
 		
+		/**
+		*	@inheritDoc
+		*/	
 		public function getDropStatements () : Array
 		{
 			var statements : Array = new Array();
@@ -143,8 +160,13 @@ package org.projectsnooze.impl.generator
 				{
 					var relationship : Relationship = j.next() as Relationship;
 					
-					logger.info( "{0} , {1}" , relationship.getType().getName() , 
-						relationship.getEntityDataMap().getTableName() );
+					if ( relationship.getType().getName() == MetaData.MANY_TO_MANY )
+					{
+						logger.info( "the table to be created {0} , with the columns {1}, {2}" , 
+						relationship.getJoinTableName() , 
+						relationship.getEntityDataMap().getForeignKeyName() ,
+						entityDataMap.getForeignKeyName() )
+					}
 				}
 			}
 		}

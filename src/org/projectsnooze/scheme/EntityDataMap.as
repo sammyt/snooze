@@ -29,12 +29,45 @@ package org.projectsnooze.scheme
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.patterns.Iterator;
 	
+	/**
+	*	this class hold all the infotmation about a given entity
+	*	such that is can be mapped to and from the database.  It contains
+	*	information about all the relationships the entity is involved
+	*	in, as well as all the properties the entity has.  It is the vital
+	*	contract that snooze uses to work with entities in an applicaion
+	*	
+	*	@see org.projectsnooze.scheme.NameTypeMapping
+	*	@see org.projectsnooze.associations.Relationship
+	*/	
 	public interface EntityDataMap
 	{
+		/**
+		*	adds a natural property to the data map.  A natrual property
+		*	is one that maps directly to a database column such as a String
+		*	or a Number.
+		*	
+		*	@param mapping : NameTypeMapping , the object that describes the 
+		*	natural property of the entity
+		*/	
 		function addProperty ( mapping : NameTypeMapping ) : void;
 		
+		/**
+		*	this method adds a Relationship to the entities data map.  Relationships
+		*	describe the way the underlying database tables that map the business domain
+		*	objects are related. An example relationship would be a one-to-many relatinship.
+		*	
+		*	@param relationship : Relationship , the relationship to be added 
+		*	the the entities data map
+		*/	
 		function addRelationship ( relationship : Relationship ) : void;
 		
+		/**
+		*	this method returns the relationship between this entity and the one
+		*	whos data map is porvided
+		*	
+		*	@param dataMap : EntityDataMap , the data map of the entity we want
+		*	to know the relationship with
+		*/	
 		function getRelationship ( dataMap : EntityDataMap ) : Relationship;
 		
 		function setPrimaryKey ( mapping : NameTypeMapping ) : void;
@@ -48,6 +81,8 @@ package org.projectsnooze.scheme
 		function getTableName () : String;
 		
 		function setTableName ( name : String ) : void;
+		
+		function getForeignKeyName () : String;
 		
 	}
 }

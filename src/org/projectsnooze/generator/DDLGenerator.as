@@ -27,14 +27,37 @@ package org.projectsnooze.generator
 {
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	
+	/**
+	*	the DDLGenerator creates SQL statements for createing and dropping 
+	*	whole databases.  It generates the SQL based on the EntityDataMapProvider
+	*	is is given via the <code>setEntityDataMapProvider<code> method.
+	*	
+	*	@see org.projectsnooze.scheme.EntityDataMapProvider
+	*	@see org.projectsnooze.generator.Statement
+	*/	
 	public interface DDLGenerator
 	{
+		/**
+		*	sets the EntityDataMapProvider used to determine the structure 
+		*	of the database to be created or deleted
+		*/	
 		function setEntityDataMapProvider ( entityDataMapProvider : EntityDataMapProvider ) : void;
 		
+		/**
+		*	returns the EntityDataMapProvider in use by the DDLGenerator
+		*/	
 		function getEntityDataMapProvider () : EntityDataMapProvider;
 		
+		/**
+		*	returns an <code>Array</code> of <code>Statement</code> objects
+		*	which when executed will generate the while database structure
+		*/	
 		function getDDLStatements () : Array;
 		
+		/**
+		*	returns an <code>Array</code> of <code>Statement</code> objects
+		*	which when executed will drop all the database tables
+		*/
 		function getDropStatements () : Array;
 	}
 }

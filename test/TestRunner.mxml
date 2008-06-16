@@ -31,7 +31,7 @@
 			{
                 
                 var traceTarget: TraceTarget = new TraceTarget();
-                traceTarget.filters=[ "DDLGeneratorImplTest" ];
+                traceTarget.filters=[ "DDLGeneratorImplTest" , "DDLGeneratorImpl" ];
                 traceTarget.level = LogEventLevel.ALL;
                 traceTarget.includeDate = true;
                 traceTarget.includeTime = true;

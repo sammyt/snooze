@@ -94,6 +94,11 @@ package org.projectsnooze.impl.scheme
 			return null;
 		}
 		
+		public function getForeignKeyName () : String
+		{
+			return getTableName().toLowerCase() + "_" + getPrimaryKey().getLowerCaseName();
+		}
+		
 	}
 }
 

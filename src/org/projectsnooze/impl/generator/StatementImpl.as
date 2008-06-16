@@ -90,5 +90,10 @@ package org.projectsnooze.impl.generator
 			return _dict[ key ];
 		}
 		
+		public function toString () : String
+		{
+			return _skeleton;
+		}
+		
 	}
 }
