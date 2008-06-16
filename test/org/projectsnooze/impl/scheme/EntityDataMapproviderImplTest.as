@@ -43,7 +43,9 @@ package org.projectsnooze.impl.scheme
    			
    			_dataMapProvider.setEntityDataMap( describeType( concern ).@name , map );
    			
-   			assertNotNull( "Should get map back " ,_dataMapProvider.getEntityDataMapByClassName( describeType( concern ).@name ) );
+   			assertNotNull( "Should get map back " ,
+				_dataMapProvider.getEntityDataMapByClassName( 
+					describeType( concern ).@name ) );
    			
    		}
    		
@@ -54,7 +56,8 @@ package org.projectsnooze.impl.scheme
    			
    			_dataMapProvider.setEntityDataMap( describeType( concern ).@name , map );
    			
-   			assertNotNull( "Should get map back " ,_dataMapProvider.getEntityDataMap( concern ) );
+   			assertNotNull( "Should get map back " ,
+				_dataMapProvider.getEntityDataMap( concern ) );
    			
    		}
 		

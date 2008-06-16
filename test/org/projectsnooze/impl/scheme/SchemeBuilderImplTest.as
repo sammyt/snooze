@@ -49,7 +49,9 @@ package org.projectsnooze.impl.scheme
      		ts.addTest( new SchemeBuilderImplTest( "testSchoolClassRelationships" ) );
      		ts.addTest( new SchemeBuilderImplTest( "testChildRelationships" ) );
      		ts.addTest( new SchemeBuilderImplTest( "testMotherChildRelationships" ) );
-     		ts.addTest( new SchemeBuilderImplTest( "testClubDomain" ) );
+     		ts.addTest( new SchemeBuilderImplTest( "testClubDomainClub" ) );
+			ts.addTest( new SchemeBuilderImplTest( "testClubDomainPlayer" ) );
+			ts.addTest( new SchemeBuilderImplTest( "testClubDomainTournament" ) );
      		
    			return ts;
    		}
@@ -73,7 +75,8 @@ package org.projectsnooze.impl.scheme
 			_builder.addEntityClass( Mother );
 			_builder.addEntityClass( Concern );
 			_builder.generateEntityDataMaps();
-			assertNotNull( "Dont be null!" , _builder.getEntityDataMapProvider().getEntityDataMapByClassName( "domain::Mother" ) );
+			assertNotNull( "Dont be null!" , 
+				_builder.getEntityDataMapProvider().getEntityDataMapByClassName( "domain::Mother" ) );
 		}
 		
 		public function testMotheresRelationships () : void
@@ -82,12 +85,12 @@ package org.projectsnooze.impl.scheme
 			_builder.addEntityClass( Concern );
 			_builder.generateEntityDataMaps();
 			
-			var motherMap : EntityDataMap = _builder.getEntityDataMapProvider().getEntityDataMap( new Mother () );
+			var motherMap : EntityDataMap = 
+				_builder.getEntityDataMapProvider().getEntityDataMap( new Mother () );
 			
 			for ( var iterator : Iterator = motherMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
 				var relationship : Relationship = iterator.next() as Relationship;
-				//logger.info( "Mother relationship to {0} , by {1} , has key {2}" , relationship.getEntityDataMap().getTableName() , relationship.getType().getName() , relationship.getType().getForeignKeyContainer() );
 				assertTrue( "Has concern" , relationship.getEntityDataMap().getTableName() == "Concern" );
 				assertTrue( "Mother is owner" , relationship.getType().getName() == OneToManyOwns.Name ); 
 			}
@@ -99,7 +102,8 @@ package org.projectsnooze.impl.scheme
 			_builder.addEntityClass( Concern );
 			_builder.generateEntityDataMaps();
 			
-			var concernMap : EntityDataMap = _builder.getEntityDataMapProvider().getEntityDataMap( new Concern() );
+			var concernMap : EntityDataMap = 
+				_builder.getEntityDataMapProvider().getEntityDataMap( new Concern() );
 			
 			for ( var iterator : Iterator = concernMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
@@ -117,7 +121,8 @@ package org.projectsnooze.impl.scheme
 			_builder.addEntityClass( Concern );
 			_builder.generateEntityDataMaps();
 			
-			var schoolMap : EntityDataMap = _builder.getEntityDataMapProvider().getEntityDataMap( new SchoolClass() );
+			var schoolMap : EntityDataMap = 
+				_builder.getEntityDataMapProvider().getEntityDataMap( new SchoolClass() );
 			
 			for ( var iterator : Iterator = schoolMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
@@ -135,7 +140,8 @@ package org.projectsnooze.impl.scheme
 			_builder.addEntityClass( Concern );
 			_builder.generateEntityDataMaps();
 			
-			var childMap : EntityDataMap = _builder.getEntityDataMapProvider().getEntityDataMap( new Child() );
+			var childMap : EntityDataMap = 
+				_builder.getEntityDataMapProvider().getEntityDataMap( new Child() );
 			
 			for ( var iterator : Iterator = childMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
@@ -156,7 +162,8 @@ package org.projectsnooze.impl.scheme
 			_builder.addEntityClass( Concern );
 			_builder.generateEntityDataMaps();
 			
-			var motherMap : EntityDataMap = _builder.getEntityDataMapProvider().getEntityDataMap( new Mother() );
+			var motherMap : EntityDataMap = 
+				_builder.getEntityDataMapProvider().getEntityDataMap( new Mother() );
 			
 			for ( var iterator : Iterator = motherMap.getRelationshipIterator() ; iterator.hasNext() ; )
 			{
@@ -164,30 +171,110 @@ package org.projectsnooze.impl.scheme
 				
 				if ( relationship.getType().getName() == ManyToOneBelongs.Name )
 				{
-					assertTrue( "Has child" , relationship.getEntityDataMap().getTableName() == "Child" );
+					assertTrue( "Has child" , 
+						relationship.getEntityDataMap().getTableName() == "Child" );
 				} 
 			}
 		}
 		
-		public function testClubDomain () : void
+		public function testClubDomainClub () : void
 		{
 			_builder.addEntityClass( Club );
 			_builder.addEntityClass( Player );
 			_builder.addEntityClass( Tournament );
 			_builder.generateEntityDataMaps();
 			
-			var playerMap : EntityDataMap = _builder.getEntityDataMapProvider().getEntityDataMap( new Player() );
+			var clubMap : EntityDataMap = 
+				_builder.getEntityDataMapProvider().getEntityDataMap( new Club() );
 			
-			//trace ( describeType( new Player() ) );
+			var count : int = 0;
+			
+			for ( var i : Iterator = clubMap.getRelationshipIterator() ; i.hasNext() ; )
+			{
+				var relationship : Relationship = i.next() as Relationship;
+				count ++;
+				
+				switch ( relationship.getPropertyName() )
+				{
+					case "Players" :
+					
+						assertTrue( "type is OneToMany " , 
+							relationship.getType().getName() == "OneToManyOwns" )
+						
+						break;
+						
+					case "Tournaments" :
+					
+						assertTrue( "type is ManyToMany " , 
+							relationship.getType().getName() == "ManyToMany" )
+						
+						break;
+				}
+			}
+			assertTrue( "there where two relationships " , count == 2 );
+		}
+		
+		public function testClubDomainPlayer () : void
+		{
+			_builder.addEntityClass( Club );
+			_builder.addEntityClass( Player );
+			_builder.addEntityClass( Tournament );
+			_builder.generateEntityDataMaps();
+			
+			var playerMap : EntityDataMap = 
+				_builder.getEntityDataMapProvider().getEntityDataMap( new Player() );
+			
+			var count : int = 0;
 			
 			for ( var i : Iterator = playerMap.getRelationshipIterator() ; i.hasNext() ; )
 			{
 				var relationship : Relationship = i.next() as Relationship;
-				//trace( relationship.getType() , relationship.getPropertyName() );
+				
+				count ++;
+				switch ( relationship.getPropertyName() )
+				{
+					case "Players" :
+						
+						assertTrue( "has a OneToManyBelongs " , 
+							relationship.getType().getName() == "OneToManyBelongs" );
+						
+						break;
+				}
 			}
 			
-			assertFalse( true );			
+			assertTrue( "just one relationship" , count == 1 );
 			
+		}
+		
+		public function testClubDomainTournament():void
+		{
+			_builder.addEntityClass( Club );
+			_builder.addEntityClass( Player );
+			_builder.addEntityClass( Tournament );
+			_builder.generateEntityDataMaps();
+			
+			var tournamentMap : EntityDataMap = 
+				_builder.getEntityDataMapProvider().getEntityDataMap( new Player() );
+			
+			var count : int = 0;
+			
+			for ( var i : Iterator = tournamentMap.getRelationshipIterator() ; i.hasNext() ; )
+			{
+				var relationship : Relationship = i.next() as Relationship;
+				
+				count ++;
+				switch ( relationship.getPropertyName() )
+				{
+					case "Clubs" :
+						
+						assertTrue( "has a ManyToMany with cubs " , 
+							relationship.getType().getName() == "ManyToMany" );
+						
+						break;
+				}
+			}
+			
+			assertTrue( "just one relationship" , count == 1 );
 		}
 	}
 }

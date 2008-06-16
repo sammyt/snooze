@@ -118,7 +118,8 @@ package org.projectsnooze.impl
 			queue.setTransactional( true );
 			queue.openConnection();
 			
-			for ( var iterator : Iterator = new ArrayIterator( getDDLgenerator().getDDLStatements() ) ; iterator.hasNext() ; )
+			for ( var iterator : Iterator = new ArrayIterator( 
+				getDDLgenerator().getDDLStatements() ) ; iterator.hasNext() ; )
 			{
 				queue.addToExecutionQueue( new StatementWrapperImpl( iterator.next() as Statement ) );
 			}
@@ -134,7 +135,8 @@ package org.projectsnooze.impl
 			queue.setTransactional( true );
 			queue.openConnection();
 			
-			for ( var iterator : Iterator = new ArrayIterator( getDDLgenerator().getDropStatements() ) ; iterator.hasNext() ; )
+			for ( var iterator : Iterator = new ArrayIterator( 
+				getDDLgenerator().getDropStatements() ) ; iterator.hasNext() ; )
 			{
 				queue.addToExecutionQueue( new StatementWrapperImpl( iterator.next() as Statement ) );
 			}

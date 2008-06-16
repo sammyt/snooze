@@ -5,6 +5,8 @@ package org.projectsnooze.impl
 	import domain.Mother;
 	import domain.SchoolClass;
 	
+	import some.other.domain.*;
+	
 	import flash.data.SQLConnection;
 	import flash.data.SQLStatement;
 	
@@ -183,7 +185,18 @@ package org.projectsnooze.impl
    			facade.getSession().save( school , new ResponderImpl ( myAddAsync ( result ) , fault , this ) );
 		}
 		
-		
+		public function testBuildDataMap1 () : void
+		{
+			facade.addEntityClass( Club );
+			facade.addEntityClass( Player );
+			facade.addEntityClass( Tournament );
+			facade.createDatabase();
+			
+			var connection : SQLConnection = facade.getConnectionPool().getConnection();
+			connection.open( facade.getConnectionPool().getFile() );
+			
+			
+		}
 		
 	}
 }

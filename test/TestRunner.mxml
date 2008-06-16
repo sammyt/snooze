@@ -23,7 +23,6 @@
 			import org.projectsnooze.impl.scheme.EntityDataMapproviderImplTest;
 			import org.projectsnooze.impl.scheme.SchemeBuilderImplTest;
 			import org.projectsnooze.impl.scheme.TypeUtilsImplTest;
-			import org.projectsnooze.impl.session.SessionImplTest;
 			
 			import flexunit.framework.TestSuite;
 			
@@ -31,7 +30,7 @@
 			{
                 
                 var traceTarget: TraceTarget = new TraceTarget();
-                traceTarget.filters=[ "DDLGeneratorImplTest" , "DDLGeneratorImpl" ];
+                traceTarget.filters=[ "SchemeBuilderImplTest" ];
                 traceTarget.level = LogEventLevel.ALL;
                 traceTarget.includeDate = true;
                 traceTarget.includeTime = true;
@@ -48,15 +47,14 @@
 			{
  				var testSuite:TestSuite = new TestSuite();
  				
- 				//testSuite.addTest( SchemeBuilderImplTest.suite() );
- 				//testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
- 				//testSuite.addTest( TypeUtilsImplTest.suite() );
+ 				testSuite.addTest( SchemeBuilderImplTest.suite() );
+ 				testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
+ 				testSuite.addTest( TypeUtilsImplTest.suite() );
  				testSuite.addTest( DDLGeneratorImplTest.suite() );
- 				//testSuite.addTest( SessionImplTest.suite() );
- 				//testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
- 				//testSuite.addTest( StatementCreatorImplTest.suite() );
- 				//testSuite.addTest( ArrayIteratorTest.suite() );
- 				//testSuite.addTest( EntityFacadeTest.suite() );
+ 				testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
+ 				testSuite.addTest( StatementCreatorImplTest.suite() );
+ 				testSuite.addTest( ArrayIteratorTest.suite() );
+ 				testSuite.addTest( EntityFacadeTest.suite() );
  				
  				return testSuite;
  			}

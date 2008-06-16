@@ -25,6 +25,8 @@
  
 package org.projectsnooze.impl.generator
 {
+	import flash.utils.Dictionary;
+	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
@@ -151,21 +153,43 @@ package org.projectsnooze.impl.generator
 		
 		
 		private function addManyToManyTables ( statements : Array ) : void
-		{
+		{	
+			// holds the name of the tables already created
+			var addedNames : Dictionary = new Dictionary();
+			
+			// loop through all the entity data maps
 			for ( var i : Iterator = getEntityDataMapProvider().getIterator() ; i.hasNext() ; )
 			{
 				var entityDataMap : EntityDataMap = i.next() as EntityDataMap;
 				
+				// loop through all the relationships each entity data map contains
 				for ( var j : Iterator = entityDataMap.getRelationshipIterator() ; j.hasNext() ; )
 				{
 					var relationship : Relationship = j.next() as Relationship;
 					
+					// where the relationship is many-to-many
 					if ( relationship.getType().getName() == MetaData.MANY_TO_MANY )
 					{
-						logger.info( "the table to be created {0} , with the columns {1}, {2}" , 
-						relationship.getJoinTableName() , 
-						relationship.getEntityDataMap().getForeignKeyName() ,
-						entityDataMap.getForeignKeyName() )
+						// only need to create the tables once, so need to keep
+						// track of which ones have been created
+						if ( ! addedNames[ relationship.getJoinTableName() ] )
+						{
+							// create the statement object
+							var statement : Statement = new StatementImpl();
+							
+							// set the create table statement for the join table
+							statement.setSqlSkeleton( "CREATE TABLE IF NOT EXISTS " + 
+							 	relationship.getJoinTableName() + " ( " +
+								entityDataMap.getForeignKeyName() + " INTEGER ," +
+								relationship.getEntityDataMap().getForeignKeyName() + " INTEGER " +
+							 	" ); " );
+							
+							// record that this table has been created
+							addedNames[ relationship.getJoinTableName() ] = true;
+							
+							// add the statement to the statements array
+							statements.push( statement );
+						}
 					}
 				}
 			}

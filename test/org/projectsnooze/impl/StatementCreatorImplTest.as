@@ -66,6 +66,7 @@ package org.projectsnooze.impl
 		{
 			var data : EntityDataMap = _builder.getEntityDataMapProvider().getEntityDataMap( new SchoolClass () );
 			//logger.info( _creator.getInsertSql( data ).getSQL() );
+			assertTrue( false );
 			
 		}
 				
