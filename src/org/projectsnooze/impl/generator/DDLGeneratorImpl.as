@@ -217,7 +217,7 @@ package org.projectsnooze.impl.generator
 				{
 					var tableName : String = relationship.getEntityDataMap().getTableName().toLowerCase();
 					var idName : String = relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
-					values.push( tableName + "_" + idName + " " + 
+					values.push( tableName + "_" + idName + " " + "NOT NULL " +
 						relationship.getEntityDataMap().getPrimaryKey().getType().getSQLType() );
 				}
 			}

@@ -5,21 +5,31 @@ package org.projectsnooze.impl
 	import domain.Mother;
 	import domain.SchoolClass;
 	
-	import some.other.domain.*;
-	
+	import flash.data.SQLColumnSchema;
 	import flash.data.SQLConnection;
 	import flash.data.SQLStatement;
+	import flash.data.SQLTableSchema;
 	
 	import flexunit.framework.TestCase;
 	import flexunit.framework.TestSuite;
 	
+	import mx.automation.codec.AssetPropertyCodec;
 	import mx.events.DynamicEvent;
+	import mx.logging.ILogger;
+	import mx.logging.Log;
 	
 	import org.projectsnooze.impl.execute.ResponderImpl;
+	import org.projectsnooze.impl.patterns.ArrayIterator;
+	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.session.Session;
+	
+	import some.other.domain.*;
 
 	public class EntityFacadeTest extends TestCase
 	{
+		private static var logger : ILogger = 
+			Log.getLogger( "EntityFacadeTest" );
+		
 		private var facade : EntityFacadeImpl;
 		
 		public function EntityFacadeTest(methodName:String=null)
@@ -30,11 +40,13 @@ package org.projectsnooze.impl
 		public static function suite () : TestSuite
 		{
 			var ts : TestSuite = new TestSuite();
-			//ts.addTest( new EntityFacadeTest( "testGetSession" ) );
-			//ts.addTest( new EntityFacadeTest( "testCreateDB" ) );
-			//ts.addTest( new EntityFacadeTest( "testDropDB" ) );
-			//ts.addTest( new EntityFacadeTest( "testBuildDataMap" ) );
-			ts.addTest( new EntityFacadeTest( "testBuildDataMap1" ) );
+			ts.addTest( new EntityFacadeTest( "testGetSession" ) );
+			ts.addTest( new EntityFacadeTest( "testCreateSchoolDB" ) );
+			ts.addTest( new EntityFacadeTest( "testDropSchoolDB" ) );
+			ts.addTest( new EntityFacadeTest( "testInsertSchool" ) );
+			ts.addTest( new EntityFacadeTest( "testCreateFootballDB" ) );
+			ts.addTest( new EntityFacadeTest( "testClubTable" ) );
+			ts.addTest( new EntityFacadeTest( "testPlayerTable" ) );
 			
 			return ts;
 		}
@@ -50,7 +62,7 @@ package org.projectsnooze.impl
 			facade = null;
 		}
 		
-		public function myAddAsync(f:Function):Function 
+		public function smartAddAsync(f:Function):Function 
 		{
 			var f1:Function = function(e:DynamicEvent):void 
 			{ 
@@ -74,16 +86,27 @@ package org.projectsnooze.impl
 			assertNotNull( "session returned" , session );
 		}
 		
-		public function testCreateDB () : void
+		public function testCreateSchoolDB () : void
 		{
 			facade.addEntityClass( SchoolClass )
 			facade.addEntityClass( Child )
 			facade.addEntityClass( Mother )
 			facade.addEntityClass( Concern )
 			facade.createDatabase();
+			
+			var connection : SQLConnection = 
+				facade.getConnectionPool().getConnection();
+			connection.open( facade.getConnectionPool().getFile() );
+			
+			connection.loadSchema();
+			
+			assertTrue( "has all the tables it should " , 
+				connection.getSchemaResult().tables , 
+				[ "SchoolClass" , "Child" , "Mother" , "Concern" ]); 
+				
 		}
 		
-		public function testDropDB () : void
+		public function testDropSchoolDB () : void
 		{
 			facade.addEntityClass( SchoolClass )
 			facade.addEntityClass( Child )
@@ -92,44 +115,19 @@ package org.projectsnooze.impl
 			facade.createDatabase();
 			
 			facade.dropDatabase();
-		}
-		
-		public function testBuildDataMap () : void
-		{
-			facade.addEntityClass( SchoolClass )
-			facade.addEntityClass( Child )
-			facade.addEntityClass( Mother )
-			facade.addEntityClass( Concern )
-			facade.createDatabase();
 			
-			var school : SchoolClass = new SchoolClass();
-			school.setName( "My School" );
-   			
-   			var mother : Mother = new Mother();
-   			mother.setName( "Sarah" );
-   			
-   			var concern : Concern = new Concern();
-   			concern.setConcern( "OMG" );
-   			
-   			var concern2 : Concern = new Concern();
-   			concern2.setConcern( "cheese" );
-   			
-   			mother.addConcern( concern );
-   			mother.addConcern( concern2 );
-   			
-   			for ( var i : int = 0 ; i < 4 ; i ++  )
-   			{
-	   			var child : Child = new Child();
-	   			child.setHeight( i );
-	   			child.setMother( mother );
-	   			school.addChild( child );
-   			}
-   			
-   			facade.getSession().save( school );
+			var connection : SQLConnection = 
+				facade.getConnectionPool().getConnection();
+			connection.open( facade.getConnectionPool().getFile() );
+			
+			connection.loadSchema();
+			
+			assertTrue( "has all the tables it should " , 
+				connection.getSchemaResult().tables , 
+				[  ]); 
 		}
 		
-		
-		public function testBuildDataMap1 () : void
+		public function testInsertSchool () : void
 		{
 			facade.addEntityClass( SchoolClass )
 			facade.addEntityClass( Child )
@@ -168,7 +166,8 @@ package org.projectsnooze.impl
    				assertTrue( "is a schoolclass " , s is SchoolClass );
    				assertTrue( "is the id 1 " , s.getId() >= 0 );
    				
-   				var connection : SQLConnection = facade.getConnectionPool().getConnection();
+   				var connection : SQLConnection = 
+   					facade.getConnectionPool().getConnection();
    				connection.open( facade.getConnectionPool().getFile() );
    				
    				var select1 : SQLStatement = new SQLStatement();
@@ -182,21 +181,159 @@ package org.projectsnooze.impl
    				assertTrue( "100 kids" , result[0]["kids"] == 100 );
    			}
    			
-   			facade.getSession().save( school , new ResponderImpl ( myAddAsync ( result ) , fault , this ) );
+   			facade.getSession().save( school , new 
+   				ResponderImpl ( smartAddAsync ( result ) , fault , this ) );
 		}
 		
-		public function testBuildDataMap1 () : void
+		public function testCreateFootballDB () : void
 		{
 			facade.addEntityClass( Club );
 			facade.addEntityClass( Player );
 			facade.addEntityClass( Tournament );
 			facade.createDatabase();
 			
-			var connection : SQLConnection = facade.getConnectionPool().getConnection();
+			var connection : SQLConnection = 
+				facade.getConnectionPool().getConnection();
 			connection.open( facade.getConnectionPool().getFile() );
 			
+			connection.loadSchema();
 			
+			var tableNames : Array = new Array();
+			for ( var i : Iterator = new ArrayIterator( 
+				connection.getSchemaResult().tables ); i.hasNext() ; )
+			{
+				var t : SQLTableSchema = i.next() as SQLTableSchema;
+				tableNames.push( t.name );
+			}
+			
+			assertTrue( "has all the tables it should " , testListContents(
+				tableNames , 
+				[ "Club_Tournament" , "Club" , "Player" , "Tournament" ] ) ); 
 		}
 		
+		public function testClubTable () : void
+		{
+			facade.addEntityClass( Club );
+			facade.addEntityClass( Player );
+			facade.addEntityClass( Tournament );
+			facade.createDatabase();
+			
+			var connection : SQLConnection = 
+				facade.getConnectionPool().getConnection();
+			connection.open( facade.getConnectionPool().getFile() );
+			
+			connection.loadSchema( SQLTableSchema , "Club" );
+			
+			var club : SQLTableSchema =  
+				connection.getSchemaResult().tables [0] as SQLTableSchema;
+			
+			for ( var i : Iterator = new ArrayIterator( club.columns ) ; 
+				i.hasNext() ; )
+			{
+				var column : SQLColumnSchema = i.next() as SQLColumnSchema;
+				switch ( column.name ) 
+				{
+					case "id" :
+						assertTrue( "is primaty key" , column.primaryKey );
+						assertTrue( "is integer" , column.dataType == "INTEGER" );
+						assertTrue( "does autoincrement" , column.autoIncrement );
+						assertFalse( "does not allow null" , column.allowNull );
+						break;
+						
+					case "name" :
+						assertFalse( "is not primaty key" , column.primaryKey );
+						assertTrue( "is text" , column.dataType == "TEXT" );
+						assertTrue( "does allow null" , column.allowNull );
+						break;
+				}
+			}
+		}
+		
+		public function testPlayerTable () : void
+		{
+			facade.addEntityClass( Club );
+			facade.addEntityClass( Player );
+			facade.addEntityClass( Tournament );
+			facade.createDatabase();
+			
+			var connection : SQLConnection = 
+				facade.getConnectionPool().getConnection();
+			connection.open( facade.getConnectionPool().getFile() );
+			
+			connection.loadSchema( SQLTableSchema , "Player" );
+			
+			var player : SQLTableSchema =  
+				connection.getSchemaResult().tables [0] as SQLTableSchema;
+			
+			for ( var i : Iterator = new ArrayIterator( player.columns ) ; 
+				i.hasNext() ; )
+			{
+				var column : SQLColumnSchema = i.next() as SQLColumnSchema;
+				
+				logger.debug( "column {0}" , column.name );
+				
+				switch ( column.name ) 
+				{
+					case "id" :
+						assertTrue( "is primaty key" , column.primaryKey );
+						assertTrue( "is integer" , column.dataType == "INTEGER" );
+						assertTrue( "does autoincrement" , column.autoIncrement );
+						assertFalse( "does not allow null" , column.allowNull );
+						break;
+						
+					case "club_id" :
+						assertFalse( "is not primaty key" , column.primaryKey );
+						assertTrue( "is integer" , column.dataType == "INTEGER" );
+						assertFalse( "does not autoincrement" , column.autoIncrement );
+						assertFalse( "does not allow null" , column.allowNull );
+						break;
+						
+					case "firstname" :
+						assertFalse( "is not primaty key" , column.primaryKey );
+						assertTrue( "is text" , column.dataType == "TEXT" );
+						assertTrue( "does allow null" , column.allowNull );
+						break;
+						
+					case "lastname" :
+						assertFalse( "is not primaty key" , column.primaryKey );
+						assertTrue( "is text" , column.dataType == "TEXT" );
+						assertTrue( "does allow null" , column.allowNull );
+						break;
+				}
+			}
+		}
+		
+		private function testListContents ( 
+			testList : Array , correctList : Array ) : Boolean
+		{
+			var containsAll : Boolean = true;
+			
+			for ( var i : Iterator = new ArrayIterator ( correctList ) ;
+				i.hasNext() ; )
+			{
+				var name : String = i.next() as String;
+				if ( ! listContains( testList , name ) )
+				{
+					return false;
+				}	
+			}
+			
+			function listContains ( list : Array , item : String ) : Boolean
+			{
+				for ( var i : Iterator = new ArrayIterator ( list ) ;
+					i.hasNext() ; )
+				{
+					var name : String = i.next() as String;
+					if ( name == item ) return true;
+				}
+				return false;
+			}
+			
+			return true;
+		}
 	}
 }
+
+
+
+

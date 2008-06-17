@@ -30,7 +30,7 @@
 			{
                 
                 var traceTarget: TraceTarget = new TraceTarget();
-                traceTarget.filters=[ "SchemeBuilderImplTest" ];
+                traceTarget.filters=[ "EntityFacadeTest" ];
                 traceTarget.level = LogEventLevel.ALL;
                 traceTarget.includeDate = true;
                 traceTarget.includeTime = true;
@@ -47,13 +47,13 @@
 			{
  				var testSuite:TestSuite = new TestSuite();
  				
- 				testSuite.addTest( SchemeBuilderImplTest.suite() );
- 				testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
- 				testSuite.addTest( TypeUtilsImplTest.suite() );
- 				testSuite.addTest( DDLGeneratorImplTest.suite() );
- 				testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
- 				testSuite.addTest( StatementCreatorImplTest.suite() );
- 				testSuite.addTest( ArrayIteratorTest.suite() );
+ 				//testSuite.addTest( SchemeBuilderImplTest.suite() );
+ 				//testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
+ 				//testSuite.addTest( TypeUtilsImplTest.suite() );
+ 				//testSuite.addTest( DDLGeneratorImplTest.suite() );
+ 				//testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
+ 				//testSuite.addTest( StatementCreatorImplTest.suite() );
+ 				//testSuite.addTest( ArrayIteratorTest.suite() );
  				testSuite.addTest( EntityFacadeTest.suite() );
  				
  				return testSuite;
