@@ -47,6 +47,8 @@ package org.projectsnooze.impl
 			ts.addTest( new EntityFacadeTest( "testCreateFootballDB" ) );
 			ts.addTest( new EntityFacadeTest( "testClubTable" ) );
 			ts.addTest( new EntityFacadeTest( "testPlayerTable" ) );
+			ts.addTest( new EntityFacadeTest( "testTournamentTable" ) );
+			ts.addTest( new EntityFacadeTest( "testClubTournamentTable" ) );
 			
 			return ts;
 		}
@@ -234,14 +236,14 @@ package org.projectsnooze.impl
 				switch ( column.name ) 
 				{
 					case "id" :
-						assertTrue( "is primaty key" , column.primaryKey );
+						assertTrue( "is primary key" , column.primaryKey );
 						assertTrue( "is integer" , column.dataType == "INTEGER" );
 						assertTrue( "does autoincrement" , column.autoIncrement );
 						assertFalse( "does not allow null" , column.allowNull );
 						break;
 						
 					case "name" :
-						assertFalse( "is not primaty key" , column.primaryKey );
+						assertFalse( "is not primary key" , column.primaryKey );
 						assertTrue( "is text" , column.dataType == "TEXT" );
 						assertTrue( "does allow null" , column.allowNull );
 						break;
@@ -270,38 +272,116 @@ package org.projectsnooze.impl
 			{
 				var column : SQLColumnSchema = i.next() as SQLColumnSchema;
 				
-				logger.debug( "column {0}" , column.name );
-				
 				switch ( column.name ) 
 				{
 					case "id" :
-						assertTrue( "is primaty key" , column.primaryKey );
+						assertTrue( "is primary key" , column.primaryKey );
 						assertTrue( "is integer" , column.dataType == "INTEGER" );
 						assertTrue( "does autoincrement" , column.autoIncrement );
 						assertFalse( "does not allow null" , column.allowNull );
 						break;
 						
 					case "club_id" :
-						assertFalse( "is not primaty key" , column.primaryKey );
+						assertFalse( "is not primary key" , column.primaryKey );
 						assertTrue( "is integer" , column.dataType == "INTEGER" );
 						assertFalse( "does not autoincrement" , column.autoIncrement );
 						assertFalse( "does not allow null" , column.allowNull );
 						break;
 						
 					case "firstname" :
-						assertFalse( "is not primaty key" , column.primaryKey );
+						assertFalse( "is not primary key" , column.primaryKey );
 						assertTrue( "is text" , column.dataType == "TEXT" );
 						assertTrue( "does allow null" , column.allowNull );
 						break;
 						
 					case "lastname" :
-						assertFalse( "is not primaty key" , column.primaryKey );
+						assertFalse( "is not primary key" , column.primaryKey );
 						assertTrue( "is text" , column.dataType == "TEXT" );
 						assertTrue( "does allow null" , column.allowNull );
 						break;
 				}
 			}
 		}
+		
+		public function testTournamentTable () : void
+		{
+			facade.addEntityClass( Club );
+			facade.addEntityClass( Player );
+			facade.addEntityClass( Tournament );
+			facade.createDatabase();
+			
+			var connection : SQLConnection = 
+				facade.getConnectionPool().getConnection();
+			connection.open( facade.getConnectionPool().getFile() );
+			
+			connection.loadSchema( SQLTableSchema , "Club" );
+			
+			var tournament : SQLTableSchema =  
+				connection.getSchemaResult().tables [0] as SQLTableSchema;
+			
+			for ( var i : Iterator = new ArrayIterator( tournament.columns ) ; 
+				i.hasNext() ; )
+			{
+				var column : SQLColumnSchema = i.next() as SQLColumnSchema;
+				
+				switch ( column.name ) 
+				{ 
+					case "id" :
+						assertTrue( "is primary key" , column.primaryKey );
+						assertTrue( "is integer" , column.dataType == "INTEGER" );
+						assertTrue( "does autoincrement" , column.autoIncrement );
+						assertFalse( "does not allow null" , column.allowNull );
+						break;
+						
+					case "name" :
+						assertFalse( "is not primary key" , column.primaryKey );
+						assertTrue( "is text" , column.dataType == "TEXT" );
+						assertTrue( "does allow null" , column.allowNull );
+						break;
+				}
+			}
+		}
+		
+		public function testClubTournamentTable () : void
+		{
+			facade.addEntityClass( Club );
+			facade.addEntityClass( Player );
+			facade.addEntityClass( Tournament );
+			facade.createDatabase();
+			
+			var connection : SQLConnection = 
+				facade.getConnectionPool().getConnection();
+			connection.open( facade.getConnectionPool().getFile() );
+			
+			connection.loadSchema( SQLTableSchema , "Club_Tournament" );
+			
+			var tournament : SQLTableSchema =  
+				connection.getSchemaResult().tables [0] as SQLTableSchema;
+			
+			for ( var i : Iterator = new ArrayIterator( tournament.columns ) ; 
+				i.hasNext() ; )
+			{
+				var column : SQLColumnSchema = i.next() as SQLColumnSchema;
+				
+				switch ( column.name ) 
+				{ 
+					case "club_id" :
+						assertFalse( "is not primary key" , column.primaryKey );
+						assertTrue( "is integer" , column.dataType == "INTEGER" );
+						assertFalse( "does not autoincrement" , column.autoIncrement );
+						assertFalse( "does not allow null" , column.allowNull );
+						break;
+						
+					case "tournament_id" :
+						assertFalse( "is not primary key" , column.primaryKey );
+						assertTrue( "is integer" , column.dataType == "INTEGER" );
+						assertFalse( "does not autoincrement" , column.autoIncrement );
+						assertFalse( "does not allow null" , column.allowNull );
+						break;
+				}
+			}
+		}
+		
 		
 		private function testListContents ( 
 			testList : Array , correctList : Array ) : Boolean

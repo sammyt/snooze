@@ -43,7 +43,8 @@ package org.projectsnooze.impl.dependency
 
 	public class DependencyTreeCreatorImpl implements DependencyTreeCreator
 	{
-		protected static var logger : ILogger = Log.getLogger( "DependencyTreeCreatorImpl" ) ;
+		protected static var logger : ILogger = 
+			Log.getLogger( "DependencyTreeCreatorImpl" ) ;
 		
 		protected var _entityDataMapProvider : EntityDataMapProvider;
 		protected var _typeUtils : TypeUtils;
@@ -55,16 +56,25 @@ package org.projectsnooze.impl.dependency
 		{
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */ 
 		public function setQueueManager ( queueManager : QueueManager ) : void
 		{
 			_queueManager = queueManager;
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getQueueManager () : QueueManager
 		{
 			return _queueManager;
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getSaveDependencyTree ( entity : Object ) : DependencyTree
 		{
 			var depTree : DependencyTree = new DependencyTreeImpl();
@@ -74,15 +84,20 @@ package org.projectsnooze.impl.dependency
 			return depTree;
 		}
 		
-		private function createInsertTree ( entity : Object , depTree : DependencyTree , lastDepNode : DependencyNode = null , isPrevEntityFKContiner : Boolean = true ) : void
+		protected function createInsertTree ( entity : Object , depTree : DependencyTree , 
+			lastDepNode : DependencyNode = null , isPrevEntityFKContiner : Boolean = true ) : void
 		{
-			var dataMap : EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
+			// get the entity data map for the entity provided
+			var dataMap : EntityDataMap = 
+				getEntitDataMapProvider().getEntityDataMap( entity );
 			
 			var depNode : DependencyNode;
 			
 			// has this entity already been wrapped in a node
 			if ( depTree.doesTreeContain( entity ) )
 			{
+				// if a DependencyNode has already been created for this
+				// entity then retrieve it from the tree 
 				depNode = depTree.getNodeByEntity( entity );
 			}
 			
@@ -93,7 +108,9 @@ package org.projectsnooze.impl.dependency
 				depNode = new DependencyNodeImpl();
 				depNode.setEnity( entity );
 				depNode.setEntityDataMap( dataMap );
-				depNode.setStatement( getStatementCreator().getStatementByType( "insert" , dataMap ) );
+				depNode.setStatement( getStatementCreator().getStatementByType( 
+					"insert" , dataMap ) );
+					
 				depNode.setStatementQueue( depTree.getStatementQueue() );
 				depNode.setDependencyTree( depTree );
 				
@@ -116,55 +133,81 @@ package org.projectsnooze.impl.dependency
 				depNode.addDependency( lastDepNode )
 			}
 			
-			for ( var iterator : Iterator = dataMap.getRelationshipIterator() ; iterator.hasNext() ; )
+			for ( var iterator : Iterator = dataMap.getRelationshipIterator() ; 
+				iterator.hasNext() ; )
 			{
 				var relationship  : Relationship = iterator.next() as Relationship;
 				
 				if ( relationship.getIsEntityContainer() )
 				{
-					var getter : Function = entity[ "get" + relationship.getPropertyName() ] as Function;
+					var getter : Function = entity[ "get" + 
+						relationship.getPropertyName() ] as Function;
+						
 					var data : * = getter.apply( entity );
 					
 					if ( getTypeUtils().isCollection( data ) )
 					{
-						for ( var i : Iterator = new SmartIterator( data ) ; i.hasNext() ; )
+						for ( var i : Iterator = new SmartIterator( data ) ; 
+							i.hasNext() ; )
 						{
-							createInsertTree( i.next() , depTree , depNode , relationship.getType().getForeignKeyContainer() );
+							createInsertTree( i.next() , depTree , depNode , 
+								relationship.getType().getForeignKeyContainer() );
 						}
 					}
 					else
 					{
-						createInsertTree( data , depTree , depNode , relationship.getType().getForeignKeyContainer() );
+						createInsertTree( data , depTree , depNode , 
+							relationship.getType().getForeignKeyContainer() );
 					}
 				}
 			}
 		}
 		
-		public function setEntityDataMapProvider ( entityDataMap : EntityDataMapProvider ) : void
+		/**
+		 * 	@inheritDoc
+		 */
+		public function setEntityDataMapProvider ( 
+			entityDataMap : EntityDataMapProvider ) : void
 		{
 			_entityDataMapProvider = entityDataMap;
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getEntitDataMapProvider ( ) : EntityDataMapProvider
 		{
 			return _entityDataMapProvider;
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function setTypeUtils ( typeUtils : TypeUtils ) : void
 		{
 			_typeUtils = typeUtils;
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getTypeUtils () : TypeUtils
 		{
 			return _typeUtils;
 		}
-	
-		public function setStatementCreator ( statementCreator : StatementCreator ) : void
+		
+		/**
+		 * 	@inheritDoc
+		 */
+		public function setStatementCreator ( 
+			statementCreator : StatementCreator ) : void
 		{
 			_statementCreator = statementCreator
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getStatementCreator () : StatementCreator
 		{
 			return _statementCreator;

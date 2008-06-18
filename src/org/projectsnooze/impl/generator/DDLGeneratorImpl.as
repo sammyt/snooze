@@ -180,8 +180,8 @@ package org.projectsnooze.impl.generator
 							// set the create table statement for the join table
 							statement.setSqlSkeleton( "CREATE TABLE IF NOT EXISTS " + 
 							 	relationship.getJoinTableName() + " ( " +
-								entityDataMap.getForeignKeyName() + " INTEGER ," +
-								relationship.getEntityDataMap().getForeignKeyName() + " INTEGER " +
+								entityDataMap.getForeignKeyName() + " INTEGER NOT NULL," +
+								relationship.getEntityDataMap().getForeignKeyName() + " INTEGER NOT NULL" +
 							 	" ); " );
 							
 							// record that this table has been created
@@ -217,8 +217,8 @@ package org.projectsnooze.impl.generator
 				{
 					var tableName : String = relationship.getEntityDataMap().getTableName().toLowerCase();
 					var idName : String = relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
-					values.push( tableName + "_" + idName + " " + "NOT NULL " +
-						relationship.getEntityDataMap().getPrimaryKey().getType().getSQLType() );
+					values.push( tableName + "_" + idName + " " +
+						relationship.getEntityDataMap().getPrimaryKey().getType().getSQLType() + "  NOT NULL" );
 				}
 			}
 		}
