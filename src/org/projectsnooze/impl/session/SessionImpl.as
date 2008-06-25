@@ -47,6 +47,13 @@ package org.projectsnooze.impl.session
 
 		public function save( entity:Object , responder : Responder = null ):void
 		{
+			
+			function saveComplete ( event : StatementQueueEvent ) : void
+			{
+				event.getStatementQueue().removeEventListener( StatementQueueEvent.COMPLETE , saveComplete );
+				responder.result( entity );
+			}
+			
 			var depTree : DependencyTree = getDependencyTreeCreator().getSaveDependencyTree( entity );
 			
 			var queue : StatementQueue = depTree.getStatementQueue();
@@ -54,11 +61,6 @@ package org.projectsnooze.impl.session
 			
 			depTree.begin();
 			
-			function saveComplete ( event : StatementQueueEvent ) : void
-			{
-				event.getStatementQueue().removeEventListener( StatementQueueEvent.COMPLETE , saveComplete );
-				responder.result( entity );
-			}
 		}
 		
 		public function getDependencyTreeCreator (  ) : DependencyTreeCreator

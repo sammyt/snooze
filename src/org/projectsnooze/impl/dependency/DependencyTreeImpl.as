@@ -36,8 +36,12 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
-
-	public class DependencyTreeImpl extends EventDispatcher implements DependencyTree
+	
+	/**
+	 * 	@inheritDoc
+	 */ 
+	public class DependencyTreeImpl extends EventDispatcher 
+									implements DependencyTree
 	{
 		private var logger : ILogger = Log.getLogger( "DependencyTreeImpl" );
 		
@@ -51,24 +55,34 @@ package org.projectsnooze.impl.dependency
 			_completedCount = 0;
 		}
 		
+		/**
+	 	* 	@inheritDoc
+	 	*/
 		public function getNodeCount () : int
 		{
 			return _nodes.length;
 		}
 		
-		public function addDependencyNode( dependencyNode : DependencyNode ) : void
+		/**
+	 	* 	@inheritDoc
+	 	*/
+		public function addDependencyNode( 
+			dependencyNode : DependencyNode ) : void
 		{
 			_nodes.push( dependencyNode );
 		}
 		
+		/**
+	 	* 	@inheritDoc
+	 	*/
 		public function begin():void
 		{
 			_statementQueue.setTransactional( true );
 			_statementQueue.openConnection();
 			
-			for( var iterator : Iterator = new SmartIterator( _nodes ) ; iterator.hasNext() ; )
+			for( var i : Iterator = new SmartIterator( _nodes ) ; i.hasNext() ; )
 			{
-				var depNode : DependencyNode = iterator.next() as DependencyNode;
+				var depNode : DependencyNode = i.next() as DependencyNode;
 				depNode.setDependencyTree( this );
 				
 				// the node has no unfilled dependencies, so can begin
@@ -76,6 +90,9 @@ package org.projectsnooze.impl.dependency
 			}
 		}
 		
+		/**
+	 	* 	@inheritDoc
+	 	*/
 		public function nodeHasCompleted ( node : DependencyNode ) : void
 		{
 			_completedCount ++;
@@ -88,26 +105,39 @@ package org.projectsnooze.impl.dependency
 			}
 		}
 		
-		public function doesTreeContain ( entity : Object ) : Boolean
+		/**
+	 	* 	@inheritDoc
+	 	*/
+		public function doAnyNodesWrap ( obj : Object ) : Boolean
 		{
-			return getNodeByEntity( entity ) != null;
+			return getNodeByWrappedObject( obj ) ? true : false;
 		}
 		
-		public function getNodeByEntity ( entity : Object ) : DependencyNode
+		/**
+	 	* 	@inheritDoc
+	 	*/
+		public function getNodeByWrappedObject ( obj : Object ) : DependencyNode
 		{
-			for ( var iterator : Iterator = new ArrayIterator ( _nodes ) ; iterator.hasNext() ; )
+			for ( var i : Iterator = new ArrayIterator ( _nodes ) ; i.hasNext() ; )
 			{
-				var node : DependencyNode = iterator.next() as DependencyNode;
-				if ( node.getEntity() == entity ) return node;
+				var node : DependencyNode = i.next() as DependencyNode;
+				if ( node.getWrappedObject() == obj ) return node;
 			}
 			return null;
 		}
 		
-		public function setStatementQueue ( statementQueue : StatementQueue ) : void
+		/**
+	 	* 	@inheritDoc
+	 	*/
+		public function setStatementQueue ( 
+			statementQueue : StatementQueue ) : void
 		{
 			_statementQueue = statementQueue; 
 		}
 		
+		/**
+	 	* 	@inheritDoc
+	 	*/
 		public function getStatementQueue () : StatementQueue
 		{
 			return _statementQueue;

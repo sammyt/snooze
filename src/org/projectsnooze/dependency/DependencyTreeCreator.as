@@ -30,6 +30,13 @@ package org.projectsnooze.dependency
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	
+	/**
+	 * 	This class is used to create instances of <code>DependencyTree</code>.
+	 * 	It performs the hard work of recursing through entities, creating
+	 * 	and relating the <code>DependencyNode</code>s in such a way that they
+	 * 	form a dependency tree which, when executed only performs SQL when
+	 * 	all necessay SQL has been performed first
+	 */ 
 	public interface DependencyTreeCreator
 	{
 		/**

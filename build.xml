@@ -46,9 +46,13 @@
 
 
 	<target name="unittest" depends="compile">
-		<flexunit swf="${deploy.unit}/${unit.out}" toDir="${deploy.unit}/junit" haltonfailure="false" verbose="true" failureproperty="flexunit.failed" />
-
+		<flexunit swf="${deploy.unit}/${unit.out}" toDir="${deploy.unit}/junit" 
+			haltonfailure="false" verbose="true" failureproperty="flexunit.failed" />
 		<fail message="One or more flexunit tests failed. See test reports for details." if="flexunit.failed" />
+	</target>
+
+	<target name="asdoc">
+		<asdoc />
 	</target>
 
 </project>

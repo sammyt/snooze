@@ -27,8 +27,18 @@ package org.projectsnooze.scheme
 {
 	import org.projectsnooze.datatype.Type;
 	
+	/**
+	 * 	This class maps the name of a property getter/setter to its 
+	 * 	<code>Type</code>.  It also holds useful information about whether or
+	 * 	not the property is mapped to a primary key
+	 */ 
 	public interface NameTypeMapping
 	{
+		/**
+		*	one property in each entity must act as a primary key.
+		*	This function returns wether of not this is the 
+		*	property which holds the primary key
+		*/	
 		function isPrimaryKey () : Boolean;
 		
 		function setIsPrimaryKey ( value : Boolean ) : void;

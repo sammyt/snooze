@@ -22,35 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package org.projectsnooze.generator
+ 
+package org.projectsnooze.impl.dependency
 {
-	import org.projectsnooze.associations.Relationship;
-	import org.projectsnooze.scheme.EntityDataMap;
-	
-	/**
-	 * 	The <code>StatementCreator</code>s job is to generate the necessary
-	 * 	<code>Statement</code> objects for a given scenario, such as inserting
-	 * 	an entity into the database
-	 */ 
-	public interface StatementCreator
+	import org.projectsnooze.dependency.DependencyNode;
+
+	public class RelationshipInsertDepNode 	extends AbstractDependencyNodeImpl 
+											implements DependencyNode
 	{
-		/**
-		 * 	this method returns a <code>Statement</code> object for inserting
-		 * 	into a join table to relate two entites within a many to many
-		 * 	relationship within the database
-		 */ 
-		function getRelationshipInsert ( relationship : Relationship ,
-			dataOne : EntityDataMap , dataTwo : EntityDataMap ) : Statement;
-		
-		function getSelectStatement ( data : EntityDataMap ) : Statement;
-		
-		function getInsertStatement ( data : EntityDataMap ) : Statement;
-		
-		function getUpdateStatement ( data : EntityDataMap ) : Statement;
-		
-		function getDeleteStatement ( data : EntityDataMap ) : Statement;
-		
-		function getStatementByType ( type : String , data : EntityDataMap ) : Statement;
+		public function RelationshipInsertDepNode()
+		{
+			super();
+		}
 	}
 }

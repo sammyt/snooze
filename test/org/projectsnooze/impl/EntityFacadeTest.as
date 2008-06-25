@@ -34,6 +34,7 @@ package org.projectsnooze.impl
 		
 		public function EntityFacadeTest(methodName:String=null)
 		{
+			logger.info( "running test {0}" , methodName );
 			super(methodName);
 		}
 		

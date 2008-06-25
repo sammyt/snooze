@@ -37,12 +37,18 @@ package org.projectsnooze.impl.patterns
 		{
 			_observers = new Array();
 		}
-
+		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function registerObserver(observer:Observer):void
 		{
 			_observers.push( observer );
 		}
-
+		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function removeObserver(observer:Observer):void
 		{
 			for( var iterator : Iterator = new ArrayIterator( _observers ); iterator.hasNext() ; )
@@ -52,6 +58,9 @@ package org.projectsnooze.impl.patterns
 			}
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function notifyObservers(obj:Object=null):void
 		{
 			for( var iterator : Iterator = new ArrayIterator( _observers ); iterator.hasNext() ; )
