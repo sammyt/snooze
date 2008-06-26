@@ -56,7 +56,8 @@ package org.projectsnooze.impl.generator
 		/**
 		*	@inheritDoc
 		*/
-		public function setEntityDataMapProvider(entityDataMapProvider:EntityDataMapProvider):void
+		public function setEntityDataMapProvider(
+			entityDataMapProvider:EntityDataMapProvider):void
 		{
 			_entityDataMapProvider = entityDataMapProvider;
 		}
@@ -77,21 +78,22 @@ package org.projectsnooze.impl.generator
 			var statements : Array = new Array();
 			
 			// for each entity data map create the necessary tables
-			for ( var iterator : Iterator = getEntityDataMapProvider().getIterator() ; 
-				iterator.hasNext() ; )
+			for ( var i : Iterator = getEntityDataMapProvider().getIterator() ; 
+				i.hasNext() ; )
 			{
 				// a list cotaining the line of sql that make up the 
 				// create table command for the given entity
 				var values : Array = new Array();
 				
 				// the entity data map being inspected 
-				var entityDataMap : EntityDataMap = iterator.next() as EntityDataMap;
+				var entityDataMap : EntityDataMap = i.next() as EntityDataMap;
 				
 				// the string that will contain the sql
 				var sqlSkeleton : String = "";
 				
 				// create the table from the table name in the entity data map
-				sqlSkeleton += " CREATE TABLE IF NOT EXISTS " + entityDataMap.getTableName() + " ( "; 
+				sqlSkeleton += " CREATE TABLE IF NOT EXISTS " + 
+					entityDataMap.getTableName() + " ( "; 
 				
 				// add the primary key for the table
 				addPrimaryKey ( entityDataMap , values );
@@ -144,13 +146,53 @@ package org.projectsnooze.impl.generator
 				
 				var statement : Statement = new StatementImpl();
 				statement.setSqlSkeleton( sqlSkeleton );
-				statements.push( statement );
-				
+				statements.push( statement );			
 			}
+			
+			removeManyToManyTables( statements );
 			
 			return statements;
 		}
 		
+		private function removeManyToManyTables ( statements : Array ) : void
+		{
+			// holds the name of the tables already dropped
+			var droppedNames : Dictionary = new Dictionary();
+			
+			// loop through all the entity data maps
+			for ( var i : Iterator = getEntityDataMapProvider().getIterator() ; i.hasNext() ; )
+			{
+				var entityDataMap : EntityDataMap = i.next() as EntityDataMap;
+				
+				// loop through all the relationships each entity data map contains
+				for ( var j : Iterator = entityDataMap.getRelationshipIterator() ; j.hasNext() ; )
+				{
+					var relationship : Relationship = j.next() as Relationship;
+					
+					// where the relationship is many-to-many
+					if ( relationship.getType().getName() == MetaData.MANY_TO_MANY )
+					{
+						// only need to drop the tables once, so need to keep
+						// track of which ones have been dropped
+						if ( ! droppedNames[ relationship.getJoinTableName() ] )
+						{
+							// create the statement object
+							var statement : Statement = new StatementImpl();
+							
+							// set the create table statement for the join table
+							statement.setSqlSkeleton( "DROP TABLE IF EXISTS " + 
+							 	relationship.getJoinTableName() + ";" );
+							
+							// record that this table has been created
+							droppedNames[ relationship.getJoinTableName() ] = true;
+							
+							// add the statement to the statements array
+							statements.push( statement );
+						}
+					}
+				}
+			}
+		}
 		
 		private function addManyToManyTables ( statements : Array ) : void
 		{	

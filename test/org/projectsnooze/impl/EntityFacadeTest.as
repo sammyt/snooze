@@ -13,7 +13,6 @@ package org.projectsnooze.impl
 	import flexunit.framework.TestCase;
 	import flexunit.framework.TestSuite;
 	
-	import mx.automation.codec.AssetPropertyCodec;
 	import mx.events.DynamicEvent;
 	import mx.logging.ILogger;
 	import mx.logging.Log;
@@ -43,13 +42,14 @@ package org.projectsnooze.impl
 			var ts : TestSuite = new TestSuite();
 			ts.addTest( new EntityFacadeTest( "testGetSession" ) );
 			ts.addTest( new EntityFacadeTest( "testCreateSchoolDB" ) );
-			ts.addTest( new EntityFacadeTest( "testDropSchoolDB" ) );
+			//ts.addTest( new EntityFacadeTest( "testDropSchoolDB" ) );
 			ts.addTest( new EntityFacadeTest( "testInsertSchool" ) );
 			ts.addTest( new EntityFacadeTest( "testCreateFootballDB" ) );
 			ts.addTest( new EntityFacadeTest( "testClubTable" ) );
 			ts.addTest( new EntityFacadeTest( "testPlayerTable" ) );
 			ts.addTest( new EntityFacadeTest( "testTournamentTable" ) );
 			ts.addTest( new EntityFacadeTest( "testClubTournamentTable" ) );
+			ts.addTest( new EntityFacadeTest( "testInsertionWithFootballDomain" ) );
 			
 			return ts;
 		}
@@ -383,6 +383,52 @@ package org.projectsnooze.impl
 			}
 		}
 		
+		public function testInsertionWithFootballDomain () : void
+		{
+			facade = new EntityFacadeImpl( true , false );
+			facade.setDatabaseName( "football.db" );
+			facade.init();
+			
+			facade.addEntityClass( Club );
+			facade.addEntityClass( Player );
+			facade.addEntityClass( Tournament );
+			facade.createDatabase();
+			
+			var p1 : Player = new Player()
+			p1.setFirstName( "sam" );
+			p1.setLastName( "williams" );
+			
+			var p2 : Player = new Player()
+			p2.setFirstName( "becky" );
+			p2.setLastName( "howes" );
+			
+			var p3 : Player = new Player()
+			p3.setFirstName( "justin" );
+			p3.setLastName( "clarke" );
+			
+			var club : Club = new Club();
+			club.setName( "some peeps" );
+			
+			club.setPlayers( [ p1 , p2 , p3 ] );
+			
+			var prem : Tournament = new Tournament()
+			prem.setName( "prem" );
+			prem.setClubs( [ club ] );
+			
+			facade.getSession().save( club , new
+			   	ResponderImpl ( smartAddAsync ( result ) , smartAddAsync ( fault ) , this ) );
+			   	
+			function result ( data : Object ) : void
+			{
+				assertFalse( true );
+			}
+			
+			function fault ( info : Object ) : void
+			{
+				//assertFalse( true );
+			}
+		}
+		
 		
 		private function testListContents ( 
 			testList : Array , correctList : Array ) : Boolean
@@ -414,7 +460,5 @@ package org.projectsnooze.impl
 		}
 	}
 }
-
-
 
 

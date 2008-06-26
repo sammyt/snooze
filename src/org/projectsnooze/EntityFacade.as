@@ -42,6 +42,10 @@ package org.projectsnooze
 		
 		function init () : void;
 		
+		function setDatabaseName ( databaseName : String ) : void;
+		
+		function getDatabaseName () : String;
+		
 		function createDatabase () : void;
 		
 		function dropDatabase () : void;

@@ -35,6 +35,9 @@ package org.projectsnooze.impl.generator
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.NameTypeMapping;
 
+	/**
+	 * 	@inheritDoc
+	 */ 
 	public class StatementCreaterImpl implements StatementCreator
 	{
 		private static var logger : ILogger = Log.getLogger( "StatementCreaterImpl" );
@@ -44,12 +47,28 @@ package org.projectsnooze.impl.generator
 		public function StatementCreaterImpl()
 		{
 		}
-
+		
+		/**
+		 * 	@inheritDoc
+		 */
+		public function getRelationshipInsert ( relationship : Relationship ,
+			dataOne : EntityDataMap , dataTwo : EntityDataMap ) : Statement
+		{
+			
+			return null;
+		}
+		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getSelectStatement( data : EntityDataMap ):Statement
 		{
 			return null;
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getInsertStatement( data : EntityDataMap ):Statement
 		{
 			var statement : Statement = new StatementImpl();
@@ -79,11 +98,17 @@ package org.projectsnooze.impl.generator
 			return statement;
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getUpdateStatement( data : EntityDataMap ):Statement
 		{
 			return null;
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getDeleteStatement( data : EntityDataMap ):Statement
 		{
 			return null;
@@ -136,6 +161,9 @@ package org.projectsnooze.impl.generator
 			return csv;
 		}
 		
+		/**
+		 * 	@inheritDoc
+		 */
 		public function getStatementByType ( type : String , data : EntityDataMap ) : Statement
 		{
 			switch ( type )

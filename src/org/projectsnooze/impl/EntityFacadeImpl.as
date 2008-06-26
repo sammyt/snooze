@@ -64,6 +64,7 @@ package org.projectsnooze.impl
 		private static var logger : ILogger = Log.getLogger( "EntityFacadeImpl" );
 		
 		protected var _createDDL : Boolean;
+		protected var _databaseName : String = "snooze.db";
 		protected var _schemeBuilder : SchemeBuilder;
 		protected var _entityDataMapProvider : EntityDataMapProvider;
 		protected var _typeUtils : TypeUtils;
@@ -75,7 +76,8 @@ package org.projectsnooze.impl
 		protected var _ddlGenerator : DDLGenerator;
 		protected var _queueManager : QueueManager;
 		
-		public function EntityFacadeImpl( createDDL : Boolean = true , initilise : Boolean = true )
+		public function EntityFacadeImpl( createDDL : Boolean = true , 
+			initilise : Boolean = true )
 		{
 			_createDDL = createDDL;
 			if ( initilise ) init();
@@ -89,7 +91,8 @@ package org.projectsnooze.impl
 			_linkTypeFactory = new LinkTypeFactoryImpl();
 			_statementCreator = new StatementCreaterImpl();
 			_connectionPool = new ConnectionPoolImpl();
-			_connectionPool.setFile( File.applicationDirectory.resolvePath( "snooze.db" ) );
+			_connectionPool.setFile( 
+				File.applicationDirectory.resolvePath( getDatabaseName() ) );
 			
 			_queueManager = new QueueManagerImpl(); 
 			_queueManager.setConnectionPool( getConnectionPool() );
@@ -110,6 +113,16 @@ package org.projectsnooze.impl
 			_schemeBuilder.setTypeUtils( getTypeUtils() );
 		}
 		
+		public function setDatabaseName ( databaseName : String ) : void
+		{
+			_databaseName = databaseName;
+		}
+		
+		public function getDatabaseName () : String
+		{
+			return _databaseName;
+		}
+		
 		public function createDatabase () : void
 		{
 			prepare();
@@ -118,10 +131,11 @@ package org.projectsnooze.impl
 			queue.setTransactional( true );
 			queue.openConnection();
 			
-			for ( var iterator : Iterator = new ArrayIterator( 
-				getDDLgenerator().getDDLStatements() ) ; iterator.hasNext() ; )
+			for ( var i : Iterator = new ArrayIterator( 
+				getDDLgenerator().getDDLStatements() ) ; i.hasNext() ; )
 			{
-				queue.addToExecutionQueue( new StatementWrapperImpl( iterator.next() as Statement ) );
+				queue.addToExecutionQueue( 
+					new StatementWrapperImpl( i.next() as Statement ) );
 			}
 			
 			queue.setAllStatementsAdded( true );
@@ -135,10 +149,11 @@ package org.projectsnooze.impl
 			queue.setTransactional( true );
 			queue.openConnection();
 			
-			for ( var iterator : Iterator = new ArrayIterator( 
-				getDDLgenerator().getDropStatements() ) ; iterator.hasNext() ; )
+			for ( var i : Iterator = new ArrayIterator( 
+				getDDLgenerator().getDropStatements() ) ; i.hasNext() ; )
 			{
-				queue.addToExecutionQueue( new StatementWrapperImpl( iterator.next() as Statement ) );
+				queue.addToExecutionQueue( 
+					new StatementWrapperImpl( i.next() as Statement ) );
 			}
 			
 			queue.setAllStatementsAdded( true );
@@ -180,7 +195,8 @@ package org.projectsnooze.impl
 			return _schemeBuilder;
 		}
 		
-		public function setEntityDataMapProvider(entityDataMapProvider:EntityDataMapProvider):void
+		public function setEntityDataMapProvider(
+			entityDataMapProvider:EntityDataMapProvider):void
 		{
 			_entityDataMapProvider = entityDataMapProvider;
 		}
@@ -240,7 +256,8 @@ package org.projectsnooze.impl
 			return _connectionPool;
 		}
 		
-		public function setDependencyTreeCreator(dependencyTreeCreator:DependencyTreeCreator):void
+		public function setDependencyTreeCreator(
+			dependencyTreeCreator:DependencyTreeCreator):void
 		{
 			_dependencyTreeCreator = dependencyTreeCreator;
 		}

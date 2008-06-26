@@ -34,5 +34,17 @@ package org.projectsnooze.impl.dependency
 		{
 			super();
 		}
+		
+		override public function begin () : void
+		{
+			super.begin();
+			
+			trace( "RelationshipInsertDepNode.begin" );
+		}
+		
+		override public function result( data : Object ):void
+		{	
+			super.result( data );
+		}
 	}
 }

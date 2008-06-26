@@ -168,12 +168,12 @@ package org.projectsnooze.impl.dependency
 						// each of them neecs to be recursed through
 						for ( var j : Iterator = new SmartIterator( data ) ; j.hasNext() ; )
 						{
-							createInsertTree( j.next() , depTree , depNode , 
+							var obj : Object = j.next();
+							createInsertTree( obj , depTree , depNode , 
 								relationship.getType().getForeignKeyContainer() );
 								
 							// add any relationship dep nodes here... which will
 							// be dependent on both the entites j.next and entity
-							
 							if ( relationship.getType().getName() == MetaData.MANY_TO_MANY )
 							{
 								var relDepNode : RelationshipInsertDepNode
@@ -184,8 +184,14 @@ package org.projectsnooze.impl.dependency
 								relDepNode.setDependencyTree( depTree );
 								
 								// need to set the statement
-								//relDepNode.setStatement( 
-								//	getStatementCreator().
+								relDepNode.setStatement
+								( 
+									getStatementCreator().getRelationshipInsert( relationship , dataMap , 
+									getEntitDataMapProvider().getEntityDataMap( obj ) )
+								);
+								
+								relDepNode.addDependency( depNode )
+								relDepNode.addDependency( depTree.getNodeByWrappedObject( obj ) );
 								
 								// inform the dep tree of another dep node
 								depTree.addDependencyNode( relDepNode );
