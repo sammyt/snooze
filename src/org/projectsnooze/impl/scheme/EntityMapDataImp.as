@@ -25,18 +25,23 @@
  
 package org.projectsnooze.impl.scheme
 {
-	import org.projectsnooze.scheme.NameTypeMapping;
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
+	import org.projectsnooze.scheme.NameTypeMapping;
 
 	public class EntityMapDataImp implements EntityDataMap
 	{
-		private var _properties : Array;
-		private var _relationships : Array;
-		private var _tableName : String;
-		private var _pkMapping : NameTypeMapping;
+		private var logger:ILogger = Log.getLogger( "EntityMapDataImp" );
+		
+		private var _properties:Array;
+		private var _relationships:Array;
+		private var _tableName:String;
+		private var _pkMapping:NameTypeMapping;
 		
 		public function EntityMapDataImp()
 		{
@@ -44,57 +49,60 @@ package org.projectsnooze.impl.scheme
 			_relationships = new Array();
 		}
 		
-		public function setPrimaryKey ( mapping : NameTypeMapping ) : void
+		public function setPrimaryKey ( mapping:NameTypeMapping ):void
 		{
 			_pkMapping = mapping;
 		}
 		
-		public function getPrimaryKey () : NameTypeMapping
+		public function getPrimaryKey ():NameTypeMapping
 		{
 			return _pkMapping;
 		}
 
-		public function addProperty( mapping : NameTypeMapping ):void
+		public function addProperty( mapping:NameTypeMapping ):void
 		{
 			_properties.push( mapping );
 		}
 		
-		public function getPropertyIterator () : Iterator
+		public function getPropertyIterator ():Iterator
 		{
 			return new ArrayIterator ( _properties );
 		}
 		
-		public function getRelationshipIterator () : Iterator
+		public function getRelationshipIterator ():Iterator
 		{
+			//logger.debug( "create ArrayIterator with {0} or length {1} " , 
+			//	_relationships , _relationships.length );
+				
 			return new ArrayIterator ( _relationships );
 		}
 		
-		public function getTableName () : String
+		public function getTableName ():String
 		{
 			return _tableName;
 		}
 		
-		public function setTableName ( name : String ) : void
+		public function setTableName ( name:String ):void
 		{
 			_tableName = name;
 		}
 		
-		public function addRelationship ( relationship : Relationship ) : void
+		public function addRelationship ( relationship:Relationship ):void
 		{
 			_relationships.push( relationship );
 		}
 		
-		public function getRelationship ( dataMap : EntityDataMap ) : Relationship
+		public function getRelationship ( dataMap:EntityDataMap ):Relationship
 		{
-			for ( var iterator : Iterator = getRelationshipIterator() ; iterator.hasNext() ; )
+			for ( var iterator:Iterator = getRelationshipIterator() ; iterator.hasNext() ; )
 			{
-				var relationship : Relationship = iterator.next() as Relationship;
+				var relationship:Relationship = iterator.next() as Relationship;
 				if ( relationship.getEntityDataMap() == dataMap ) return relationship;
 			}
 			return null;
 		}
 		
-		public function getForeignKeyName () : String
+		public function getForeignKeyName ():String
 		{
 			return getTableName().toLowerCase() + "_" + getPrimaryKey().getLowerCaseName();
 		}

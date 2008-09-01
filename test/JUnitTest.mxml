@@ -21,11 +21,11 @@
 			private var runner:JUnitTestRunner;
 
 	        private function testComplete():void {
-	        	var logger : ILogger = Log.getLogger(this.className);
+	        	var logger:ILogger = Log.getLogger(this.className);
 	           	fscommand( "quit" );
 	        }
 			
-			private function onCreationComplete() : void
+			private function onCreationComplete():void
 			{
                 
                 var traceTarget: TraceTarget = new TraceTarget();
@@ -36,7 +36,7 @@
                 traceTarget.includeCategory = true;
                 traceTarget.includeLevel = true;
                 
-                var logger : ILogger = Log.getLogger(this.className);
+                var logger:ILogger = Log.getLogger(this.className);
 				
  				var testSuite:TestSuite = new TestSuite();
  				

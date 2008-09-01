@@ -39,21 +39,21 @@ package org.projectsnooze.scheme
 		*	This function returns wether of not this is the 
 		*	property which holds the primary key
 		*/	
-		function isPrimaryKey () : Boolean;
+		function isPrimaryKey ():Boolean;
 		
-		function setIsPrimaryKey ( value : Boolean ) : void;
+		function setIsPrimaryKey ( value:Boolean ):void;
 		
-		function getIsPrimaryKey () : Boolean;
+		function getIsPrimaryKey ():Boolean;
 		
-		function setName ( name : String ) : void;
+		function setName ( name:String ):void;
 		
-		function getName () : String;
+		function getName ():String;
 		
-		function setType ( type : Type ) : void;
+		function setType ( type:Type ):void;
 		
-		function getType () : Type;
+		function getType ():Type;
 		
-		function getLowerCaseName () : String;
+		function getLowerCaseName ():String;
 	
 	}
 }

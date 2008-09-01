@@ -40,33 +40,33 @@ package org.projectsnooze.generator
 		 * 	into a join table to relate two entites within a many to many
 		 * 	relationship within the database
 		 */ 
-		function getRelationshipInsert ( relationship : Relationship ,
-			dataOne : EntityDataMap , dataTwo : EntityDataMap ) : Statement;
+		function getRelationshipInsert ( relationship:Relationship ,
+			dataOne:EntityDataMap , dataTwo:EntityDataMap ):Statement;
 		
 		/**
 		 * 	returns a SELECT statement for the provided entity
 		 */ 
-		function getSelectStatement ( data : EntityDataMap ) : Statement;
+		function getSelectStatement ( data:EntityDataMap ):Statement;
 		
 		/**
 		 * 	returns a INSERT statement for the provided entity
 		 */
-		function getInsertStatement ( data : EntityDataMap ) : Statement;
+		function getInsertStatement ( data:EntityDataMap ):Statement;
 		
 		/**
 		 * 	returns a UPDATE statement for the provided entity
 		 */
-		function getUpdateStatement ( data : EntityDataMap ) : Statement;
+		function getUpdateStatement ( data:EntityDataMap ):Statement;
 		
 		/**
 		 * 	returns a DELETE statement for the provided entity
 		 */
-		function getDeleteStatement ( data : EntityDataMap ) : Statement;
+		function getDeleteStatement ( data:EntityDataMap ):Statement;
 		
 		/**
 		 * 	returns a statement for the provided entity of the type select,
 		 * 	update, delete or insert  
 		 */
-		function getStatementByType ( type : String , data : EntityDataMap ) : Statement;
+		function getStatementByType ( type:String , data:EntityDataMap ):Statement;
 	}
 }

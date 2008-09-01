@@ -26,6 +26,7 @@
 		<compc output="${deploy.swc}/${snooze.out}">
 			<include-sources dir="${src.dir}" includes="**/*.as **/*.mxml" />
 			<source-path path-element="${src.dir}" />
+			<source-path path-element="${lbi.dir}" />
 			<load-config filename="${flex.sdk}/frameworks/air-config.xml" />
 			<keep-as3-metadata name="Id" />
 			<keep-as3-metadata name="Entity" />

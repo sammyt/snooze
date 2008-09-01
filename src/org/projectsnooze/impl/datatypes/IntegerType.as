@@ -34,7 +34,7 @@ package org.projectsnooze.impl.datatypes
 			super( "INTEGER" , "int" );
 		}
 
-		override public function toString () : String
+		override public function toString ():String
 		{
 			return "IntegerType";
 		}

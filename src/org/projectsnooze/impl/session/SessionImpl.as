@@ -25,52 +25,136 @@
  
 package org.projectsnooze.impl.session
 {
-	import mx.logging.ILogger;
-	import mx.logging.Log;
-	
 	import org.projectsnooze.dependency.DependencyTree;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
-	import org.projectsnooze.execute.Responder;
+	import org.projectsnooze.execute.QueueManager;
 	import org.projectsnooze.execute.StatementQueue;
-	import org.projectsnooze.impl.execute.StatementQueueEvent;
+	import org.projectsnooze.generator.DDLGenerator;
+	import org.projectsnooze.generator.Statement;
+	import org.projectsnooze.impl.execute.StatementWrapperImpl;
+	import org.projectsnooze.impl.patterns.ArrayIterator;
+	import org.projectsnooze.patterns.Iterator;
+	import org.projectsnooze.patterns.Observer;
+	import org.projectsnooze.session.Dispatcher;
 	import org.projectsnooze.session.Session;
-
-	public class SessionImpl implements Session
+	import org.projectsnooze.events.SessionEvent;
+	
+	/**
+	 * Concrete implementation of the <code>Session</code>
+	 * interface.  Manages the saveing and retrieveing of 
+	 * entitys to the database etc
+	 * 
+	 * @author Samuel Williams
+	 * @since 31.08.08
+	 */ 
+	public class SessionImpl implements Session, Observer
 	{
-		private static var logger : ILogger = Log.getLogger( "SessionImpl" );
+		protected var _dependencyTreeCreator:DependencyTreeCreator;
+		protected var _queueManager:QueueManager;
+		protected var _ddlGenerator:DDLGenerator;
+		protected var _dispatcher:Dispatcher;
 		
-		protected var _dependencyTreeCreator : DependencyTreeCreator;
-		
+		/**
+		 * Creates instance of <code>SessionImpl</code>
+		 */ 
 		public function SessionImpl()
 		{
 		}
-
-		public function save( entity:Object , responder : Responder = null ):void
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function createDatabase ():void
 		{
+			var queue:StatementQueue = getQueueManager().getStatementQueue();
+
+			var success:SessionEvent = new SessionEvent( SessionEvent.DATABASE_CREATED );
+			getDispatcher().addTrigger( queue , success );
 			
-			function saveComplete ( event : StatementQueueEvent ) : void
+			var statements:Array = getDDLGenerator().getDDLStatements();
+			for ( var i:Iterator = new ArrayIterator( statements ) ; i.hasNext() ; )
 			{
-				event.getStatementQueue().removeEventListener( StatementQueueEvent.COMPLETE , saveComplete );
-				responder.result( entity );
+				queue.add( new StatementWrapperImpl( i.next() as Statement ) );
 			}
 			
-			var depTree : DependencyTree = getDependencyTreeCreator().getSaveDependencyTree( entity );
-			
-			var queue : StatementQueue = depTree.getStatementQueue();
-			queue.addEventListener( StatementQueueEvent.COMPLETE , saveComplete );
-			
-			depTree.begin();
-			
+			queue.setFull( true );
 		}
 		
-		public function getDependencyTreeCreator (  ) : DependencyTreeCreator
+		/**
+		 * @inheritDoc
+		 */
+		public function dropDatabase ():void
+		{
+			var queue:StatementQueue = getQueueManager().getStatementQueue();
+			var statements:Array = getDDLGenerator().getDropStatements();
+			
+			for ( var i:Iterator = new ArrayIterator( statements ) ; i.hasNext() ; )
+			{
+				queue.add( new StatementWrapperImpl( i.next() as Statement ) );
+			}
+			
+			queue.setFull( true );
+		}
+		
+		/**
+		 * @inheritDoc
+		 */ 
+		public function save( entity:Object ):void
+		{
+			var depTree:DependencyTree = 
+				getDependencyTreeCreator().getSaveDependencyTree( entity );
+			
+			depTree.begin();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function update ( obj:Object = null ):void
+		{
+			trace( "SessionImpl::update" , obj );
+			getDispatcher().trigger( obj as StatementQueue , true );
+		} 
+		
+		public function getDependencyTreeCreator ():DependencyTreeCreator
 		{
 			return _dependencyTreeCreator;
 		}
 		
-		public function setDependencyTreeCreator ( dependencyTreeCreator : DependencyTreeCreator ) : void
+		public function setDependencyTreeCreator ( dependencyTreeCreator:DependencyTreeCreator ):void
 		{
 			_dependencyTreeCreator = dependencyTreeCreator;
+		}
+		
+		public function getQueueManager ():QueueManager
+		{
+			return _queueManager;
+		}
+		
+		public function setQueueManager ( queueManager:QueueManager ):void
+		{
+			_queueManager = queueManager;
+			getQueueManager().registerObserver( this );
+		}
+		
+		public function getDDLGenerator():DDLGenerator
+		{
+			return _ddlGenerator;
+		}
+		
+		public function setDDLGenerator(ddlGenerator:DDLGenerator):void
+		{
+			_ddlGenerator = ddlGenerator;
+		}
+		
+		public function getDispatcher():Dispatcher
+		{
+			return _dispatcher;
+		}
+		
+		public function setDispatcher( dispatcher:Dispatcher ):void
+		{
+			_dispatcher = dispatcher;
 		}
 	}
 }

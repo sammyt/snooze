@@ -3,9 +3,9 @@ package domain
 	[Entity]
 	public class Mother
 	{
-		private var _id : int;
-		private var _name : String;
-		private var _concerns : Array;
+		private var _id:int;
+		private var _name:String;
+		private var _concerns:Array;
 		
 		public function Mother()
 		{
@@ -13,44 +13,44 @@ package domain
 		}
 		
 		[Id]
-		public function getId () : int
+		public function getId ():int
 		{
 			return _id;
 		}
 		
-		public function setId ( id : int ) : void
+		public function setId ( id:int ):void
 		{
 			_id = id;
 		}
 
-		public function getName () : String
+		public function getName ():String
 		{
 			return _name;
 		}
 				
-		public function setName ( name : String ) : void
+		public function setName ( name:String ):void
 		{
 			_name = name;
 		}
 		
 		[OneToMany(ref="domain::Concern")]
-		public function getConcerns () : Array
+		public function getConcerns ():Array
 		{
 			return _concerns;
 		}
 		
-		public function setConcerns ( concerns : Array ) : void
+		public function setConcerns ( concerns:Array ):void
 		{
 			_concerns = concerns;
 		}
 		
-		public function addConcern ( concern : Concern ) : void
+		public function addConcern ( concern:Concern ):void
 		{
 			_concerns.push( concern );
 		}
 		
 		[Transient]
-		public function getSillyValue () : Number
+		public function getSillyValue ():Number
 		{
 			return Math.random() * new Date().getMilliseconds();
 		}

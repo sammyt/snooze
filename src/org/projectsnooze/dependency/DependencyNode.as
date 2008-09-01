@@ -56,13 +56,13 @@ package org.projectsnooze.dependency
 		 * 	of those which as a result have all their dependencies met begin
 		 * 	the process of execution.</p>
 		 */ 
-		function setDependencyTree ( dependencyTree : DependencyTree ) : void;
+		function setDependencyTree ( dependencyTree:DependencyTree ):void;
 		
 		/**
 		 * 	Gets the <code>DependencyTree</code> that this <code>DependencyNode</code>
 		 * 	is contained within.
 		 */
-		function getDependencyTree () : DependencyTree;
+		function getDependencyTree ():DependencyTree;
 		
 		/**
 		 * 	<code>DependencyNode</code>s require a reference to the statement
@@ -70,13 +70,13 @@ package org.projectsnooze.dependency
 		 * 	<code>Statement</code> object and set its <code>StatementQueue</code
 		 * 	property, thus allowing it to be executed on the database
 		 */ 
-		function setStatementQueue ( statementQueue : StatementQueue ) : void;
+		//function setStatementQueue ( statementQueue:StatementQueue ):void;
 		
 		/**
 		 * 	returns the reference to the <code>StatementQueue</code> given
 		 * 	to the instance
 		 */ 
-		function getStatementQueue () : StatementQueue;
+		function getStatementQueue ():StatementQueue;
 		
 		/**
 		 * 	returns wether this node is dependent on the execution of any other
@@ -86,56 +86,56 @@ package org.projectsnooze.dependency
 		 * 	@see isComplete
 		 * 	@see dependenciesAreMet
 		 */ 
-		function isDependent () : Boolean;
+		function isDependent ():Boolean;
 		
 		/**
 		 * 	this function returns true if all the nodes this node is dependent
 		 * 	on have completed there execution.  Otherwise it returns false.
 		 */ 
-		function dependenciesAreMet () : Boolean;
+		function dependenciesAreMet ():Boolean;
 		
 		/**
 		 * 	isComplete returns true if the node has completed execution or
 		 * 	false if is has not begun, or is currently executing
 		 */ 
-		function isComplete () : Boolean;
+		function isComplete ():Boolean;
 		
 		/**
 		 * 	this is used by the <code>DependencyTreeCreator</code> to add a
 		 * 	dependent node to this nodes list of dependent nodes.
 		 */ 
-		function addDependentNode ( dependencyNode : DependencyNode ) : void;
+		function addDependentNode ( dependencyNode:DependencyNode ):void;
 		
 		/**
 		 * 	this is used to inform the node of another node which it is dependent
 		 * 	on.  This node cannot execute untill all the nodes it is dependent on
 		 * 	have completed execution.
 		 */ 
-		function addDependency ( dependencyNode : DependencyNode ) : void;
+		function addDependency ( dependencyNode:DependencyNode ):void;
 		
 		/**
 		 * 	the statement set here should be ready prepared with the correct
 		 * 	sql for the given action, the dependecy node simple need to fill
 		 * 	in the blank parameters
 		 */ 
-		function setStatement ( statement : Statement ) : void;
+		function setStatement ( statement:Statement ):void;
 		
 		/**
 		 * 	returns the statement for this <code>DependencyNode</code>
 		 */ 
-		function getStatement () : Statement;
+		function getStatement ():Statement;
 		
 		/**
 		 * 	used to begin the execution of the dependency node where there
 		 * 	are no dependencies
 		 */ 
-		function begin () : void;
+		function begin ():void;
 		
 		/**
 		 * 	<code>DependencyNode</code>s often wrap objects such as entities.
 		 * 	If this is such a node then this function will return the object
 		 */	
-		function getWrappedObject () : Object;
+		function getWrappedObject ():Object;
 		
 	}
 }

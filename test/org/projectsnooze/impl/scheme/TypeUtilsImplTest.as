@@ -11,7 +11,7 @@ package org.projectsnooze.impl.scheme
 
 	public class TypeUtilsImplTest extends TestCase
 	{
-		private var _typeUtils : TypeUtilsImpl;
+		private var _typeUtils:TypeUtilsImpl;
 		
 		public function TypeUtilsImplTest(methodName:String=null)
 		{
@@ -35,17 +35,17 @@ package org.projectsnooze.impl.scheme
    			_typeUtils = null;
    		}
    		
-   		public function testGetTypeWithinCollection () : void
+   		public function testGetTypeWithinCollection ():void
    		{
-   			var mother : Mother = new Mother();
+   			var mother:Mother = new Mother();
    			
-   			var reflection : XML = describeType( mother );
+   			var reflection:XML = describeType( mother );
    			
-   			for each ( var method : XML in reflection.method )
+   			for each ( var method:XML in reflection.method )
    			{
    				if ( method.@name == "getConcerns" )
    				{
-   					var type : String = _typeUtils.getTypeFromMetadata( method );
+   					var type:String = _typeUtils.getTypeFromMetadata( method );
    					
    					assertTrue( "get concert out" , type == "domain::Concern" );
    				}

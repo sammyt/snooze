@@ -31,94 +31,80 @@ package org.projectsnooze.impl.dependency
 	import mx.logging.Log;
 	
 	import org.projectsnooze.associations.Relationship;
-	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.execute.StatementWrapper;
 	import org.projectsnooze.impl.execute.StatementWrapperImpl;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.NameTypeMapping;
+	import org.projectsnooze.dependency.DependencyTree;
 
 	public class EntityInsertDepNode extends AbstractDependencyNodeImpl
 	{
-		private static var logger : ILogger = 
-			Log.getLogger( "DependancyNodeImpl" );
+		private static var logger:ILogger = Log.getLogger( "DependancyNodeImpl" );
 		
-		protected var _entityDataMap : EntityDataMap;
-		protected var _entity : Object;
+		protected var _entityDataMap:EntityDataMap;
+		protected var _entity:Object;
 		
 		public function EntityInsertDepNode()
 		{
 			super();
 		}
 		
-		public function addParams () : void
+		public function addParams ():void
 		{
 			addNaturalParams();
 			addPrimaryKeyParams();
 			addForeignKeyParams();
 		}
 		
-		protected function addNaturalParams () : void
+		protected function addNaturalParams ():void
 		{
-			for ( var iterator : Iterator = 
-				getEntityDataMap().getPropertyIterator() ; iterator.hasNext() ; )
+			for ( var i:Iterator = getEntityDataMap().getPropertyIterator() ; i.hasNext() ; )
 			{
-				var mapping : NameTypeMapping = 
-					iterator.next() as NameTypeMapping;
+				var mapping:NameTypeMapping = i.next() as NameTypeMapping;
 				
-				var getter : Function = _entity[ 
-					"get" + mapping.getName() ] as Function;
+				var getter:Function = _entity[ "get" + mapping.getName() ] as Function;
 				
-				var data : * = getter.apply( _entity );
+				var data:* = getter.apply( _entity );
 				
-				var mark : String = 
-					mapping.getType().getSQLType() == "TEXT" ? '"' : "";
+				var mark:String = mapping.getType().getSQLType() == "TEXT" ? '"':"";
 				
-				_statement.addValue( ":" + 
-					mapping.getLowerCaseName() , mark + data + mark );
+				_statement.addValue( ":" + mapping.getLowerCaseName() , mark + data + mark );
 			}
 		}
 		
-		protected function addPrimaryKeyParams () : void
+		protected function addPrimaryKeyParams ():void
 		{
-			var mapping : NameTypeMapping = getEntityDataMap().getPrimaryKey();
+			var mapping:NameTypeMapping = getEntityDataMap().getPrimaryKey();
 			
-			var getter : Function = _entity[ 
-				"get" + mapping.getName() ] as Function;
+			var getter:Function = _entity[ "get" + mapping.getName() ] as Function;
 				
-			var data : * = getter.apply( _entity );
+			var data:* = getter.apply( _entity );
 			
-			_statement.addValue( ":" + 
-				mapping.getLowerCaseName() + "_value" , data );
+			_statement.addValue( ":" + mapping.getLowerCaseName() + "_value" , data );
 		}
 		
-		protected function addForeignKeyParams () : void
+		protected function addForeignKeyParams ():void
 		{
-			for ( var i : Iterator = 
-				getEntityDataMap().getRelationshipIterator() ; i.hasNext() ; )
+			for ( var i:Iterator = getEntityDataMap().getRelationshipIterator() ; i.hasNext() ; )
 			{
-				var relationship : Relationship = i.next() as Relationship;
+				var relationship:Relationship = i.next() as Relationship;
 				if ( relationship.getType().getForeignKeyContainer() )
 				{
-					var depNode : EntityInsertDepNode = getDependencyNodeByDataMap( 
-						relationship.getEntityDataMap() );
+					var depNode:EntityInsertDepNode = getDependencyNodeByDataMap( relationship.getEntityDataMap() );
 					
 					if ( depNode.isComplete() )
 					{
-						var priaryKeyName : String = 
-							depNode.getEntityDataMap().getPrimaryKey().getName();
+						var primaryKeyName:String = depNode.getEntityDataMap().getPrimaryKey().getName();
 							
-						var getter : Function = depNode.getEntity()[ 
-							"get" + priaryKeyName ] as Function;
+						var getter:Function = depNode.getEntity()[ "get" + primaryKeyName ] as Function;
 						
-						var data : * = getter.apply( depNode.getEntity() );
+						var data:* = getter.apply( depNode.getEntity() );
 						
-						var tableName : String = 
-							relationship.getEntityDataMap().getTableName().toLowerCase();
+						var tableName:String = relationship.getEntityDataMap().getTableName().toLowerCase();
 							
-						var idName : String = 
-							relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
+						var idName:String = relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
 						
 						_statement.addValue( ":" + tableName + "_" + idName , data );
 					}
@@ -126,61 +112,61 @@ package org.projectsnooze.impl.dependency
 			}
 		}
 		
-		protected function getDependencyNodeByDataMap ( 
-			entityDataMap : EntityDataMap ) : EntityInsertDepNode
-		{
-			logger.error( "this will crash out" );
-			
-			for ( var i : Iterator = new ArrayIterator( _dependencies ) ; 
-				i.hasNext() ; )
+		protected function getDependencyNodeByDataMap ( entityDataMap:EntityDataMap ):EntityInsertDepNode
+		{	
+			for ( var i:Iterator = new ArrayIterator( _dependencies ) ; i.hasNext() ; )
 			{
-				var depNode : EntityInsertDepNode = 
-					i.next() as EntityInsertDepNode;
-					
-				if ( depNode.getEntityDataMap() == entityDataMap )
-				{ 
-					return depNode;
+				var depNode:EntityInsertDepNode = i.next() as EntityInsertDepNode;
+				
+				if ( depNode )
+				{
+					if ( depNode.getEntityDataMap() == entityDataMap )
+					{ 
+						return depNode;
+					}
 				}
 			}
 			return null;
 		}
 	
-		override public function begin () : void
+		override public function begin ():void
 		{
 			super.begin();
-			
 			addParams();
 			
-			var wrapper : StatementWrapper = new StatementWrapperImpl( 
-				getStatement() , this );
-				
-			getStatementQueue().addToExecutionQueue( wrapper );
+			var wrapper:StatementWrapper = new StatementWrapperImpl( getStatement() , this );
+			getStatementQueue().add( wrapper );
 		}
 		
-		override public function result( data : Object ):void
+		override public function result( data:Object ):void
 		{
-			var e : SQLResult = data as SQLResult;
+			var e:SQLResult = data as SQLResult;
 			getEntity().setId ( e.lastInsertRowID );
 			
 			super.result( data );
 		}
 	
-		public function setEnity ( entity : Object ) : void
+		override public function getWrappedObject ():Object
+		{
+			return getEntity();
+		}
+	
+		public function setEnity ( entity:Object ):void
 		{
 			_entity = entity;
 		}
 		
-		public function getEntity () : Object
+		public function getEntity ():Object
 		{
 			return _entity;
 		}
 		
-		public function setEntityDataMap ( entityDataMap : EntityDataMap ) : void
+		public function setEntityDataMap ( entityDataMap:EntityDataMap ):void
 		{
 			_entityDataMap = entityDataMap;
 		}
 		
-		public function getEntityDataMap () : EntityDataMap
+		public function getEntityDataMap ():EntityDataMap
 		{
 			return _entityDataMap;			
 		}

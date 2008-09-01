@@ -31,15 +31,15 @@ package org.projectsnooze.impl.patterns
 
 	public class DictionaryIterator implements Iterator
 	{
-		private var _dict : Dictionary;
-		private var _iterator : ArrayIterator;
+		private var _dict:Dictionary;
+		private var _iterator:ArrayIterator;
 		
-		public function DictionaryIterator( dict : Dictionary )
+		public function DictionaryIterator( dict:Dictionary )
 		{
 			_dict = dict;
 			
-			var keys : Array = new Array();
-			for ( var key : String in _dict )
+			var keys:Array = new Array();
+			for ( var key:String in _dict )
 			{
 				keys.push( key );
 			}
@@ -56,7 +56,7 @@ package org.projectsnooze.impl.patterns
 			return _dict[ _iterator.next() ];
 		}
 		
-		public function remove () : void
+		public function remove ():void
 		{
 			_iterator.remove();
 			trace( "this doesnt work!" )

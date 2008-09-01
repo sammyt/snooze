@@ -34,13 +34,13 @@ package org.projectsnooze.impl.patterns
 
 	public class SmartIterator implements Iterator
 	{
-		private static var logger : ILogger = Log.getLogger( "SmartIterator" );
+		private static var logger:ILogger = Log.getLogger( "SmartIterator" );
 		
-		private var _iterator : Iterator;
+		private var _iterator:Iterator;
 		
-		public function SmartIterator( list : Object )
+		public function SmartIterator( list:Object )
 		{
-			var type : String = describeType( list ).@name;
+			var type:String = describeType( list ).@name;
 			
 			switch ( type )
 			{
@@ -60,7 +60,7 @@ package org.projectsnooze.impl.patterns
 			return _iterator.next();
 		}
 		
-		public function remove () : void
+		public function remove ():void
 		{
 			_iterator.remove();
 		}

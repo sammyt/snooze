@@ -26,10 +26,10 @@ package org.projectsnooze.impl.dependency
 
 	public class DependencyTreeCreatorImplTest extends TestCase
 	{
-		private static var logger : ILogger = Log.getLogger( "DependencyTreeCreatorImplTest" );
+		private static var logger:ILogger = Log.getLogger( "DependencyTreeCreatorImplTest" );
 		
-		private var _treeCreator : DependencyTreeCreatorImpl;
-		private var builder : SchemeBuilderImpl;
+		private var _treeCreator:DependencyTreeCreatorImpl;
+		private var builder:SchemeBuilderImpl;
 		
 		public function DependencyTreeCreatorImplTest(methodName:String=null)
 		{
@@ -43,7 +43,7 @@ package org.projectsnooze.impl.dependency
    			ts.addTest( new DependencyTreeCreatorImplTest( "testGetSaveTree1" ) );
    			ts.addTest( new DependencyTreeCreatorImplTest( "testGetSaveTree2" ) );
    			ts.addTest( new DependencyTreeCreatorImplTest( "testGetSaveTree3" ) );
-   			ts.addTest( new DependencyTreeCreatorImplTest( "testGetSaveTree4" ) );
+   			//ts.addTest( new DependencyTreeCreatorImplTest( "testGetSaveTree4" ) );
    			return ts;
    		}
    		
@@ -68,7 +68,7 @@ package org.projectsnooze.impl.dependency
    			_treeCreator = null;
    		}
    		
-   		public function testGetSaveTree1 () : void
+   		public function testGetSaveTree1 ():void
    		{
    			
 			builder.addEntityClass( SchoolClass );
@@ -77,22 +77,22 @@ package org.projectsnooze.impl.dependency
 			builder.addEntityClass( Concern );
 			builder.generateEntityDataMaps();
 			
-   			var school : SchoolClass = new SchoolClass();
+   			var school:SchoolClass = new SchoolClass();
    			
-   			var child : Child = new Child();
+   			var child:Child = new Child();
    			child.setHeight( 55 );
    			
-   			var mother : Mother = new Mother();
+   			var mother:Mother = new Mother();
    			mother.setName( "mummy" );
    			
-   			var concern : Concern = new Concern();
+   			var concern:Concern = new Concern();
    			
    			mother.addConcern( concern );
    			child.setMother( mother );
    			
    			school.addChild( child );
    			
-   			var depTree : DependencyTree = _treeCreator.getSaveDependencyTree( school )
+   			var depTree:DependencyTree = _treeCreator.getSaveDependencyTree( school )
    			 
    			//logger.debug( "the dependency tree contains {0} node(s) , there should be 4" , depTree.getNodeCount() ); 
    			
@@ -100,7 +100,7 @@ package org.projectsnooze.impl.dependency
    			
    		}
    		
-   		public function testGetSaveTree2 () : void
+   		public function testGetSaveTree2 ():void
    		{
    			
 			builder.addEntityClass( SchoolClass );
@@ -109,18 +109,18 @@ package org.projectsnooze.impl.dependency
 			builder.addEntityClass( Concern );
 			builder.generateEntityDataMaps();
 			
-   			var school : SchoolClass = new SchoolClass();
+   			var school:SchoolClass = new SchoolClass();
    			
-   			var child : Child = new Child();
+   			var child:Child = new Child();
    			child.setHeight( 55 );
    			
-   			var child2 : Child = new Child();
+   			var child2:Child = new Child();
    			child2.setHeight( 56 );
    			
-   			var mother : Mother = new Mother();
+   			var mother:Mother = new Mother();
    			mother.setName( "mummy" );
    			
-   			var concern : Concern = new Concern();
+   			var concern:Concern = new Concern();
    			
    			mother.addConcern( concern );
    			child.setMother( mother );
@@ -129,7 +129,7 @@ package org.projectsnooze.impl.dependency
    			school.addChild( child );
    			school.addChild( child2 );
    			
-   			var depTree : DependencyTree = _treeCreator.getSaveDependencyTree( school )
+   			var depTree:DependencyTree = _treeCreator.getSaveDependencyTree( school )
    			 
    			//logger = SnoozeLog.getLogger( this );
    			//logger.debug( "the dependency tree contains {0} node(s) , there should be 5" , depTree.getNodeCount() ); 
@@ -138,7 +138,7 @@ package org.projectsnooze.impl.dependency
    			
    		}
    		
-   		public function testGetSaveTree3 () : void
+   		public function testGetSaveTree3 ():void
    		{
    			
 			builder.addEntityClass( SchoolClass );
@@ -147,26 +147,26 @@ package org.projectsnooze.impl.dependency
 			builder.addEntityClass( Concern );
 			builder.generateEntityDataMaps();
 			
-   			var school : SchoolClass = new SchoolClass();
+   			var school:SchoolClass = new SchoolClass();
 			school.setName( "Big School Place" );
    			
-   			var mother : Mother = new Mother();
+   			var mother:Mother = new Mother();
    			mother.setName( "mummy" );
    			
-   			var concern : Concern = new Concern();
+   			var concern:Concern = new Concern();
    			concern.setConcern( "to fat" );
    			
    			mother.addConcern( concern );
    			
-   			for ( var i : int = 0 ; i < 100 ; i ++  )
+   			for ( var i:int = 0 ; i < 100 ; i ++  )
    			{
-	   			var child : Child = new Child();
+	   			var child:Child = new Child();
 	   			child.setHeight( i );
 	   			child.setMother( mother );
 	   			school.addChild( child );
    			}
    			
-   			var depTree : DependencyTree = _treeCreator.getSaveDependencyTree( school )
+   			var depTree:DependencyTree = _treeCreator.getSaveDependencyTree( school )
    				//logger = SnoozeLog.getLogger( this );
    			//logger.debug( "the dependency tree contains {0} node(s) , there should be 103" , depTree.getNodeCount() ); 
    			
@@ -174,7 +174,7 @@ package org.projectsnooze.impl.dependency
    			
    		}
    		
-   		public function testGetSaveTree4 () : void
+   		public function testGetSaveTree4 ():void
    		{
    			
 			builder.addEntityClass( Player );
@@ -182,21 +182,21 @@ package org.projectsnooze.impl.dependency
 			builder.addEntityClass( Club );
 			builder.generateEntityDataMaps();
 			
-			var players : Array = [];
-			for ( var i : int = 0 ; i < 2 ; i++ )
+			var players:Array = [];
+			for ( var i:int = 0 ; i < 2 ; i++ )
 			{
-				var p : Player = new Player ();
+				var p:Player = new Player ();
 				p.setFirstName( "Joe" );
 				p.setLastName( "Bloggs" );
 				players.push( p );
 			}
 			
-			var club1 : Club = new Club();
+			var club1:Club = new Club();
 			club1.setName( "North" );
 			club1.setPlayers( players );
 			club1.setTournaments( [] );
 						
-			var depTree : DependencyTree = _treeCreator.getSaveDependencyTree( club1 )
+			var depTree:DependencyTree = _treeCreator.getSaveDependencyTree( club1 )
 			
 			logger.debug( "what size is it currently? {0} " , depTree.getNodeCount() );
 			

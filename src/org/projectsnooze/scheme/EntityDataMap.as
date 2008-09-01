@@ -46,43 +46,43 @@ package org.projectsnooze.scheme
 		*	is one that maps directly to a database column such as a String
 		*	or a Number.
 		*	
-		*	@param mapping : NameTypeMapping , the object that describes the 
+		*	@param mapping:NameTypeMapping , the object that describes the 
 		*	natural property of the entity
 		*/	
-		function addProperty ( mapping : NameTypeMapping ) : void;
+		function addProperty ( mapping:NameTypeMapping ):void;
 		
 		/**
 		*	this method adds a Relationship to the entities data map.  Relationships
 		*	describe the way the underlying database tables that map the business domain
 		*	objects are related. An example relationship would be a one-to-many relatinship.
 		*	
-		*	@param relationship : Relationship , the relationship to be added 
+		*	@param relationship:Relationship , the relationship to be added 
 		*	the the entities data map
 		*/	
-		function addRelationship ( relationship : Relationship ) : void;
+		function addRelationship ( relationship:Relationship ):void;
 		
 		/**
 		*	this method returns the relationship between this entity and the one
 		*	whos data map is porvided
 		*	
-		*	@param dataMap : EntityDataMap , the data map of the entity we want
+		*	@param dataMap:EntityDataMap , the data map of the entity we want
 		*	to know the relationship with
 		*/	
-		function getRelationship ( dataMap : EntityDataMap ) : Relationship;
+		function getRelationship ( dataMap:EntityDataMap ):Relationship;
 		
-		function setPrimaryKey ( mapping : NameTypeMapping ) : void;
+		function setPrimaryKey ( mapping:NameTypeMapping ):void;
 		
-		function getPrimaryKey () : NameTypeMapping;
+		function getPrimaryKey ():NameTypeMapping;
 		
-		function getPropertyIterator () : Iterator;
+		function getPropertyIterator ():Iterator;
 		
-		function getRelationshipIterator () : Iterator;
+		function getRelationshipIterator ():Iterator;
 		
-		function getTableName () : String;
+		function getTableName ():String;
 		
-		function setTableName ( name : String ) : void;
+		function setTableName ( name:String ):void;
 		
-		function getForeignKeyName () : String;
+		function getForeignKeyName ():String;
 		
 	}
 }

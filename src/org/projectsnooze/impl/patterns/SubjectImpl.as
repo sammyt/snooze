@@ -31,7 +31,7 @@ package org.projectsnooze.impl.patterns
 
 	public class SubjectImpl implements Subject
 	{
-		protected var _observers : Array;
+		protected var _observers:Array;
 		
 		public function SubjectImpl()
 		{
@@ -51,9 +51,9 @@ package org.projectsnooze.impl.patterns
 		 */
 		public function removeObserver(observer:Observer):void
 		{
-			for( var iterator : Iterator = new ArrayIterator( _observers ); iterator.hasNext() ; )
+			for( var iterator:Iterator = new ArrayIterator( _observers ); iterator.hasNext() ; )
 			{
-				var o : Observer = iterator.next() as Observer;
+				var o:Observer = iterator.next() as Observer;
 				if ( observer == o ) iterator.remove();
 			}
 		}
@@ -63,9 +63,9 @@ package org.projectsnooze.impl.patterns
 		 */
 		public function notifyObservers(obj:Object=null):void
 		{
-			for( var iterator : Iterator = new ArrayIterator( _observers ); iterator.hasNext() ; )
+			for( var iterator:Iterator = new ArrayIterator( _observers ); iterator.hasNext() ; )
 			{
-				var observer : Observer = iterator.next() as Observer;
+				var observer:Observer = iterator.next() as Observer;
 				observer.update( obj );
 			}
 		}

@@ -11,18 +11,17 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.impl.patterns.SubjectImpl;
 	import org.projectsnooze.patterns.Iterator;
 
-	public class AbstractDependencyNodeImpl extends SubjectImpl 
-									implements DependencyNode
+	public class AbstractDependencyNodeImpl extends SubjectImpl implements DependencyNode
 	{
-		private static var logger : ILogger = 
+		private static var logger:ILogger = 
 			Log.getLogger( "AbstractDependencyNode" );
 		
-		protected var _statement : Statement;
-		protected var _dependencies : Array;
-		protected var _hasStarted : Boolean;
-		protected var _isComplete : Boolean;
-		protected var _statementQueue : StatementQueue;
-		protected var _dependencyTree : DependencyTree; 
+		protected var _statement:Statement;
+		protected var _dependencies:Array;
+		protected var _hasStarted:Boolean;
+		protected var _isComplete:Boolean;
+		protected var _statementQueue:StatementQueue;
+		protected var _dependencyTree:DependencyTree; 
 		
 		public function AbstractDependencyNodeImpl()
 		{
@@ -35,7 +34,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */ 
-		public function getWrappedObject () : Object
+		public function getWrappedObject ():Object
 		{
 			logger.error( "override this method" );
 			return null;
@@ -44,7 +43,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function update( obj : Object = null ) : void
+		public function update( obj:Object = null ):void
 		{
 			execute( obj );
 		}
@@ -52,8 +51,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function addDependentNode ( 
-			dependencyNode : DependencyNode ) : void
+		public function addDependentNode ( dependencyNode:DependencyNode ):void
 		{
 			registerObserver( dependencyNode );
 		}
@@ -61,7 +59,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function addDependency ( dependencyNode : DependencyNode ) : void
+		public function addDependency ( dependencyNode:DependencyNode ):void
 		{
 			_dependencies.push( dependencyNode );
 		}
@@ -69,7 +67,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */		
-		public function execute( data : * = null ):void
+		public function execute( data:* = null ):void
 		{
 			if ( dependenciesAreMet() && ! _hasStarted )
 			{
@@ -80,16 +78,15 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function begin () : void
+		public function begin ():void
 		{
 			_hasStarted = true;
 		}
 		
-		public function result( data : Object ):void
+		public function result( data:Object ):void
 		{
 			_isComplete = true;
 			
-			// notify observers
 			notifyObservers();
 			
 			getDependencyTree().nodeHasCompleted( this );
@@ -98,7 +95,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function fault( info : Object ):void
+		public function fault( info:Object ):void
 		{	
 			getDependencyTree().nodeHasCompleted( this );
 		}
@@ -106,7 +103,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function isComplete () : Boolean
+		public function isComplete ():Boolean
 		{
 			return _isComplete;
 		}
@@ -114,7 +111,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function isDependent() : Boolean
+		public function isDependent():Boolean
 		{
 			return ( _dependencies.length > 0 );
 		}
@@ -122,13 +119,12 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function dependenciesAreMet() : Boolean
+		public function dependenciesAreMet():Boolean
 		{
-			var depsMet : Boolean = true;
-			for ( var i : Iterator = new ArrayIterator( _dependencies ) ; 
-				i.hasNext() ; )
+			var depsMet:Boolean = true;
+			for ( var i:Iterator = new ArrayIterator( _dependencies ) ; i.hasNext() ; )
 			{
-				var depNode : DependencyNode = i.next() as DependencyNode;
+				var depNode:DependencyNode = i.next() as DependencyNode;
 				if ( ! depNode.isComplete() ) depsMet = false;
 			}
 			return depsMet;
@@ -137,8 +133,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function setDependencyTree ( 
-			dependencyTree : DependencyTree ) : void
+		public function setDependencyTree ( dependencyTree:DependencyTree ):void
 		{
 			_dependencyTree = dependencyTree;
 		}
@@ -146,7 +141,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function getDependencyTree () : DependencyTree
+		public function getDependencyTree ():DependencyTree
 		{
 			return _dependencyTree;
 		}
@@ -154,7 +149,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function setStatement ( statement : Statement ) : void
+		public function setStatement ( statement:Statement ):void
 		{
 			_statement = statement;
 		}
@@ -162,7 +157,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function getStatement () : Statement
+		public function getStatement ():Statement
 		{
 			return _statement;
 		}
@@ -170,16 +165,12 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function setStatementQueue ( statementQueue : StatementQueue ) : void
+		public function getStatementQueue ():StatementQueue
 		{
-			_statementQueue = statementQueue;
-		}
-		
-		/**
-		 * 	@inheritDoc
-		 */
-		public function getStatementQueue () : StatementQueue
-		{
+			if ( !_statementQueue )
+			{
+				_statementQueue = getDependencyTree().getStatementQueue();
+			}
 			return _statementQueue;
 		}
 	}

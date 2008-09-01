@@ -34,7 +34,7 @@ package org.projectsnooze.impl.datatypes
 			super( "NUMBER" , "Number");
 		}
 		
-		override public function toString () : String
+		override public function toString ():String
 		{
 			return "NumberType";
 		}

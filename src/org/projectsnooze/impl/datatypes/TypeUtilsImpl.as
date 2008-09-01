@@ -40,7 +40,7 @@ package org.projectsnooze.impl.datatypes
 			return false;
 		}
 		
-		public function isCollection( object : Object ) : Boolean
+		public function isCollection( object:Object ):Boolean
 		{
 			
 			return isCollectionType( describeType( object ).@name );

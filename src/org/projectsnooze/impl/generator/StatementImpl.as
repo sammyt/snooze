@@ -35,10 +35,10 @@ package org.projectsnooze.impl.generator
 
 	public class StatementImpl implements Statement
 	{
-		private static var logger : ILogger = Log.getLogger( "StatementImpl" );
+		private static var logger:ILogger = Log.getLogger( "StatementImpl" );
 		
-		private var _dict : Dictionary;
-		private var _skeleton : String;
+		private var _dict:Dictionary;
+		private var _skeleton:String;
 		
 		public function StatementImpl()
 		{
@@ -57,40 +57,40 @@ package org.projectsnooze.impl.generator
 		
 		public function getParamaters():Object
 		{
-			var params : Object = new Object();
-			for  (var key : Object in _dict )
+			var params:Object = new Object();
+			for  (var key:Object in _dict )
 	        {
 	        	params[ key ] = _dict[ key ]
 	        }
 			return params;
 		}
 		
-		public function getSQL () : String
+		public function getSQL ():String
 		{
 			return substitute( getSqlSkeleton() , _dict );
 		}
 		
-		private function substitute( str : String , dict : Dictionary ):String
+		private function substitute( str:String , dict:Dictionary ):String
     	{
-    		for (var key : Object in dict)
+    		for (var key:Object in dict)
 	        {
-	        	var k : String = key as String;
+	        	var k:String = key as String;
 	            str = str.replace( new RegExp ( k , "g" ) , dict[ key ] );
 	        }
 	        return str;
 	    }
 	    
-		public function addValue ( key : String , value : * ) : void
+		public function addValue ( key:String , value:* ):void
 		{
 			_dict[ key ] = value;
 		}
 		
-		public function getValuebyKey ( key : String ) : *
+		public function getValuebyKey ( key:String ):*
 		{
 			return _dict[ key ];
 		}
 		
-		public function toString () : String
+		public function toString ():String
 		{
 			return _skeleton;
 		}

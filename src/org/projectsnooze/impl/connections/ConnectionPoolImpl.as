@@ -30,45 +30,34 @@ package org.projectsnooze.impl.connections
 	
 	import org.projectsnooze.connections.ConnectionPool;
 	
-	
-	/*
-	 * Should the connection pool return open connections, and 
-	 * manage the life cycle of those connection or should it be the 
-	 * job of the statements that execute using them?
-	 *
-	 * If the connection pool manages the lifecycle then statements
-	 * can execute faster (if some open connections are available)
-	 *
-	 * are there downsides, such as connections being left open
-	 * causing issues? do they close after execution?
-	 */
+
 	public class ConnectionPoolImpl implements ConnectionPool
 	{
-		private var _file : File;
-		private var _maxConnections : uint = 0;
-		private var _minConnections : uint = 1;
-		private var _connections : Array;
+		private var _file:File;
+		private var _maxConnections:uint = 0;
+		private var _minConnections:uint = 1;
+		private var _connections:Array;
 		
 		public function ConnectionPoolImpl()
 		{
 			_connections = new Array();
 		}
 
-		public function getConnection() : SQLConnection
+		public function getConnection():SQLConnection
 		{
-			for ( var i : int = 0 ; i < _connections.length ; i ++ )
+			for ( var i:int = 0 ; i < _connections.length ; i ++ )
 			{
-				var conn : SQLConnection = _connections[i] as SQLConnection;
+				var conn:SQLConnection = _connections[i] as SQLConnection;
 				if ( !conn.connected ) return conn
 			}
 			
 			if ( ! isMaxConnectionsReached( _connections.length ) ) 
 			{
-				var newConn : SQLConnection = new SQLConnection()
+				var newConn:SQLConnection = new SQLConnection()
 				_connections.push( newConn );
 				return newConn;
 			}
-				
+			
 			return null;
 		}
 		
@@ -92,7 +81,7 @@ package org.projectsnooze.impl.connections
 			return _minConnections;
 		}
 		
-		private function isMaxConnectionsReached ( connections : int ) : Boolean
+		private function isMaxConnectionsReached ( connections:int ):Boolean
 		{
 			if ( getMaxConnections() == 0 ) return false;
 			
@@ -103,12 +92,12 @@ package org.projectsnooze.impl.connections
 			return false;
 		}
 		
-		public function setFile ( file : File ) : void
+		public function setFile ( file:File ):void
 		{
 			_file = file;
 		}
 		
-		public function getFile () : File
+		public function getFile ():File
 		{
 			return _file;
 		}

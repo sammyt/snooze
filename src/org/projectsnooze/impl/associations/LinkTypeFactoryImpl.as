@@ -35,7 +35,7 @@ package org.projectsnooze.impl.associations
 		{
 		}
 
-		public function getLinkType ( name : String , owner : Boolean = true ) : LinkType
+		public function getLinkType ( name:String , owner:Boolean = true ):LinkType
 		{
 			switch ( name )
 			{

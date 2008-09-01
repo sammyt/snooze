@@ -35,21 +35,21 @@ package org.projectsnooze.impl.associations
 	public class RelationshipImpl implements Relationship
 	{
 		// what type of relationship is it
-		private var _type : LinkType;
+		private var _type:LinkType;
 		
 		// the entity data map of the entity who
 		// relationship this describes
-		private var _dataMap : EntityDataMap;
+		private var _dataMap:EntityDataMap;
 		
 		// the name of the property getter and setter
-		private var _propertyName : String;
+		private var _propertyName:String;
 		
 		// is this entity the one which contains the other
 		// ie. entity.setOtherEntity( otherEntity );
-		private var _isEntityContainer : Boolean;
+		private var _isEntityContainer:Boolean;
 		
 		// if a join table i needed its name is stored here
-		private var _joinTableName : String;
+		private var _joinTableName:String;
 		
 		public function RelationshipImpl()
 		{
@@ -90,7 +90,7 @@ package org.projectsnooze.impl.associations
 		/**
 		*	@inheritDoc	
 		*/
-		public function setPropertyName ( propertyName : String ) : void
+		public function setPropertyName ( propertyName:String ):void
 		{
 			_propertyName = propertyName;
 		}
@@ -98,7 +98,7 @@ package org.projectsnooze.impl.associations
 		/**
 		*	@inheritDoc	
 		*/
-		public function getPropertyName () : String
+		public function getPropertyName ():String
 		{
 			return _propertyName;
 		}
@@ -106,7 +106,7 @@ package org.projectsnooze.impl.associations
 		/**
 		*	@inheritDoc	
 		*/
-		public function setIsEntityContainer ( isEntityContainer : Boolean ) : void
+		public function setIsEntityContainer ( isEntityContainer:Boolean ):void
 		{
 			_isEntityContainer = isEntityContainer;
 		}
@@ -114,7 +114,7 @@ package org.projectsnooze.impl.associations
 		/**
 		*	@inheritDoc	
 		*/
-		public function getIsEntityContainer () : Boolean
+		public function getIsEntityContainer ():Boolean
 		{
 			return _isEntityContainer;
 		}
@@ -122,7 +122,7 @@ package org.projectsnooze.impl.associations
 		/**
 		*	@inheritDoc	
 		*/	
-		public function getJoinTableName () : String
+		public function getJoinTableName ():String
 		{
 			return _joinTableName;
 		}
@@ -130,7 +130,7 @@ package org.projectsnooze.impl.associations
 		/**
 		*	@inheritDoc	
 		*/	
-		public function setJoinTableName ( joinTableName : String ) : void
+		public function setJoinTableName ( joinTableName:String ):void
 		{
 			_joinTableName = joinTableName;
 		}

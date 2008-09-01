@@ -4,11 +4,11 @@ package org.projectsnooze.impl.execute
 
 	public class ResponderImpl implements Responder
 	{
-		private var _result : Function;
-		private var _fault : Function;
-		private var _this : Object;
+		private var _result:Function;
+		private var _fault:Function;
+		private var _this:Object;
 		
-		public function ResponderImpl( result : Function , fault : Function , scope : Object )
+		public function ResponderImpl( result:Function , fault:Function , scope:Object )
 		{
 			_result = result;
 			_fault = fault;

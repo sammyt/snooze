@@ -25,34 +25,59 @@
  
 package org.projectsnooze.impl.execute
 {
+	import com.lbi.queue.Queue;
+	
 	import flash.data.SQLConnection;
 	import flash.data.SQLStatement;
-	import flash.events.EventDispatcher;
 	import flash.events.SQLErrorEvent;
 	import flash.events.SQLEvent;
 	
-	import mx.logging.ILogger;
-	import mx.logging.Log;
-	
-	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.execute.Responder;
 	import org.projectsnooze.execute.StatementExecutor;
+	import org.projectsnooze.execute.StatementWrapper;
 	import org.projectsnooze.generator.Statement;
-
-	public class StatementExecutorImpl extends EventDispatcher implements StatementExecutor
+	
+	/**
+	 * Given a <code>StatementWrapper</code> and a <code>SQLConnection</code>
+	 * StatementExecutorImpl will create a <code>SQLStatement</code> object
+	 * ad execute it.  Once the SQL has executed the result is passed onto
+	 * the responder from the <code>StatementWrapper</code>
+	 * 
+	 * @author Samuel Williams
+	 * @since 25.08.08
+	 */
+	public class StatementExecutorImpl extends Queue implements StatementExecutor
 	{
-		private static var logger : ILogger = Log.getLogger( "StatementExecutorImpl" );
+		/**
+		 * @private
+		 */ 
+		protected var _sqlStatement:SQLStatement;
 		
-		protected var _connectionPool : ConnectionPool;
-		protected var _statement : Statement;
-		protected var _sqlStatement : SQLStatement;
-		protected var _conection : SQLConnection;
-		protected var _responder : Responder;
+		/**
+		 * @private
+		 */
+		protected var _conection:SQLConnection;
 		
+		/**
+		 * @private
+		 */
+		protected var _statementWrapper:StatementWrapper;
+		
+		/**
+		 * Creates instance of <code>StatementExecutorImpl</code>
+		 */ 
 		public function StatementExecutorImpl()
 		{
 		}
 		
+		override public function start():void
+		{
+			execute();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function execute():void
 		{
 			_sqlStatement = new SQLStatement();
@@ -63,53 +88,73 @@ package org.projectsnooze.impl.execute
 			_sqlStatement.sqlConnection = getConnection();
 			_sqlStatement.text = getStatement().getSQL();
 			
-			logger.debug( "execute this sql {0}" , getStatement().getSQL() );
+			trace( "StatementExecutorImpl::execute" , getStatement().getSQL() );
 			
 			_sqlStatement.execute();
 		}
 		
-		private function onResult ( event : SQLEvent ) : void
+		private function onResult ( event:SQLEvent ):void
 		{
-			//logger.debug( "onResult {0}" , event );
-			dispatchEvent( new StatementExecutorEvent ( StatementExecutorEvent.RESULT , this ) );
-			if ( getResponder() ) getResponder().result( _sqlStatement.getResult() );
+			if ( getResponder() ) 
+			{
+				getResponder().result( _sqlStatement.getResult() );
+			}
+			onComplete();
 		}
 		
-		private function onFault ( event : SQLErrorEvent ) : void
+		private function onFault ( event:SQLErrorEvent ):void
 		{
-			//logger.debug( "onFault {0}" , event );
-			dispatchEvent( new StatementExecutorEvent ( StatementExecutorEvent.FAULT , this ) );
-			if ( getResponder() ) getResponder().fault( event );
+			if ( getResponder() ) 
+			{
+				getResponder().fault( event );
+			}
+			onComplete();
 		}
 		
-		public function setResponder ( responder : Responder ) : void
+		private function onComplete():void
 		{
-			_responder = responder;
+			cleanup();
+			super.start();
 		}
 		
-		public function getResponder () : Responder
+		private function cleanup():void
 		{
-			return _responder;
+			_sqlStatement.removeEventListener( SQLEvent.RESULT , onResult );
+			_sqlStatement.removeEventListener( SQLErrorEvent.ERROR , onFault );
 		}
 		
-		public function setConnection ( connection : SQLConnection ) : void
+		private function getResponder():Responder
+		{
+			return _statementWrapper.getResponder();
+		}
+		
+		private function getStatement():Statement
+		{
+			return _statementWrapper.getStatement();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function setConnection ( connection:SQLConnection ):void
 		{
 			_conection = connection;
 		}
 		
-		public function getConnection () : SQLConnection
+		/**
+		 * @inheritDoc
+		 */
+		public function getConnection ():SQLConnection
 		{
 			return _conection;
 		}
 		
-		public function setStatement(statement:Statement):void
+		/**
+		 * @inheritDoc
+		 */ 
+		public function setStatementWrapper( statementWrapper:StatementWrapper ):void
 		{
-			_statement = statement;
-		}
-		
-		public function getStatement():Statement
-		{
-			return _statement;
+			_statementWrapper = statementWrapper;
 		}
 		
 	}

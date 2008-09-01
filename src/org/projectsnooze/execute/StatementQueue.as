@@ -25,43 +25,38 @@
 
 package org.projectsnooze.execute
 {
-	import flash.events.IEventDispatcher;
+	import com.lbi.queue.IQueue;
 	
 	import org.projectsnooze.connections.ConnectionPool;
-	import org.projectsnooze.generator.Statement;
 	
-	public interface StatementQueue extends IEventDispatcher
+	public interface StatementQueue extends IQueue
 	{
-		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
 		
-		function getConnectionPool () : ConnectionPool;
+		/**
+		*	Adds a <code>StatementWrapper</code> to the queue to be
+		*	executed against the database
+		*	
+		*	@param wrapper:StatementWrapper
+		*/	
+		function add( wrapper:StatementWrapper ):void;
 		
-		function setTransactional ( transactional : Boolean ) : void;
+		/**
+		*	provides the StatementQueue with a reference to the ConnectionPool
+		*	
+		*	@param connectionPool:ConnectionPool the pool
+		*/	
+		function setConnectionPool ( connectionPool:ConnectionPool ):void;
 		
-		function getTransactional ( ) : Boolean;
+		/**
+		 * If the queue has all the elements it needs
+		 * the the full boolean should be true
+		 */ 
+		function getFull():Boolean
 		
-		function addToExecutionQueue( wrapper : StatementWrapper ):void
-		
-		function setAllStatementsAdded ( allAdded : Boolean ) : void;
-		
-		function areAllStatementsAdded () : Boolean;
-		
-		function isInQueue ( statement : Statement ) : Boolean;
-		
-		function openConnection () : void;
-		
-		function beginProcessingQueue () : void;
-		
-		function finishProcessingQueue () : void;
-		
-		function errorProcessingQueue () : void;
-		
-		function processNext () : void;
-		
-		function beginTransaction () : void;
-		
-		function commitTransaction () : void;
-		
-		function rollbackTransaction () : void;
+		/**
+		 * used to set a statement queues full value
+		 * to true ones all statements have been added to it
+		 */ 
+		function setFull( full:Boolean ):void
 	}
 }

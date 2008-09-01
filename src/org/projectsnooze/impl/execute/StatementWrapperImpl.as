@@ -6,10 +6,10 @@ package org.projectsnooze.impl.execute
 
 	public class StatementWrapperImpl implements StatementWrapper
 	{
-		protected var _responder : Responder;
-		protected var _statement : Statement;
+		protected var _responder:Responder;
+		protected var _statement:Statement;
 		
-		public function StatementWrapperImpl( statement : Statement , responder : Responder = null )
+		public function StatementWrapperImpl( statement:Statement , responder:Responder = null )
 		{
 			_responder = responder;
 			_statement = statement;

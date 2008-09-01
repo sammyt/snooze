@@ -4,12 +4,12 @@ package org.projectsnooze.execute
 	
 	public interface StatementWrapper
 	{
-		function setResponder ( responder : Responder ) : void;
+		function setResponder ( responder:Responder ):void;
 		
-		function getResponder () : Responder;
+		function getResponder ():Responder;
 		
-		function setStatement ( statement : Statement ) : void;
+		function setStatement ( statement:Statement ):void;
 		
-		function getStatement () : Statement;
+		function getStatement ():Statement;
 	}
 }

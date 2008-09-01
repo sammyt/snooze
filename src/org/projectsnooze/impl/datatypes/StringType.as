@@ -34,7 +34,7 @@ package org.projectsnooze.impl.datatypes
 			super ( "TEXT" , "String" );
 		}
 		
-		override public function toString () : String
+		override public function toString ():String
 		{
 			return "StringType";
 		}

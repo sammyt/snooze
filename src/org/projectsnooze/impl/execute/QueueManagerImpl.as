@@ -25,107 +25,112 @@
  
 package org.projectsnooze.impl.execute
 {
-	import mx.logging.ILogger;
-	import mx.logging.Log;
+	import com.lbi.queue.IQueue;
+	import com.lbi.queue.Queue;
 	
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.execute.QueueManager;
 	import org.projectsnooze.execute.StatementQueue;
 	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.patterns.Iterator;
+	import org.projectsnooze.patterns.Observer;
 
-	public class QueueManagerImpl implements QueueManager
+	/**
+	*	Instance of <code>QueueManager</code>. Used to manage
+	*	the execution of <code>StatementQueue</code> objects
+	*	
+	*	@author Samuel Williams
+	*	@since 12.08.08
+	*/	
+	public class QueueManagerImpl extends Queue implements QueueManager
 	{
-		private var logger : ILogger = Log.getLogger( "QueueManagerImpl" );
+		/**
+		 *	@private
+		 *	
+		 *	connection pool for application
+		 */	
+		protected var _connectionPool:ConnectionPool;
 		
-		protected var _connectionPool : ConnectionPool;
-		protected var _queue : Array;
-		protected var _index : int;
-		protected var _inTransaction : Boolean;
+		/**
+		 * @private
+		 */
+		protected var _observers:Array;  
 		
+		/**
+		*	Creates instance an of <code>QueueManagerImpl</code>
+		*/	
 		public function QueueManagerImpl()
 		{
-			_queue = new Array();
-			
-			_index = - 1;
-			
-			_inTransaction = false;
-		}
-			
-		public function processNext () : void
-		{
-			if ( ! _inTransaction && _queue.length > 0 )
-			{
-				
-				_index ++;
-			
-				var queue : StatementQueue = _queue[ _index ] as StatementQueue;
-				
-				_inTransaction = queue.getTransactional();
-				
-				queue.beginProcessingQueue();
-				
-				processNext();
-			}
+			_observers = new Array();
 		}
 		
-		public function getQueue():StatementQueue
+		/**
+		*	@inheritDoc
+		*/	
+		public function getStatementQueue():StatementQueue
 		{
-			// create the new statement queue
-			var queue : StatementQueue = new StatementQueueImpl();
-			queue.setConnectionPool( getConnectionPool() ); 
-			queue.addEventListener( StatementQueueEvent.COMPLETE , onQueueComplete );
-			queue.addEventListener( StatementQueueEvent.OPEN , onQueueConnectionOpen );
+			// create the statement queue
+			var queue:StatementQueue = new StatementQueueImpl();
+			queue.setConnectionPool( _connectionPool );
 			
-			// add the statement queue to the parent queue 
-			_queue.push( queue );
+			// add the StatementQueue to the management queue
+			addElement( queue );
+			
+			if ( _elements.length == 1 )
+			{
+				processNext();
+			}
+			
 			return queue;
 		}
 		
-		protected function onQueueConnectionOpen ( event : StatementQueueEvent ) : void
+		/**
+		 * @inheritDoc
+		 */ 
+		override public function onElementFinish( queue:IQueue ):void
 		{
-			processNext();
+			super.onElementFinish( queue );
+			notifyObservers( queue );
 		}
 		
-		protected function onQueueComplete ( event : StatementQueueEvent ) : void
+		/**
+		 * 	@inheritDoc
+		 */
+		public function registerObserver( observer:Observer ):void
 		{
-			// remove the event listener
-			event.getStatementQueue().removeEventListener( StatementQueueEvent.COMPLETE , onQueueComplete );
-			
-			// remove from queue
-			removeFromQueue( event.getStatementQueue() );
-			
-			if ( event.getStatementQueue().getTransactional() )
-			{
-				_inTransaction = false;
-			}
-			
-			// continue processing queue
-			processNext();
+			_observers.push( observer );
 		}
 		
-		public function removeFromQueue ( statementQueue : StatementQueue ) : void
+		/**
+		 * 	@inheritDoc
+		 */
+		public function removeObserver( observer:Observer ):void
 		{
-			for ( var iterator : Iterator = new ArrayIterator ( _queue ) ; iterator.hasNext() ; )
+			for( var iterator:Iterator = new ArrayIterator( _observers ); iterator.hasNext() ; )
 			{
-				var queue : StatementQueue = iterator.next() as StatementQueue;
-				if ( queue == statementQueue )
-				{
-					iterator.remove();
-					_index --;
-					break;
-				}
+				var o:Observer = iterator.next() as Observer;
+				if ( observer == o ) iterator.remove();
 			}
 		}
 		
-		public function setConnectionPool ( connectionPool : ConnectionPool ) : void
+		/**
+		 * 	@inheritDoc
+		 */
+		public function notifyObservers( obj:Object=null ):void
+		{
+			for( var iterator:Iterator = new ArrayIterator( _observers ); iterator.hasNext() ; )
+			{
+				var observer:Observer = iterator.next() as Observer;
+				observer.update( obj );
+			}
+		}
+		
+		/**
+		*	@inheritDoc
+		*/	
+		public function setConnectionPool ( connectionPool:ConnectionPool ):void
 		{
 			_connectionPool = connectionPool;
-		}
-		
-		public function getConnectionPool () : ConnectionPool
-		{
-			return _connectionPool;
 		}
 	}
 }

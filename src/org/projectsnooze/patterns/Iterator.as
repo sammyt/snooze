@@ -27,10 +27,10 @@ package org.projectsnooze.patterns
 {
 	public interface Iterator
 	{
- 		function hasNext() : Boolean;
+ 		function hasNext():Boolean;
  		
-		function next() : Object;
+		function next():Object;
 		
-		function remove () : void;
+		function remove ():void;
 	}
 }

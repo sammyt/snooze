@@ -23,10 +23,10 @@ package org.projectsnooze.impl.generator
 
 	public class DDLGeneratorImplTest extends TestCase
 	{
-		private var _generator : DDLGeneratorImpl;
-		private var _builder : SchemeBuilderImpl;
+		private var _generator:DDLGeneratorImpl;
+		private var _builder:SchemeBuilderImpl;
 		
-		private static var logger : ILogger;
+		private static var logger:ILogger;
 		
 		public function DDLGeneratorImplTest(methodName:String=null)
 		{
@@ -60,7 +60,7 @@ package org.projectsnooze.impl.generator
    			_generator = null;
    		}
    		
-   		public function testGetDDL () : void
+   		public function testGetDDL ():void
    		{
    			
 			_builder.addEntityClass( SchoolClass );
@@ -74,7 +74,7 @@ package org.projectsnooze.impl.generator
 
    		}
    		
-   		public function testGetDDL2 () : void
+   		public function testGetDDL2 ():void
    		{
    			
 			_builder.addEntityClass( Tournament );

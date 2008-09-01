@@ -38,58 +38,58 @@ package org.projectsnooze.associations
 		/**
 		*	set the link type object for this relationship
 		*/	
-		function setType ( type : LinkType ) : void;
+		function setType ( type:LinkType ):void;
 		
 		/**
 		*	retreive the link type object for the given relationship
 		*/	
-		function getType () : LinkType;
+		function getType ():LinkType;
 		
 		/**
 		*	where the relationship requires a join table (ManyToMany) the name
 		*	of that table, in the form 'joined table name 1'_'joined table name 2'
 		*	is returned with the following function
 		*/	
-		function getJoinTableName () : String;
+		function getJoinTableName ():String;
 		
 		/**
 		*	use this function to set the name of the join table
 		*	where the relationship requires it
 		*/	
-		function setJoinTableName ( joinTableName : String ) : void;
+		function setJoinTableName ( joinTableName:String ):void;
 		
 		/**
 		*	sets the entity data map of the entity whos 
 		*	relationships the onject describes
 		*/	
-		function setEntityDataMap ( dataMap : EntityDataMap ) : void;
+		function setEntityDataMap ( dataMap:EntityDataMap ):void;
 		
 		/**
 		*	returns the entity data map whos relationship is described
 		*/	
-		function getEntityDataMap () : EntityDataMap;
+		function getEntityDataMap ():EntityDataMap;
 		
 		/**
 		*	set the property name  (Duck for getDuck) where the entity
 		*	contains the related entity
 		*/	
-		function setPropertyName ( name : String ) : void;
+		function setPropertyName ( name:String ):void;
 		
 		/**
 		*	returns the property name where there is one. If thie IsEntityContainer
 		*	property is true, then their will be a property name
 		*/	
-		function getPropertyName () : String;
+		function getPropertyName ():String;
 		
 		/**
 		*	set whether or not this is the entity container
 		*/	
-		function setIsEntityContainer ( isEntityContainer : Boolean ) : void;
+		function setIsEntityContainer ( isEntityContainer:Boolean ):void;
 		
 		/**
 		*	returns is this entity is the entity container is the relationship
 		*/
-		function getIsEntityContainer () : Boolean;
+		function getIsEntityContainer ():Boolean;
 		
 	}
 }

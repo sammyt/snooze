@@ -27,6 +27,6 @@ package org.projectsnooze.patterns
 {
 	public interface Command
 	{
-		function execute ( data : * = null ) : void;
+		function execute ( data:* = null ):void;
 	}
 }

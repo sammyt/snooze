@@ -41,23 +41,23 @@ package org.projectsnooze.generator
 		*	sets the EntityDataMapProvider used to determine the structure 
 		*	of the database to be created or deleted
 		*/	
-		function setEntityDataMapProvider ( entityDataMapProvider : EntityDataMapProvider ) : void;
+		function setEntityDataMapProvider ( entityDataMapProvider:EntityDataMapProvider ):void;
 		
 		/**
 		*	returns the EntityDataMapProvider in use by the DDLGenerator
 		*/	
-		function getEntityDataMapProvider () : EntityDataMapProvider;
+		function getEntityDataMapProvider ():EntityDataMapProvider;
 		
 		/**
 		*	returns an <code>Array</code> of <code>Statement</code> objects
 		*	which when executed will generate the while database structure
 		*/	
-		function getDDLStatements () : Array;
+		function getDDLStatements ():Array;
 		
 		/**
 		*	returns an <code>Array</code> of <code>Statement</code> objects
 		*	which when executed will drop all the database tables
 		*/
-		function getDropStatements () : Array;
+		function getDropStatements ():Array;
 	}
 }

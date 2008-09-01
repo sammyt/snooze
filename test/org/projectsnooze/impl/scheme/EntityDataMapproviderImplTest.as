@@ -11,7 +11,7 @@ package org.projectsnooze.impl.scheme
 
 	public class EntityDataMapproviderImplTest extends TestCase
 	{
-		private var _dataMapProvider : EntityDataMapProviderImpl;
+		private var _dataMapProvider:EntityDataMapProviderImpl;
 		
 		public function EntityDataMapproviderImplTest(param:String=null)
 		{
@@ -36,10 +36,10 @@ package org.projectsnooze.impl.scheme
    			_dataMapProvider = null;
    		}
    		
-   		public function testGetByName () : void
+   		public function testGetByName ():void
    		{
-   			var concern : Concern = new Concern();
-   			var map : EntityDataMap = new EntityMapDataImp();
+   			var concern:Concern = new Concern();
+   			var map:EntityDataMap = new EntityMapDataImp();
    			
    			_dataMapProvider.setEntityDataMap( describeType( concern ).@name , map );
    			
@@ -49,10 +49,10 @@ package org.projectsnooze.impl.scheme
    			
    		}
    		
-   		public function testGetByEntity () : void
+   		public function testGetByEntity ():void
    		{
-   			var concern : Concern = new Concern();
-   			var map : EntityDataMap = new EntityMapDataImp();
+   			var concern:Concern = new Concern();
+   			var map:EntityDataMap = new EntityMapDataImp();
    			
    			_dataMapProvider.setEntityDataMap( describeType( concern ).@name , map );
    			

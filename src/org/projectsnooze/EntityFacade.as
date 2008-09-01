@@ -40,63 +40,55 @@ package org.projectsnooze
 	public interface EntityFacade
 	{
 		
-		function init () : void;
+		function init ():void;
 		
-		function setDatabaseName ( databaseName : String ) : void;
+		function setDatabaseName ( databaseName:String ):void;
 		
-		function getDatabaseName () : String;
+		function getDatabaseName ():String;
+
+		function addEntityClass ( clazz:Class ):void; 
 		
-		function createDatabase () : void;
+		function setSchemeBuilder ( schemeBuilder:SchemeBuilder ):void;
 		
-		function dropDatabase () : void;
+		function getSchemeBuilder ():SchemeBuilder;
 		
-		function setCreateDDL ( createDDL : Boolean ) : void;
+		function setEntityDataMapProvider ( entityDataMapProvider:EntityDataMapProvider ): void;
 		
-		function getCreateDDL () : Boolean;
+		function getEntityDataMapProvider ():EntityDataMapProvider;
 		
-		function addEntityClass ( clazz : Class ) : void; 
+		function setTypeUtils ( typeUtils:TypeUtils ):void;
 		
-		function setSchemeBuilder ( schemeBuilder : SchemeBuilder ) : void;
+		function getTypeUtils ():TypeUtils;
 		
-		function getSchemeBuilder () : SchemeBuilder;
+		function setTypeFactory( typeFactory:TypeFactory ):void;
 		
-		function setEntityDataMapProvider ( entityDataMapProvider : EntityDataMapProvider ): void;
+		function getTypeFactory ():TypeFactory;
 		
-		function getEntityDataMapProvider () : EntityDataMapProvider;
+		function setLinkTypeFactory ( linkTypeFactory:LinkTypeFactory ):void;
 		
-		function setTypeUtils ( typeUtils : TypeUtils ) : void;
+		function getLinkTypeFactory ():LinkTypeFactory;
 		
-		function getTypeUtils () : TypeUtils;
+		function setStatementCreator ( statementCreator:StatementCreator ):void;
 		
-		function setTypeFactory( typeFactory : TypeFactory ) : void;
+		function getStatementCreator ():StatementCreator;
 		
-		function getTypeFactory () : TypeFactory;
+		function setConnectionPool ( connectionPool:ConnectionPool ):void;
 		
-		function setLinkTypeFactory ( linkTypeFactory : LinkTypeFactory ) : void;
+		function getConnectionPool ():ConnectionPool;
 		
-		function getLinkTypeFactory () : LinkTypeFactory;
+		function setDependencyTreeCreator ( dependencyTreeCreator:DependencyTreeCreator ):void;
 		
-		function setStatementCreator ( statementCreator : StatementCreator ) : void;
+		function getDependencyTreeCreator ():DependencyTreeCreator;
 		
-		function getStatementCreator () : StatementCreator;
+		function setDDLGenerator ( ddlGenerator:DDLGenerator ):void;
 		
-		function setConnectionPool ( connectionPool : ConnectionPool ) : void;
+		function getDDLGenerator ():DDLGenerator;
 		
-		function getConnectionPool () : ConnectionPool;
+		function setQueueManager ( queueManager:QueueManager ):void;
 		
-		function setDependencyTreeCreator ( dependencyTreeCreator : DependencyTreeCreator ) : void;
+		function getQueueManager ():QueueManager;
 		
-		function getDependencyTreeCreator () : DependencyTreeCreator;
-		
-		function setDDLGenerator ( ddlGenerator : DDLGenerator ) : void;
-		
-		function getDDLgenerator () : DDLGenerator;
-		
-		function setQueueManager ( queueManager : QueueManager ) : void;
-		
-		function getQueueManager () : QueueManager;
-		
-		function getSession () : Session;
+		function getSession ():Session;
 				
 	}
 }

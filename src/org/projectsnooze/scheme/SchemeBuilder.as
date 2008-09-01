@@ -31,26 +31,26 @@ package org.projectsnooze.scheme
 	
 	public interface SchemeBuilder
 	{
-		function setTypeFactory ( typeFactory : TypeFactory ) : void;
+		function setTypeFactory ( typeFactory:TypeFactory ):void;
 		
-		function getTypeFactory () : TypeFactory;
+		function getTypeFactory ():TypeFactory;
 		
-		function setTypeUtils ( typeUtils : TypeUtils ) : void;
+		function setTypeUtils ( typeUtils:TypeUtils ):void;
 		
-		function getTypeUtils () : TypeUtils;
+		function getTypeUtils ():TypeUtils;
 		
-		function setLinkTypeFactory ( linkTypeFactory : LinkTypeFactory ) : void;
+		function setLinkTypeFactory ( linkTypeFactory:LinkTypeFactory ):void;
 		
-		function getLinkTypeFactory () : LinkTypeFactory; 
+		function getLinkTypeFactory ():LinkTypeFactory; 
 		
-		function setEntityDataMapProvider ( entityDataMapProvider : EntityDataMapProvider ) : void;
+		function setEntityDataMapProvider ( entityDataMapProvider:EntityDataMapProvider ):void;
 		
-		function getEntityDataMapProvider ( ) : EntityDataMapProvider;
+		function getEntityDataMapProvider ( ):EntityDataMapProvider;
 		
-		function addEntityClass ( clazz : Class ) : void;
+		function addEntityClass ( clazz:Class ):void;
 		
-		function generateEntityDataMaps () : void;
+		function generateEntityDataMaps ():void;
 		
-		function areEntityDataMapsGenerated () : Boolean;
+		function areEntityDataMapsGenerated ():Boolean;
 	}
 }

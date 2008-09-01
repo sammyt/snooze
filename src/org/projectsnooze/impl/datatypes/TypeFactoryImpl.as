@@ -31,7 +31,7 @@ package org.projectsnooze.impl.datatypes
 
 	public class TypeFactoryImpl implements TypeFactory
 	{
-		public function getType( asType:String ) : Type
+		public function getType( asType:String ):Type
 		{			
 			switch ( asType )
 			{

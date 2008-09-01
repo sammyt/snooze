@@ -25,17 +25,55 @@
  
 package org.projectsnooze.session
 {
-	
 	import org.projectsnooze.dependency.DependencyTreeCreator;
+	import org.projectsnooze.execute.QueueManager;
 	import org.projectsnooze.execute.Responder;
+	import org.projectsnooze.generator.DDLGenerator;
 	
+	/**
+	 * The session object is the main point of interation
+	 * between the application and the database.  It defines the 
+	 * methods to save and retrieve as well as creating and
+	 * dropping the database tables
+	 * 
+	 * @autor Samuel Williams
+	 * @since 31.08.08
+	 */ 
 	public interface Session
 	{
-		function save ( entity : Object , responder : Responder = null ) : void;
+		/**
+		 * Creates the database tables for the 
+		 * domain objects provided to the EntityFacade
+		 */ 
+		function createDatabase():void;
 		
-		function getDependencyTreeCreator (  ) : DependencyTreeCreator;
+		/**
+		 * Drops the database tables for the 
+		 * domain objects provided to the EntityFacade
+		 */ 
+		function dropDatabase():void;
 		
-		function setDependencyTreeCreator ( dependencyTreeCreator : DependencyTreeCreator ) : void;
+		/**
+		 * Saves an entity to the database
+		 * 
+		 * @param entity:Object the object to save to the database
+		 */ 
+		function save ( entity:Object ):void;
+		
+		function getDependencyTreeCreator (  ):DependencyTreeCreator;
+		
+		function setDependencyTreeCreator ( dependencyTreeCreator:DependencyTreeCreator ):void;
+		
+		function getQueueManager ():QueueManager;
+		
+		function setQueueManager ( queueManager:QueueManager ):void;
 
+		function getDDLGenerator():DDLGenerator;
+		
+		function setDDLGenerator( ddlGenerator:DDLGenerator ):void;
+		
+		function getDispatcher():Dispatcher;
+		
+		function setDispatcher( dispather:Dispatcher ):void;
 	}
 }

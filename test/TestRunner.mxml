@@ -26,24 +26,24 @@
 			
 			import flexunit.framework.TestSuite;
 			
-			private function onCreationComplete() : void
+			private function onCreationComplete():void
 			{
                 
                 var traceTarget: TraceTarget = new TraceTarget();
-                traceTarget.filters=[ "EntityFacadeTest" ];
+                traceTarget.filters=[ "*" ];
                 traceTarget.level = LogEventLevel.ALL;
                 traceTarget.includeDate = true;
                 traceTarget.includeTime = true;
                 traceTarget.includeCategory = true;
                 traceTarget.includeLevel = true;
                 
-                var logger : ILogger = Log.getLogger(this.className);
+                var logger:ILogger = Log.getLogger(this.className);
 				
  				testRunner.test = createSuite();
  				testRunner.startTest();
  			}
 			
-			private function createSuite() : TestSuite 
+			private function createSuite():TestSuite 
 			{
  				var testSuite:TestSuite = new TestSuite();
  				

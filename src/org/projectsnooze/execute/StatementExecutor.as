@@ -25,25 +25,29 @@
  
 package org.projectsnooze.execute
 {
-	import flash.data.SQLConnection;
-	import flash.events.IEventDispatcher;
+	import com.lbi.queue.IQueue;
 	
-	import org.projectsnooze.generator.Statement;
+	import org.projectsnooze.connections.RequiresConnection;
 	
-	public interface StatementExecutor extends IEventDispatcher
+	/**
+	 * Executes the SQL contained in a <code>StatementWrapper</code
+	 * against the connection provided
+	 * 
+	 * @author Samuel Williams
+	 * @since 25.08.08
+	 */ 
+	public interface StatementExecutor extends RequiresConnection, IQueue
 	{
-		function setStatement ( statement : Statement ) : void;
+		/**
+		 * Sets the <code>StatementWrapper</code> which contain the sql
+		 * the SQL that should be executed
+		 */ 
+		function setStatementWrapper( statementWrapper:StatementWrapper ):void;
 		
-		function getStatement () : Statement;
-		
-		function setConnection ( connection : SQLConnection ) : void;
-		
-		function getConnection () : SQLConnection;
-		
-		function setResponder ( responder : Responder ) : void;
-		
-		function getResponder () : Responder; 
-		
-		function execute () : void; 
+		/**
+		 * executes a <code>SQLStament</code> against the connection provided
+		 * using the SQL found in the <code>StatementWrapper</code>
+		 */ 
+		function execute ():void;
 	}
 }

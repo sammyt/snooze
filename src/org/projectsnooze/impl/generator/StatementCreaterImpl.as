@@ -40,9 +40,9 @@ package org.projectsnooze.impl.generator
 	 */ 
 	public class StatementCreaterImpl implements StatementCreator
 	{
-		private static var logger : ILogger = Log.getLogger( "StatementCreaterImpl" );
+		private static var logger:ILogger = Log.getLogger( "StatementCreaterImpl" );
 		
-		private const ValuePrefix : String = ":";
+		private const ValuePrefix:String = ":";
 		
 		public function StatementCreaterImpl()
 		{
@@ -51,8 +51,8 @@ package org.projectsnooze.impl.generator
 		/**
 		 * 	@inheritDoc
 		 */
-		public function getRelationshipInsert ( relationship : Relationship ,
-			dataOne : EntityDataMap , dataTwo : EntityDataMap ) : Statement
+		public function getRelationshipInsert ( relationship:Relationship ,
+			dataOne:EntityDataMap , dataTwo:EntityDataMap ):Statement
 		{
 			
 			return null;
@@ -61,7 +61,7 @@ package org.projectsnooze.impl.generator
 		/**
 		 * 	@inheritDoc
 		 */
-		public function getSelectStatement( data : EntityDataMap ):Statement
+		public function getSelectStatement( data:EntityDataMap ):Statement
 		{
 			return null;
 		}
@@ -69,16 +69,16 @@ package org.projectsnooze.impl.generator
 		/**
 		 * 	@inheritDoc
 		 */
-		public function getInsertStatement( data : EntityDataMap ):Statement
+		public function getInsertStatement( data:EntityDataMap ):Statement
 		{
-			var statement : Statement = new StatementImpl();
-			var sql : String = "";
+			var statement:Statement = new StatementImpl();
+			var sql:String = "";
 			
 			sql = "INSERT INTO "; 
 			sql += data.getTableName();
 			sql +=  " (";
 			
-			var names : Array = new Array();
+			var names:Array = new Array();
 			addForeignKeys( names , data );
 			addArgList( names , data );
 			
@@ -86,7 +86,7 @@ package org.projectsnooze.impl.generator
 			sql += ") ";
 			sql += " VALUES ("
 			
-			var valueNames : Array = new Array();
+			var valueNames:Array = new Array();
 			addForeignKeys( valueNames , data , ValuePrefix );
 			addArgList( valueNames , data , ValuePrefix );
 			
@@ -101,7 +101,7 @@ package org.projectsnooze.impl.generator
 		/**
 		 * 	@inheritDoc
 		 */
-		public function getUpdateStatement( data : EntityDataMap ):Statement
+		public function getUpdateStatement( data:EntityDataMap ):Statement
 		{
 			return null;
 		}
@@ -109,39 +109,50 @@ package org.projectsnooze.impl.generator
 		/**
 		 * 	@inheritDoc
 		 */
-		public function getDeleteStatement( data : EntityDataMap ):Statement
+		public function getDeleteStatement( data:EntityDataMap ):Statement
 		{
 			return null;
 		}
 		
-		private function addPrimaryKey ( values : Array , data : EntityDataMap , preFix : String = "" ) : String
+		private function addPrimaryKey ( values:Array , 
+			data:EntityDataMap , preFix:String = "" ):String
 		{
-			var mapping : NameTypeMapping = data.getPrimaryKey()
+			var mapping:NameTypeMapping = data.getPrimaryKey()
 			values.push( preFix + mapping.getLowerCaseName() );
 			
 			return getCsvFromArray( values );
 		}
 		
-		private function addForeignKeys ( values : Array , data : EntityDataMap , preFix : String = "" ) : String
+		private function addForeignKeys ( values:Array , 
+			data:EntityDataMap , preFix:String = "" ):String
 		{
-			for ( var iterator : Iterator = data.getRelationshipIterator() ; iterator.hasNext() ; )
+			//logger.debug ( "addForeignKeys( {0} , {1} , {2} )" , 
+			//	values , data , preFix );
+				
+			for ( var i:Iterator = data.getRelationshipIterator() ; i.hasNext() ; )
 			{
-				var relationship : Relationship = iterator.next() as Relationship;
+				var relationship:Relationship = i.next() as Relationship;
+				
 				if ( relationship.getType().getForeignKeyContainer() )
 				{
-					var tableName : String = relationship.getEntityDataMap().getTableName().toLowerCase(); 
-					var idName : String = relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
+					var tableName:String = 
+						relationship.getEntityDataMap().getTableName().toLowerCase();
+						 
+					var idName:String = 
+						relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
+						
 					values.push( preFix + tableName + "_" + idName );
 				}
 			}
 			return getCsvFromArray( values );
 		}
 		
-		private function addArgList ( values : Array , data : EntityDataMap , preFix : String = "" ) : String
+		private function addArgList ( values:Array , 
+			data:EntityDataMap , preFix:String = "" ):String
 		{
-			for ( var iterator : Iterator = data.getPropertyIterator() ; iterator.hasNext() ; )
+			for ( var i:Iterator = data.getPropertyIterator() ; i.hasNext() ; )
 			{
-				var mapping : NameTypeMapping = iterator.next() as NameTypeMapping;
+				var mapping:NameTypeMapping = i.next() as NameTypeMapping;
 				if ( ! mapping.isPrimaryKey() )
 				{
 					values.push( preFix + mapping.getLowerCaseName() );
@@ -150,13 +161,13 @@ package org.projectsnooze.impl.generator
 			return  getCsvFromArray( values );
 		}
 		
-		private function getCsvFromArray ( list : Array ) : String
+		private function getCsvFromArray ( list:Array ):String
 		{
-			var csv : String = "";
-			for ( var i : int = 0 ; i < list.length ; i++ )
+			var csv:String = "";
+			for ( var i:int = 0 ; i < list.length ; i++ )
 			{
 				csv += list[i];
-				csv += i < list.length - 1 ? "," : "";
+				csv += i < list.length - 1 ? ",":"";
 			}
 			return csv;
 		}
@@ -164,7 +175,7 @@ package org.projectsnooze.impl.generator
 		/**
 		 * 	@inheritDoc
 		 */
-		public function getStatementByType ( type : String , data : EntityDataMap ) : Statement
+		public function getStatementByType ( type:String , data:EntityDataMap ):Statement
 		{
 			switch ( type )
 			{

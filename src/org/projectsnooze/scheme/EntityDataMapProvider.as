@@ -29,12 +29,12 @@ package org.projectsnooze.scheme
 	
 	public interface EntityDataMapProvider
 	{
-		function getEntityDataMap ( entity : Object ) : EntityDataMap
+		function getEntityDataMap ( entity:Object ):EntityDataMap
 		
-		function setEntityDataMap ( name : String , dataMap : EntityDataMap ) : void;
+		function setEntityDataMap ( name:String , dataMap:EntityDataMap ):void;
 		
-		function getEntityDataMapByClassName ( name : String ) : EntityDataMap;
+		function getEntityDataMapByClassName ( name:String ):EntityDataMap;
 		
-		function getIterator () : Iterator;
+		function getIterator ():Iterator;
 	}
 }

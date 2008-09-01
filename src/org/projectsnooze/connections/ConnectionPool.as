@@ -30,19 +30,19 @@ package org.projectsnooze.connections
 	
 	public interface ConnectionPool
 	{
-		function getConnection () : SQLConnection;
+		function getConnection ():SQLConnection;
 		
-		function setMaxConnections ( maxConnections : uint ) : void;
+		function setMaxConnections ( maxConnections:uint ):void;
 		
-		function getMaxConnections () : uint;
+		function getMaxConnections ():uint;
 		
-		function setMinConnections ( minConnections : uint ) : void;
+		function setMinConnections ( minConnections:uint ):void;
 		
-		function getMinConnections () : uint; 
+		function getMinConnections ():uint; 
 		
-		function setFile ( file : File ) : void;
+		function setFile ( file:File ):void;
 		
-		function getFile () : File;
+		function getFile ():File;
 		
 	}
 }

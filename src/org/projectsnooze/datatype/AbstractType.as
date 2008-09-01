@@ -28,10 +28,10 @@ package org.projectsnooze.datatype
 
 	public class AbstractType implements Type
 	{
-		private var _sqlType : String;
-		private var _asType : String;
+		private var _sqlType:String;
+		private var _asType:String;
 		
-		public function AbstractType( sqlType : String , asType : String )
+		public function AbstractType( sqlType:String , asType:String )
 		{
 			_asType = asType;
 			_sqlType = sqlType;
@@ -57,7 +57,7 @@ package org.projectsnooze.datatype
 			_asType = type;
 		}
 		
-		public function toString () : String
+		public function toString ():String
 		{
 			return "AbstractType";
 		}

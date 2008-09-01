@@ -27,9 +27,6 @@ package org.projectsnooze.impl
 {
 	import flash.filesystem.File;
 	
-	import mx.logging.ILogger;
-	import mx.logging.Log;
-	
 	import org.projectsnooze.EntityFacade;
 	import org.projectsnooze.associations.LinkTypeFactory;
 	import org.projectsnooze.connections.ConnectionPool;
@@ -37,9 +34,7 @@ package org.projectsnooze.impl
 	import org.projectsnooze.datatype.TypeUtils;
 	import org.projectsnooze.dependency.DependencyTreeCreator;
 	import org.projectsnooze.execute.QueueManager;
-	import org.projectsnooze.execute.StatementQueue;
 	import org.projectsnooze.generator.DDLGenerator;
-	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.associations.LinkTypeFactoryImpl;
 	import org.projectsnooze.impl.connections.ConnectionPoolImpl;
@@ -47,43 +42,39 @@ package org.projectsnooze.impl
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 	import org.projectsnooze.impl.dependency.DependencyTreeCreatorImpl;
 	import org.projectsnooze.impl.execute.QueueManagerImpl;
-	import org.projectsnooze.impl.execute.StatementWrapperImpl;
 	import org.projectsnooze.impl.generator.DDLGeneratorImpl;
 	import org.projectsnooze.impl.generator.StatementCreaterImpl;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
 	import org.projectsnooze.impl.scheme.EntityDataMapProviderImpl;
 	import org.projectsnooze.impl.scheme.SchemeBuilderImpl;
+	import org.projectsnooze.impl.session.DispatcherImpl;
 	import org.projectsnooze.impl.session.SessionImpl;
-	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.scheme.SchemeBuilder;
+	import org.projectsnooze.session.Dispatcher;
 	import org.projectsnooze.session.Session;
 
 	public class EntityFacadeImpl implements EntityFacade
 	{
-		private static var logger : ILogger = Log.getLogger( "EntityFacadeImpl" );
+		protected var _databaseName:String = "snooze.db";
+		protected var _schemeBuilder:SchemeBuilder;
+		protected var _entityDataMapProvider:EntityDataMapProvider;
+		protected var _typeUtils:TypeUtils;
+		protected var _typeFactory:TypeFactory;
+		protected var _linkTypeFactory:LinkTypeFactory;
+		protected var _statementCreator:StatementCreator;
+		protected var _connectionPool:ConnectionPool;
+		protected var _dependencyTreeCreator:DependencyTreeCreator;
+		protected var _ddlGenerator:DDLGenerator;
+		protected var _queueManager:QueueManager;
+		protected var _dispatcher:Dispatcher;
 		
-		protected var _createDDL : Boolean;
-		protected var _databaseName : String = "snooze.db";
-		protected var _schemeBuilder : SchemeBuilder;
-		protected var _entityDataMapProvider : EntityDataMapProvider;
-		protected var _typeUtils : TypeUtils;
-		protected var _typeFactory : TypeFactory;
-		protected var _linkTypeFactory : LinkTypeFactory;
-		protected var _statementCreator : StatementCreator;
-		protected var _connectionPool : ConnectionPool;
-		protected var _dependencyTreeCreator : DependencyTreeCreator;
-		protected var _ddlGenerator : DDLGenerator;
-		protected var _queueManager : QueueManager;
-		
-		public function EntityFacadeImpl( createDDL : Boolean = true , 
-			initilise : Boolean = true )
+		public function EntityFacadeImpl( createDDL:Boolean = true , 
+			initilise:Boolean = true )
 		{
-			_createDDL = createDDL;
 			if ( initilise ) init();
 		}
 		
-		public function init () : void
+		public function init ():void
 		{
 			_entityDataMapProvider = new EntityDataMapProviderImpl();
 			_typeUtils = new TypeUtilsImpl();
@@ -113,71 +104,24 @@ package org.projectsnooze.impl
 			_schemeBuilder.setTypeUtils( getTypeUtils() );
 		}
 		
-		public function setDatabaseName ( databaseName : String ) : void
+		public function setDatabaseName ( databaseName:String ):void
 		{
 			_databaseName = databaseName;
 		}
 		
-		public function getDatabaseName () : String
+		public function getDatabaseName ():String
 		{
 			return _databaseName;
 		}
 		
-		public function createDatabase () : void
-		{
-			prepare();
-			
-			var queue : StatementQueue = getQueueManager().getQueue();
-			queue.setTransactional( true );
-			queue.openConnection();
-			
-			for ( var i : Iterator = new ArrayIterator( 
-				getDDLgenerator().getDDLStatements() ) ; i.hasNext() ; )
-			{
-				queue.addToExecutionQueue( 
-					new StatementWrapperImpl( i.next() as Statement ) );
-			}
-			
-			queue.setAllStatementsAdded( true );
-		}
-		
-		public function dropDatabase () : void
-		{
-			prepare();
-			
-			var queue : StatementQueue = getQueueManager().getQueue();
-			queue.setTransactional( true );
-			queue.openConnection();
-			
-			for ( var i : Iterator = new ArrayIterator( 
-				getDDLgenerator().getDropStatements() ) ; i.hasNext() ; )
-			{
-				queue.addToExecutionQueue( 
-					new StatementWrapperImpl( i.next() as Statement ) );
-			}
-			
-			queue.setAllStatementsAdded( true );
-		}
-		
-		public function setQueueManager ( queueManager : QueueManager ) : void
+		public function setQueueManager ( queueManager:QueueManager ):void
 		{
 			_queueManager = queueManager;
 		}
 		
-		public function getQueueManager () : QueueManager
+		public function getQueueManager ():QueueManager
 		{
 			return _queueManager;
-		}
-		
-		public function setCreateDDL(createDDL:Boolean):void
-		{
-			_createDDL = createDDL
-			if ( createDDL ) createDatabase();
-		}
-		
-		public function getCreateDDL():Boolean
-		{
-			return _createDDL;
 		}
 		
 		public function addEntityClass(clazz:Class):void
@@ -231,7 +175,7 @@ package org.projectsnooze.impl
 			_linkTypeFactory = linkTypeFactory;
 		}
 		
-		public function getLinkTypeFactory () : LinkTypeFactory
+		public function getLinkTypeFactory ():LinkTypeFactory
 		{
 			return _linkTypeFactory;
 		}
@@ -272,14 +216,13 @@ package org.projectsnooze.impl
 			_ddlGenerator = ddlGenerator;
 		}
 		
-		public function getDDLgenerator():DDLGenerator
+		public function getDDLGenerator():DDLGenerator
 		{
 			return _ddlGenerator;
 		}
 		
-		public function prepare () : void
+		public function prepare ():void
 		{
-			
 			if ( ! getSchemeBuilder().areEntityDataMapsGenerated() )
 			{
 				getSchemeBuilder().generateEntityDataMaps();
@@ -290,10 +233,22 @@ package org.projectsnooze.impl
 		{
 			prepare();
 			
-			var session : Session = new SessionImpl();
+			var session:Session = new SessionImpl();
 			session.setDependencyTreeCreator( getDependencyTreeCreator() );
+			session.setDDLGenerator( getDDLGenerator() );
+			session.setQueueManager( getQueueManager() );
+			session.setDispatcher( dispatcher );
+			
 			return session;
 		}
 		
+		public function get dispatcher():Dispatcher
+		{
+			if ( !_dispatcher )
+			{
+				_dispatcher = new DispatcherImpl();
+			}
+			return _dispatcher;
+		}
 	}
 }

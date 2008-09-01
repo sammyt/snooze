@@ -27,6 +27,6 @@ package org.projectsnooze.datatype
 {
 	public interface TypeFactory
 	{
-		function getType ( asType : String ) : Type;
+		function getType ( asType:String ):Type;
 	}
 }

@@ -27,16 +27,16 @@ package org.projectsnooze.generator
 {
 	public interface Statement
 	{
-		function getSqlSkeleton () : String;
+		function getSqlSkeleton ():String;
 		
-		function setSqlSkeleton ( sqlSkelton : String ) : void;
+		function setSqlSkeleton ( sqlSkelton:String ):void;
 		
-		function getParamaters () : Object;
+		function getParamaters ():Object;
 		
-		function addValue ( key : String , value : * ) : void;
+		function addValue ( key:String , value:* ):void;
 		
-		function getValuebyKey ( key : String ) : *;
+		function getValuebyKey ( key:String ):*;
 		
-		function getSQL () : String;
+		function getSQL ():String;
 	}
 }

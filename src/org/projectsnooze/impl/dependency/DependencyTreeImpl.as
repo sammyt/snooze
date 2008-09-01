@@ -25,11 +25,7 @@
  
 package org.projectsnooze.impl.dependency
 {
-	import flash.events.EventDispatcher;
-	
-	import mx.logging.ILogger;
-	import mx.logging.Log;
-	
+	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTree;
 	import org.projectsnooze.execute.StatementQueue;
@@ -40,25 +36,43 @@ package org.projectsnooze.impl.dependency
 	/**
 	 * 	@inheritDoc
 	 */ 
-	public class DependencyTreeImpl extends EventDispatcher 
-									implements DependencyTree
+	public class DependencyTreeImpl implements DependencyTree
 	{
-		private var logger : ILogger = Log.getLogger( "DependencyTreeImpl" );
+		/**
+		 * @private
+		 */
+		protected var _nodes:Array;
 		
-		protected var _nodes : Array;
-		protected var _completedCount : uint;
-		protected var _statementQueue : StatementQueue;
+		/**
+		 * @private
+		 */
+		protected var _completedCount:uint;
+		
+		/**
+		 * @private
+		 */ 
+		protected var _statementQueue:StatementQueue;
+		
+		/**
+		 * 	@protected
+		 * 	
+		 * 	contains references to all the many to many 
+		 * 	relationships that have been followed to
+		 * 	create the dependency tree
+		 */ 
+		protected var _followedRelationships:Array;
 		
 		public function DependencyTreeImpl()
 		{
 			_nodes = new Array();
+			_followedRelationships = new Array();
 			_completedCount = 0;
 		}
 		
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function getNodeCount () : int
+		public function getNodeCount ():int
 		{
 			return _nodes.length;
 		}
@@ -66,8 +80,7 @@ package org.projectsnooze.impl.dependency
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function addDependencyNode( 
-			dependencyNode : DependencyNode ) : void
+		public function addDependencyNode( dependencyNode:DependencyNode ):void
 		{
 			_nodes.push( dependencyNode );
 		}
@@ -77,12 +90,9 @@ package org.projectsnooze.impl.dependency
 	 	*/
 		public function begin():void
 		{
-			_statementQueue.setTransactional( true );
-			_statementQueue.openConnection();
-			
-			for( var i : Iterator = new SmartIterator( _nodes ) ; i.hasNext() ; )
+			for( var i:Iterator = new SmartIterator( _nodes ) ; i.hasNext() ; )
 			{
-				var depNode : DependencyNode = i.next() as DependencyNode;
+				var depNode:DependencyNode = i.next() as DependencyNode;
 				depNode.setDependencyTree( this );
 				
 				// the node has no unfilled dependencies, so can begin
@@ -93,44 +103,39 @@ package org.projectsnooze.impl.dependency
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function nodeHasCompleted ( node : DependencyNode ) : void
+		public function nodeHasCompleted ( node:DependencyNode ):void
 		{
 			_completedCount ++;
 			if ( _completedCount == _nodes.length )
 			{
 				// the result method in all the nodes has been called
-				logger.debug( "the action is complete" );
-				
-				_statementQueue.finishProcessingQueue();
 			}
 		}
 		
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function doAnyNodesWrap ( obj : Object ) : Boolean
+		public function doAnyNodesWrap ( obj:Object ):Boolean
 		{
-			return getNodeByWrappedObject( obj ) ? true : false;
+			return getNodeByWrappedObject( obj ) ? true:false;
 		}
 		
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function getNodeByWrappedObject ( obj : Object ) : DependencyNode
+		public function getNodeByWrappedObject ( obj:Object ):DependencyNode
 		{
-			for ( var i : Iterator = new ArrayIterator ( _nodes ) ; i.hasNext() ; )
+			for ( var i:Iterator = new ArrayIterator ( _nodes ) ; i.hasNext() ; )
 			{
-				var node : DependencyNode = i.next() as DependencyNode;
+				var node:DependencyNode = i.next() as DependencyNode;
 				if ( node.getWrappedObject() == obj ) return node;
 			}
 			return null;
 		}
-		
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function setStatementQueue ( 
-			statementQueue : StatementQueue ) : void
+		public function setStatementQueue ( statementQueue:StatementQueue ):void
 		{
 			_statementQueue = statementQueue; 
 		}
@@ -138,9 +143,34 @@ package org.projectsnooze.impl.dependency
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function getStatementQueue () : StatementQueue
+		public function getStatementQueue ():StatementQueue
 		{
 			return _statementQueue;
+		}
+		/**
+	 	* 	@inheritDoc
+	 	*/
+		public function setManyToManyPathFollowed ( 
+			relationship:Relationship ):void
+		{
+			_followedRelationships.push( relationship );
+		}
+		
+		/**
+	 	* 	@inheritDoc
+	 	*/ 
+		public function getManyToManyPathFollowed( relationship:Relationship ):Boolean
+		{	
+			for ( var i:Iterator = new ArrayIterator( _followedRelationships ) ; i.hasNext() ; )
+			{
+				var r:Relationship = i.next() as Relationship;
+				
+				if ( r.getJoinTableName() == relationship.getJoinTableName() && r.getJoinTableName() != null )
+				{
+					return true;
+				}	
+			}
+			return false;
 		}
 	}
 }

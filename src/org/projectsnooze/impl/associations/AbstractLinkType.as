@@ -29,10 +29,10 @@ package org.projectsnooze.impl.associations
 
 	public class AbstractLinkType implements LinkType
 	{
-		protected var _name : String;
-		protected var _foreignKeyContainer : Boolean;
+		protected var _name:String;
+		protected var _foreignKeyContainer:Boolean;
 		
-		public function AbstractLinkType( name : String , foreignKeyContainer : Boolean )
+		public function AbstractLinkType( name:String , foreignKeyContainer:Boolean )
 		{
 			_name = name;
 			_foreignKeyContainer = foreignKeyContainer;
@@ -48,12 +48,12 @@ package org.projectsnooze.impl.associations
 			_name = name;
 		}
 		
-		public function getForeignKeyContainer () : Boolean
+		public function getForeignKeyContainer ():Boolean
 		{
 			return _foreignKeyContainer;
 		}
 		
-		public function setForeignKeyContainer ( foreignKeyContainer : Boolean ) : void
+		public function setForeignKeyContainer ( foreignKeyContainer:Boolean ):void
 		{
 			_foreignKeyContainer = foreignKeyContainer;
 		}

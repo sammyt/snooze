@@ -25,24 +25,69 @@
  
 package org.projectsnooze.impl.dependency
 {
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	
+	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.dependency.DependencyNode;
 
 	public class RelationshipInsertDepNode 	extends AbstractDependencyNodeImpl 
 											implements DependencyNode
 	{
+		private static var logger:ILogger = 
+			Log.getLogger( "RelationshipInsertDepNode" );
+		
+		protected var _relationship:Relationship;
+		
 		public function RelationshipInsertDepNode()
 		{
 			super();
+			logger.debug( "created" );
 		}
 		
-		override public function begin () : void
+		public function setRelationship ( relationship:Relationship ):void
+		{
+			_relationship = relationship;
+		}
+		
+		protected function addParams ():void
+		{
+			/*
+			var dm1:EntityDataMap;
+			var dm2:EntityDataMap;
+			
+			var e1:Object;
+			var e2:Object;
+			
+			var getter1:Function = e1[ 
+				"get" + dm1.getPrimaryKey().getName() ] as Function;
+			
+			var getter2:Function = e2[ 
+				"get" + dm2.getPrimaryKey().getName() ] as Function;
+			
+			_statement.addValue( ":" + 
+				dm1.getForeignKeyName() , getter1.apply( e1 ) );
+			
+			_statement.addValue( ":" + 
+				dm2.getForeignKeyName() , getter2.apply( e2 ) );
+			*/
+			logger.debug( "relDep sql {0}" , _statement.getSQL() );
+		}
+		
+		/**
+		 * 	@inheritDoc
+		 */ 
+		override public function begin ():void
 		{
 			super.begin();
-			
-			trace( "RelationshipInsertDepNode.begin" );
+			logger.debug( "begin" );
+			addParams();
 		}
 		
-		override public function result( data : Object ):void
+		/**
+		 * 	@inheritDoc
+		 */
+		override public function result( data:Object ):void
 		{	
 			super.result( data );
 		}

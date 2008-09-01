@@ -32,12 +32,12 @@ package org.projectsnooze.utils
 	
 	public class SnoozeLog
 	{
-		public static function getLogger ( obj : * ) : ILogger
+		public static function getLogger ( obj:* ):ILogger
 		{
 			return Log.getLogger( getClassName( obj ) );
 		}
 		
-		public static function getClassName( obj : * ):String
+		public static function getClassName( obj:* ):String
 	    {
 	        var name:String = getQualifiedClassName( obj );
 	        
