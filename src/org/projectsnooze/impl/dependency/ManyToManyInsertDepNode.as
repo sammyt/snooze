@@ -25,53 +25,57 @@
  
 package org.projectsnooze.impl.dependency
 {
-	import mx.logging.ILogger;
-	import mx.logging.Log;
-	
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.dependency.DependencyNode;
+	import org.projectsnooze.scheme.EntityDataMapProvider;
+	import org.projectsnooze.scheme.EntityDataMap;
 
-	public class RelationshipInsertDepNode 	extends AbstractDependencyNodeImpl 
-											implements DependencyNode
+	public class ManyToManyInsertDepNode extends AbstractDependencyNodeImpl implements DependencyNode
 	{
-		private static var logger:ILogger = 
-			Log.getLogger( "RelationshipInsertDepNode" );
-		
+		/**
+		 * @private
+		 */ 
 		protected var _relationship:Relationship;
 		
-		public function RelationshipInsertDepNode()
+		/**
+		 * @private
+		 */
+		protected var _firstEntity:Object;
+		
+		/**
+		 * @private
+		 */
+		protected var _secondEntity:Object;
+		
+		/**
+		 * @private
+		 */
+		protected var _entityDataMapProvider:EntityDataMapProvider; 
+		
+		/**
+		 * Creates instance of <code>ManyToManyInsertDepNode</code>
+		 */ 	
+		public function ManyToManyInsertDepNode()
 		{
 			super();
-			logger.debug( "created" );
 		}
-		
-		public function setRelationship ( relationship:Relationship ):void
-		{
-			_relationship = relationship;
-		}
-		
+
 		protected function addParams ():void
 		{
-			/*
-			var dm1:EntityDataMap;
-			var dm2:EntityDataMap;
+			var map1:EntityDataMap = _entityDataMapProvider.getEntityDataMap( _firstEntity );
+			var map2:EntityDataMap = _entityDataMapProvider.getEntityDataMap( _secondEntity );
 			
-			var e1:Object;
-			var e2:Object;
+			var getter1:Function = _firstEntity[ 
+				"get" + map1.getPrimaryKey().getName() ] as Function;
 			
-			var getter1:Function = e1[ 
-				"get" + dm1.getPrimaryKey().getName() ] as Function;
-			
-			var getter2:Function = e2[ 
-				"get" + dm2.getPrimaryKey().getName() ] as Function;
+			var getter2:Function = _secondEntity[ 
+				"get" + map2.getPrimaryKey().getName() ] as Function;
 			
 			_statement.addValue( ":" + 
-				dm1.getForeignKeyName() , getter1.apply( e1 ) );
+				map1.getForeignKeyName() , getter1.apply( _firstEntity ) );
 			
 			_statement.addValue( ":" + 
-				dm2.getForeignKeyName() , getter2.apply( e2 ) );
-			*/
-			logger.debug( "relDep sql {0}" , _statement.getSQL() );
+				map2.getForeignKeyName() , getter2.apply( _secondEntity ) );
 		}
 		
 		/**
@@ -80,8 +84,27 @@ package org.projectsnooze.impl.dependency
 		override public function begin ():void
 		{
 			super.begin();
-			logger.debug( "begin" );
 			addParams();
+		}
+		
+		public function setFirstEntity( entity:Object ):void
+		{
+			_firstEntity = entity;
+		}
+
+		public function setSecondEntity( entity:Object ):void
+		{
+			_secondEntity = entity;
+		}
+		
+		public function setEntityDataMapProvider( entityDataMapProvider:EntityDataMapProvider ):void
+		{
+			_entityDataMapProvider = entityDataMapProvider;
+		}
+		
+		public function setRelationship( relationship:Relationship ):void
+		{
+			_relationship = relationship; 
 		}
 		
 		/**
@@ -90,6 +113,14 @@ package org.projectsnooze.impl.dependency
 		override public function result( data:Object ):void
 		{	
 			super.result( data );
+		}
+		
+		/**
+		 * 	@inheritDoc
+		 */ 
+		override public function getUniqueObject ():Object
+		{
+			return _relationship.getJoinTableName();
 		}
 	}
 }

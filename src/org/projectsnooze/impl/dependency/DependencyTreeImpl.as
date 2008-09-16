@@ -45,11 +45,6 @@ package org.projectsnooze.impl.dependency
 		
 		/**
 		 * @private
-		 */
-		protected var _completedCount:uint;
-		
-		/**
-		 * @private
 		 */ 
 		protected var _statementQueue:StatementQueue;
 		
@@ -66,7 +61,6 @@ package org.projectsnooze.impl.dependency
 		{
 			_nodes = new Array();
 			_followedRelationships = new Array();
-			_completedCount = 0;
 		}
 		
 		/**
@@ -80,9 +74,10 @@ package org.projectsnooze.impl.dependency
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function addDependencyNode( dependencyNode:DependencyNode ):void
+		public function add( dependencyNode:DependencyNode ):void
 		{
 			_nodes.push( dependencyNode );
+			dependencyNode.setDependencyTree( this );
 		}
 		
 		/**
@@ -103,32 +98,20 @@ package org.projectsnooze.impl.dependency
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function nodeHasCompleted ( node:DependencyNode ):void
+		public function contains ( obj:Object ):Boolean
 		{
-			_completedCount ++;
-			if ( _completedCount == _nodes.length )
-			{
-				// the result method in all the nodes has been called
-			}
+			return getNode( obj ) ? true:false;
 		}
 		
 		/**
 	 	* 	@inheritDoc
 	 	*/
-		public function doAnyNodesWrap ( obj:Object ):Boolean
-		{
-			return getNodeByWrappedObject( obj ) ? true:false;
-		}
-		
-		/**
-	 	* 	@inheritDoc
-	 	*/
-		public function getNodeByWrappedObject ( obj:Object ):DependencyNode
+		public function getNode ( obj:Object ):DependencyNode
 		{
 			for ( var i:Iterator = new ArrayIterator ( _nodes ) ; i.hasNext() ; )
 			{
 				var node:DependencyNode = i.next() as DependencyNode;
-				if ( node.getWrappedObject() == obj ) return node;
+				if ( node.getUniqueObject() == obj ) return node;
 			}
 			return null;
 		}

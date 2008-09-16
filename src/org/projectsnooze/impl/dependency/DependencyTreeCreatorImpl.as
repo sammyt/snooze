@@ -33,6 +33,7 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.dependency.DependencyTreeCreator;
 	import org.projectsnooze.execute.QueueManager;
 	import org.projectsnooze.generator.DDLGenerator;
+	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
 	import org.projectsnooze.impl.patterns.SmartIterator;
 	import org.projectsnooze.patterns.Iterator;
@@ -41,12 +42,34 @@ package org.projectsnooze.impl.dependency
 
 	public class DependencyTreeCreatorImpl implements DependencyTreeCreator
 	{
+		/**
+		 * @private
+		 */ 
 		protected var _entityDataMapProvider:EntityDataMapProvider;
+		
+		/**
+		 * @private
+		 */
 		protected var _typeUtils:TypeUtils;
+		
+		/**
+		 * @private
+		 */
 		protected var _statementCreator:StatementCreator;
+		
+		/**
+		 * @private
+		 */
 		protected var _ddlGenerator:DDLGenerator;
+		
+		/**
+		 * @private
+		 */
 		protected var _queueManager:QueueManager; 
 		
+		/**
+		 * Creates instance of <code>DependencyTreeCreatorImpl</code>
+		 */ 
 		public function DependencyTreeCreatorImpl()
 		{
 		}
@@ -74,6 +97,7 @@ package org.projectsnooze.impl.dependency
 		{
 			var depTree:DependencyTree = new DependencyTreeImpl();
 			depTree.setStatementQueue( getQueueManager().getStatementQueue() );
+			
 			createInsertTree( entity , depTree );
 			
 			return depTree;
@@ -84,26 +108,23 @@ package org.projectsnooze.impl.dependency
 		 * 
 		 *	this function recursively navigates through the relationships of
 		 *	the entity it is provided creating <code>DependencyNode</code>s
-		 * which are then added to a dependency tree in the order they need
-		 * to be executed.
+		 * 	which are then added to a dependency tree in the order they need
+		 * 	to be executed.
 		 */ 
-		protected function createInsertTree ( entity:Object , 
-				depTree:DependencyTree , lastDepNode:DependencyNode = null , 
-				isPrevEntityFKContiner:Boolean = true ):void
+		protected function createInsertTree ( entity:Object , depTree:DependencyTree , 
+			lastDepNode:DependencyNode = null , isPrevEntityFKContiner:Boolean = true ):void
 		{
 			// get the entity data map for the entity provided
-			var dataMap:EntityDataMap = 
-				getEntitDataMapProvider().getEntityDataMap( entity );
+			var dataMap:EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
 			
 			var depNode:EntityInsertDepNode;
 			
 			// has this entity already been wrapped in a node
-			if ( depTree.doAnyNodesWrap( entity ) )
+			if ( depTree.contains( entity ) )
 			{
 				// if a DependencyNode has already been created for this
 				// entity then retrieve it from the tree 
-				depNode = depTree.getNodeByWrappedObject( 
-					entity ) as EntityInsertDepNode;
+				depNode = depTree.getNode( entity ) as EntityInsertDepNode;
 			}
 			
 			// if this is the first the depTree has heard of
@@ -113,45 +134,38 @@ package org.projectsnooze.impl.dependency
 				depNode = new EntityInsertDepNode();
 				depNode.setEnity( entity );
 				depNode.setEntityDataMap( dataMap );
-				depNode.setDependencyTree( depTree );
-				depNode.setStatement( 
-					getStatementCreator().getInsertStatement( dataMap ) );
-				
-				depTree.addDependencyNode( depNode );
+				depNode.setStatement( getStatementCreator().getInsertStatement( dataMap ) );
+				depTree.add( depNode );
 			}
-			
 			
 			// if the last entity was the foreign key container
 			// then it is dependent on this node
 			if ( isPrevEntityFKContiner && lastDepNode )
 			{
-				depNode.addDependentNode( lastDepNode );
-				lastDepNode.addDependency( depNode )
+				depNode.addChildNode( lastDepNode );
 			}
 			// if the last entity was not the foreign key container
 			// then this entity node depends on the previous one
 			else if ( lastDepNode && ! isPrevEntityFKContiner )
 			{
-				lastDepNode.addDependentNode( depNode );
-				depNode.addDependency( lastDepNode )
+				lastDepNode.addChildNode( depNode );
 			}
 			
 			// loop though all the relationships of the entity
 			for ( var i:Iterator = dataMap.getRelationshipIterator() ; i.hasNext() ; )
 			{
-				var relationship :Relationship = i.next() as Relationship;
+				var relationship:Relationship = i.next() as Relationship;
 				
 				// if this entity is the entity container for this relationship
-				if ( relationship.getIsEntityContainer()
-					&& ! depTree.getManyToManyPathFollowed( relationship ) )
+				if ( relationship.getIsEntityContainer() && 
+					!depTree.contains( relationship.getJoinTableName() ) )
 				{
 					// get a reference to the getter for the contained object
 					// or objects, if it is a collection
-					var getter:Function = entity[ "get" + 
-						relationship.getPropertyName() ] as Function;
+					var getter:Function = entity[ "get" + relationship.getPropertyName() ] as Function;
 					
 					// apply the getter, this returning the date
-					var data:* = getter.apply( entity );
+					var data:Object = getter.apply( entity );
 					
 					// is the data a collection, ie an Array or ArrayCollection
 					if ( data && getTypeUtils().isCollection( data ) )
@@ -166,25 +180,14 @@ package org.projectsnooze.impl.dependency
 							// be dependent on both the entites j.next and entity
 							if ( relationship.getType().getName() == MetaData.MANY_TO_MANY )
 							{
-								var relDepNode:RelationshipInsertDepNode
-											= new RelationshipInsertDepNode();
-								
-								// provide the dep node with its basic requirements
-								relDepNode.setDependencyTree( depTree );
-								
-								// need to set the statement
-								relDepNode.setStatement ( getStatementCreator().getRelationshipInsert( 
-									relationship , dataMap , getEntitDataMapProvider().getEntityDataMap( obj ) ) );
-								
-								// inform the dep tree of another dep node
-								depTree.addDependencyNode( relDepNode );
-								depTree.setManyToManyPathFollowed( relationship );
+								var node:DependencyNode = 
+									getManyToManyInsertNode( relationship , entity , obj );
+									
+								depTree.add( node );
 							}		
 							
 							createInsertTree( obj , depTree , depNode , 
 								relationship.getType().getForeignKeyContainer() );
-								
-							//logger.error ( "is {0} null" , depTree.getNodeByWrappedObject( obj ) );
 						}
 					}
 					else if ( data )
@@ -195,12 +198,31 @@ package org.projectsnooze.impl.dependency
 				}
 			}
 		}
+			
+		protected function getManyToManyInsertNode( relationship:Relationship , 
+			entity1:Object , entity2:Object ):DependencyNode
+		{
+			var node:ManyToManyInsertDepNode = new ManyToManyInsertDepNode();
+			
+			var dataMap1:EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity1 );
+			var dataMap2:EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity2 );
+			
+			var statement:Statement = 
+				getStatementCreator().getRelationshipInsert( relationship , dataMap1 , dataMap2 );
+
+			node.setStatement ( statement );
+			node.setFirstEntity( entity1 );
+			node.setSecondEntity( entity2 );
+			node.setEntityDataMapProvider( getEntitDataMapProvider() );
+			node.setRelationship( relationship );
+			
+			return node;
+		}
 		
 		/**
 		 * 	@inheritDoc
 		 */
-		public function setEntityDataMapProvider ( 
-			entityDataMap:EntityDataMapProvider ):void
+		public function setEntityDataMapProvider ( entityDataMap:EntityDataMapProvider ):void
 		{
 			_entityDataMapProvider = entityDataMap;
 		}
@@ -232,8 +254,7 @@ package org.projectsnooze.impl.dependency
 		/**
 		 * 	@inheritDoc
 		 */
-		public function setStatementCreator ( 
-			statementCreator:StatementCreator ):void
+		public function setStatementCreator ( statementCreator:StatementCreator ):void
 		{
 			_statementCreator = statementCreator
 		}

@@ -54,8 +54,23 @@ package org.projectsnooze.impl.generator
 		public function getRelationshipInsert ( relationship:Relationship ,
 			dataOne:EntityDataMap , dataTwo:EntityDataMap ):Statement
 		{
+			var statement:Statement = new StatementImpl();
+			var sql:String = "";
 			
-			return null;
+			sql = "INSERT INTO ";
+			sql += relationship.getJoinTableName();
+			sql +=  " (";
+			
+			sql += dataOne.getForeignKeyName() + ", ";
+			sql += dataTwo.getForeignKeyName() + ") ";
+			
+			sql += "VALUES (";
+			sql += ValuePrefix + dataOne.getForeignKeyName() + ", ";
+			sql += ValuePrefix + dataTwo.getForeignKeyName() + "); ";
+				
+			statement.setSqlSkeleton( sql );
+			
+			return statement;
 		}
 		
 		/**

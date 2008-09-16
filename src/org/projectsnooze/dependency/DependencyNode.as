@@ -40,37 +40,8 @@ package org.projectsnooze.dependency
 	 * 	@see org.projectsnooze.dependency.DependencyTree 	
 	 * 	@see org.projectsnooze.impl.dependency.DependencyTreeCreator
 	 */ 
-	public interface DependencyNode extends Subject , Observer , Command , Responder
+	public interface DependencyNode extends Subject , Observer , Responder
 	{
-		/**
-		 * 	Sets the <code>DependencyTree</code> that this <code>DependencyNode</code>
-		 * 	is contained within.
-		 * 
-		 * 	<p>each node maintains a list of nodes it is dependent on, and 
-		 * 	a list of nodes which depend on it.  This is done via the observer
-		 * 	pattern, with each node implementing both <code>Subject</code> and
-		 * 	<code>Observer</code>.  Observers are the dependent nodes.</p>
-		 * 
-		 * 	<p>When a node has completed executing, it notifies all its 
-		 * 	dependent nodes (obserers) view the notifyObservers method, any
-		 * 	of those which as a result have all their dependencies met begin
-		 * 	the process of execution.</p>
-		 */ 
-		function setDependencyTree ( dependencyTree:DependencyTree ):void;
-		
-		/**
-		 * 	Gets the <code>DependencyTree</code> that this <code>DependencyNode</code>
-		 * 	is contained within.
-		 */
-		function getDependencyTree ():DependencyTree;
-		
-		/**
-		 * 	<code>DependencyNode</code>s require a reference to the statement
-		 * 	queue so that when they are executed that can create their
-		 * 	<code>Statement</code> object and set its <code>StatementQueue</code
-		 * 	property, thus allowing it to be executed on the database
-		 */ 
-		//function setStatementQueue ( statementQueue:StatementQueue ):void;
 		
 		/**
 		 * 	returns the reference to the <code>StatementQueue</code> given
@@ -95,6 +66,11 @@ package org.projectsnooze.dependency
 		function dependenciesAreMet ():Boolean;
 		
 		/**
+		 * How many nodes is this node dependent on
+		 */ 
+		function getDependencyCount():int;
+		
+		/**
 		 * 	isComplete returns true if the node has completed execution or
 		 * 	false if is has not begun, or is currently executing
 		 */ 
@@ -104,14 +80,14 @@ package org.projectsnooze.dependency
 		 * 	this is used by the <code>DependencyTreeCreator</code> to add a
 		 * 	dependent node to this nodes list of dependent nodes.
 		 */ 
-		function addDependentNode ( dependencyNode:DependencyNode ):void;
+		function addChildNode ( dependencyNode:DependencyNode ):void;
 		
 		/**
 		 * 	this is used to inform the node of another node which it is dependent
 		 * 	on.  This node cannot execute untill all the nodes it is dependent on
 		 * 	have completed execution.
 		 */ 
-		function addDependency ( dependencyNode:DependencyNode ):void;
+		function addParentNode ( dependencyNode:DependencyNode ):void;
 		
 		/**
 		 * 	the statement set here should be ready prepared with the correct
@@ -135,7 +111,29 @@ package org.projectsnooze.dependency
 		 * 	<code>DependencyNode</code>s often wrap objects such as entities.
 		 * 	If this is such a node then this function will return the object
 		 */	
-		function getWrappedObject ():Object;
+		function getUniqueObject ():Object;
+		
+		/**
+		 * 	Sets the <code>DependencyTree</code> that this <code>DependencyNode</code>
+		 * 	is contained within.
+		 * 
+		 * 	<p>each node maintains a list of nodes it is dependent on, and 
+		 * 	a list of nodes which depend on it.  This is done via the observer
+		 * 	pattern, with each node implementing both <code>Subject</code> and
+		 * 	<code>Observer</code>.  Observers are the dependent nodes.</p>
+		 * 
+		 * 	<p>When a node has completed executing, it notifies all its 
+		 * 	dependent nodes (obserers) view the notifyObservers method, any
+		 * 	of those which as a result have all their dependencies met begin
+		 * 	the process of execution.</p>
+		 */ 
+		function setDependencyTree ( dependencyTree:DependencyTree ):void;
+		
+		/**
+		 * 	Gets the <code>DependencyTree</code> that this <code>DependencyNode</code>
+		 * 	is contained within.
+		 */
+		function getDependencyTree ():DependencyTree;
 		
 	}
 }

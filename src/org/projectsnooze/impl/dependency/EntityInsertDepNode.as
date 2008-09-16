@@ -37,7 +37,6 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.NameTypeMapping;
-	import org.projectsnooze.dependency.DependencyTree;
 
 	public class EntityInsertDepNode extends AbstractDependencyNodeImpl
 	{
@@ -146,7 +145,7 @@ package org.projectsnooze.impl.dependency
 			super.result( data );
 		}
 	
-		override public function getWrappedObject ():Object
+		override public function getUniqueObject ():Object
 		{
 			return getEntity();
 		}
