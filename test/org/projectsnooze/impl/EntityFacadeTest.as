@@ -42,7 +42,7 @@ package org.projectsnooze.impl
 		{
 			var ts:TestSuite = new TestSuite();
 			//ts.addTest( new EntityFacadeTest( "testGetSession" ) );
-			ts.addTest( new EntityFacadeTest( "testCreateSchoolDB" ) );
+			//ts.addTest( new EntityFacadeTest( "testCreateSchoolDB" ) );
 			//ts.addTest( new EntityFacadeTest( "testDropSchoolDB" ) );
 			//ts.addTest( new EntityFacadeTest( "testInsertSchool" ) );
 			//ts.addTest( new EntityFacadeTest( "testCreateFootballDB" ) );

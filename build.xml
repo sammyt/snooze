@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="${project.name}" basedir="." default="run">
+<project name="${project.name}" basedir="." default="unittest">
 
 	<taskdef resource="flexTasks.tasks" classpath="${basedir}/flex_ant_tasks/lib/flexTasks.jar" />
 	<taskdef resource="com/adobe/ac/ant/tasks/tasks.properties" />
@@ -7,7 +7,7 @@
 	<property name="FLEX_HOME" value="${flex.sdk}" />
 
 	<target name="compile" depends="lib">
-		<mxmlc file="${test.dir}/TestRunner.mxml" output="${deploy.test}/TestRunner.swf" locale="en_US">
+		<mxmlc file="${test.dir}/JUnitTest.mxml" output="${deploy.unit}/${unit.out}" locale="en_US">
 			<load-config filename="${flex.sdk}/frameworks/air-config.xml" />
 			<source-path path-element="${test.dir}" />
 			<library-path dir="${lib.dir}" append="true">
@@ -20,7 +20,6 @@
 			</library-path>
 		</mxmlc>
 	</target>
-
 
 	<target name="lib">
 		<compc output="${deploy.swc}/${snooze.out}">
@@ -45,10 +44,8 @@
 		</exec>
 	</target>
 
-
 	<target name="unittest" depends="compile">
-		<flexunit swf="${deploy.unit}/${unit.out}" toDir="${deploy.unit}/junit" 
-			haltonfailure="false" verbose="true" failureproperty="flexunit.failed" />
+		<flexunit swf="${deploy.unit}/${unit.out}" toDir="${deploy.unit}/junit" haltonfailure="false" verbose="true" failureproperty="flexunit.failed" />
 		<fail message="One or more flexunit tests failed. See test reports for details." if="flexunit.failed" />
 	</target>
 
@@ -56,4 +53,9 @@
 		<asdoc />
 	</target>
 
+	<target name="clean">
+		<delete dir="${basedir}/${deploy.test}" />
+		<delete dir="${basedir}/${deploy.swc}" />
+		<delete dir="${basedir}/${deploy.unit}" />
+	</target>
 </project>

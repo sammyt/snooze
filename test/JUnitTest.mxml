@@ -6,17 +6,19 @@
 			import mx.logging.ILogger;
 			import mx.logging.Log;
 			import mx.logging.targets.TraceTarget;
+			
 			import flexunit.junit.JUnitTestRunner;
+			import flexunit.framework.TestSuite;
+			
 			import org.projectsnooze.impl.dependency.DependencyTreeCreatorImplTest;
-			import org.projectsnooze.impl.session.SessionImplTest;
 			import org.projectsnooze.impl.generator.DDLGeneratorImplTest;
 			import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
 			import org.projectsnooze.impl.scheme.EntityDataMapproviderImplTest;
 			import org.projectsnooze.impl.scheme.SchemeBuilderImplTest;
 			import org.projectsnooze.impl.scheme.TypeUtilsImplTest;
-			
-			import flexunit.framework.TestSuite;
-			
+			import org.projectsnooze.impl.EntityFacadeTest;
+			import org.projectsnooze.impl.ArrayIteratorTest;
+			import org.projectsnooze.impl.StatementCreatorImplTest;
 			
 			private var runner:JUnitTestRunner;
 
@@ -27,7 +29,6 @@
 			
 			private function onCreationComplete():void
 			{
-                
                 var traceTarget: TraceTarget = new TraceTarget();
                 traceTarget.filters=["*"];
                 traceTarget.level = LogEventLevel.ALL;
@@ -39,19 +40,19 @@
                 var logger:ILogger = Log.getLogger(this.className);
 				
  				var testSuite:TestSuite = new TestSuite();
- 				
+
  				testSuite.addTest( SchemeBuilderImplTest.suite() );
  				testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
  				testSuite.addTest( TypeUtilsImplTest.suite() );
  				testSuite.addTest( DDLGeneratorImplTest.suite() );
- 				testSuite.addTest( SessionImplTest.suite() );
  				testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
+ 				testSuite.addTest( StatementCreatorImplTest.suite() );
+ 				testSuite.addTest( ArrayIteratorTest.suite() );
+ 				testSuite.addTest( EntityFacadeTest.suite() );
  				
 				runner = new JUnitTestRunner();
  				runner.run( testSuite , testComplete );
  			}
-			
-		
 		]]>
 	</mx:Script>
 </mx:Application>
