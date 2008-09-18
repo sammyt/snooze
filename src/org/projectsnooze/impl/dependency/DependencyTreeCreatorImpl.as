@@ -175,19 +175,27 @@ package org.projectsnooze.impl.dependency
 						for ( var j:Iterator = new SmartIterator( data ) ; j.hasNext() ; )
 						{
 							var obj:Object = j.next();
-								
+							var node:DependencyNode;
+							
 							// add any relationship dep nodes here... which will
 							// be dependent on both the entites j.next and entity
 							if ( relationship.getType().getName() == MetaData.MANY_TO_MANY )
 							{
-								var node:DependencyNode = 
-									getManyToManyInsertNode( relationship , entity , obj );
-									
+								
+								node = getManyToManyInsertNode( relationship , entity , obj );
+								
+								depNode.addChildNode( node );
+								
 								depTree.add( node );
 							}		
 							
 							createInsertTree( obj , depTree , depNode , 
 								relationship.getType().getForeignKeyContainer() );
+								
+							if( node )
+							{
+								depTree.getNode( obj ).addChildNode( node );
+							}
 						}
 					}
 					else if ( data )

@@ -29,6 +29,8 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.scheme.EntityDataMap;
+	import org.projectsnooze.impl.execute.StatementWrapperImpl;
+	import org.projectsnooze.execute.StatementWrapper;
 
 	public class ManyToManyInsertDepNode extends AbstractDependencyNodeImpl implements DependencyNode
 	{
@@ -85,6 +87,9 @@ package org.projectsnooze.impl.dependency
 		{
 			super.begin();
 			addParams();
+			
+			var wrapper:StatementWrapper = new StatementWrapperImpl( getStatement() , this );
+			getStatementQueue().add( wrapper );
 		}
 		
 		public function setFirstEntity( entity:Object ):void
