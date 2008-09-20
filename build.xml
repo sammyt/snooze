@@ -7,7 +7,9 @@
 	<property name="FLEX_HOME" value="${flex.sdk}" />
 
 	<target name="compile" depends="lib">
-		<mxmlc file="${test.dir}/JUnitTest.mxml" output="${deploy.unit}/${unit.out}" locale="en_US">
+		<mxmlc 	file="${test.dir}/JUnitTest.mxml" 
+				output="${deploy.unit}/${unit.out}" 
+				locale="en_US" debug="true">
 			<load-config filename="${flex.sdk}/frameworks/air-config.xml" />
 			<source-path path-element="${test.dir}" />
 			<library-path dir="${lib.dir}" append="true">

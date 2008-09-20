@@ -22,32 +22,34 @@
 			
 			private var runner:JUnitTestRunner;
 
-	        private function testComplete():void {
-	        	var logger:ILogger = Log.getLogger(this.className);
-	           	fscommand( "quit" );
-	        }
+			private function testComplete():void 
+			{
+				var logger:ILogger = Log.getLogger(this.className);
+				fscommand( "quit" );
+			}
 			
 			private function onCreationComplete():void
 			{
-                var traceTarget: TraceTarget = new TraceTarget();
-                traceTarget.filters=["*"];
-                traceTarget.level = LogEventLevel.ALL;
-                traceTarget.includeDate = true;
-                traceTarget.includeTime = true;
-                traceTarget.includeCategory = true;
-                traceTarget.includeLevel = true;
-                
-                var logger:ILogger = Log.getLogger(this.className);
+				var traceTarget: TraceTarget = new TraceTarget();
+				traceTarget.filters=["*"];
+				traceTarget.level = LogEventLevel.ALL;
+				traceTarget.includeDate = true;
+				traceTarget.includeTime = true;
+				traceTarget.includeCategory = true;
+				traceTarget.includeLevel = true;
+				
+				var logger:ILogger = Log.getLogger(this.className);
+				logger.debug( "pants" );
 				
  				var testSuite:TestSuite = new TestSuite();
 
- 				testSuite.addTest( SchemeBuilderImplTest.suite() );
- 				testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
- 				testSuite.addTest( TypeUtilsImplTest.suite() );
- 				testSuite.addTest( DDLGeneratorImplTest.suite() );
- 				testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
- 				testSuite.addTest( StatementCreatorImplTest.suite() );
- 				testSuite.addTest( ArrayIteratorTest.suite() );
+ 				//testSuite.addTest( SchemeBuilderImplTest.suite() );
+ 				//testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
+ 				//testSuite.addTest( TypeUtilsImplTest.suite() );
+ 				//testSuite.addTest( DDLGeneratorImplTest.suite() );
+ 				//testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
+ 				//testSuite.addTest( StatementCreatorImplTest.suite() );
+ 				//testSuite.addTest( ArrayIteratorTest.suite() );
  				testSuite.addTest( EntityFacadeTest.suite() );
  				
 				runner = new JUnitTestRunner();

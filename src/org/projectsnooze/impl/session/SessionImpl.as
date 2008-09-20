@@ -109,6 +109,17 @@ package org.projectsnooze.impl.session
 		
 		/**
 		 * @inheritDoc
+		 */ 
+		public function retrieve( clazz:Class , id:Object ):void
+		{
+			var depTree:DependencyTree = 
+				getDependencyTreeCreator().getRetrieveDependencyTree( clazz , id );
+				
+			depTree.begin();
+		}
+		
+		/**
+		 * @inheritDoc
 		 */
 		public function update ( obj:Object = null ):void
 		{

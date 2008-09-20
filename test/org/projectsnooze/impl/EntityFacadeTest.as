@@ -24,6 +24,8 @@ package org.projectsnooze.impl
 	
 	import some.other.domain.*;
 	import org.projectsnooze.events.SessionEvent;
+	
+	import flash.utils.describeType;
 
 	public class EntityFacadeTest extends TestCase
 	{
@@ -51,6 +53,7 @@ package org.projectsnooze.impl
 			//ts.addTest( new EntityFacadeTest( "testTournamentTable" ) );
 			//ts.addTest( new EntityFacadeTest( "testClubTournamentTable" ) );
 			//ts.addTest( new EntityFacadeTest( "testInsertionWithFootballDomain" ) );
+			ts.addTest( new EntityFacadeTest( "retrieveEntity" ) );
 			
 			return ts;
 		}
@@ -471,6 +474,18 @@ package org.projectsnooze.impl
 			}
 			
 			return true;
+		}
+		
+		
+		public function retrieveEntity():void
+		{
+			trace("EntityFacadeTest::retrieveEntity()");
+			facade.addEntityClass( Club );
+			facade.addEntityClass( Player );
+			facade.addEntityClass( Tournament );
+			facade.getSession().createDatabase();
+			
+			facade.getSession().retrieve( Player , 1 );
 		}
 	}
 }

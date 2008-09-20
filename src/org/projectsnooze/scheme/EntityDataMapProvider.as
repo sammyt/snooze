@@ -29,7 +29,7 @@ package org.projectsnooze.scheme
 	
 	public interface EntityDataMapProvider
 	{
-		function getEntityDataMap ( entity:Object ):EntityDataMap
+		function getEntityDataMap ( entity:Object ):EntityDataMap;
 		
 		function setEntityDataMap ( name:String , dataMap:EntityDataMap ):void;
 		

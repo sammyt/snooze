@@ -39,6 +39,7 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.patterns.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
+	import org.projectsnooze.impl.dependency.RetrieveDepNode;
 
 	public class DependencyTreeCreatorImpl implements DependencyTreeCreator
 	{
@@ -104,13 +105,13 @@ package org.projectsnooze.impl.dependency
 		}
 		
 		/**
-		 *	@private
-		 * 
-		 *	this function recursively navigates through the relationships of
-		 *	the entity it is provided creating <code>DependencyNode</code>s
-		 * 	which are then added to a dependency tree in the order they need
-		 * 	to be executed.
-		 */ 
+		*	@private
+		* 
+		*	this function recursively navigates through the relationships of
+		*	the entity it is provided creating <code>DependencyNode</code>s
+		* 	which are then added to a dependency tree in the order they need
+		* 	to be executed.
+		*/ 
 		protected function createInsertTree ( entity:Object , depTree:DependencyTree , 
 			lastDepNode:DependencyNode = null , isPrevEntityFKContiner:Boolean = true ):void
 		{
@@ -225,6 +226,49 @@ package org.projectsnooze.impl.dependency
 			node.setRelationship( relationship );
 			
 			return node;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function getRetrieveDependencyTree( clazz:Class , id:Object ):DependencyTree
+		{ 
+			var depTree:DependencyTree = new DependencyTreeImpl();
+			depTree.setStatementQueue( getQueueManager().getStatementQueue() );
+			
+			var entity:Object = new clazz();
+			var dataMap:EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
+			var setter:Function = entity[ "set" + dataMap.getPrimaryKey().getName() ] as Function;
+			
+			setter.apply( entity , id );
+			
+			createRetrieveTree( depTree , entity );
+			
+			return depTree;
+		}
+		
+		protected function createRetrieveTree( depTree:DependencyTree , entity:Object ):void
+		{
+			var dataMap:EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
+			
+			var node:RetrieveDepNode = new RetrieveDepNode();
+			node.setEntityDataMapProvider( getEntitDataMapProvider() );
+			node.setEntity( entity );
+			
+			depTree.add( node );
+			
+			// loop though all the relationships of the entity
+			for ( var i:Iterator = dataMap.getRelationshipIterator() ; i.hasNext() ; )
+			{
+				var relationship:Relationship = i.next() as Relationship;
+				
+				// if this entity is the entity container for this relationship
+				if ( relationship.getIsEntityContainer() && 
+					!depTree.contains( relationship.getJoinTableName() ) )
+				{
+					
+				}
+			}
 		}
 		
 		/**

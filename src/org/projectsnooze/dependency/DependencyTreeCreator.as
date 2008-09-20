@@ -62,6 +62,11 @@ package org.projectsnooze.dependency
 		function getSaveDependencyTree ( entity:Object ):DependencyTree;
 		
 		/**
+		 * retrieve an entity of a given class with the given id
+		 */ 
+		function getRetrieveDependencyTree( clazz:Class, id:Object ):DependencyTree;
+		
+		/**
 		 * 	the instance of <code>EntityDataMapProvider</code> containing the
 		 * 	<code>EntityDataMap</code>s for all in managed entities is required
 		 * 	so the necessary sql can be generated for which ever entity is 

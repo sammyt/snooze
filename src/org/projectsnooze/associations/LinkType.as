@@ -24,7 +24,7 @@
  */
  
 package org.projectsnooze.associations
-{
+{	
 	public interface LinkType
 	{
 		function getName ():String;

@@ -60,6 +60,14 @@ package org.projectsnooze.session
 		 */ 
 		function save ( entity:Object ):void;
 		
+		/**
+		 * Retrieves a object map from the database
+		 * 
+		 * @param clazz:Class tehe class of the object to retrieve
+		 * @param id:Object the ID of the object in the database
+		 */ 
+		function retrieve( clazz:Class, id:Object ):void;
+		
 		function getDependencyTreeCreator (  ):DependencyTreeCreator;
 		
 		function setDependencyTreeCreator ( dependencyTreeCreator:DependencyTreeCreator ):void;
