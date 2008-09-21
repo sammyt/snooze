@@ -40,9 +40,14 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.impl.dependency.RetrieveDepNode;
+	
+	import mx.logging.ILogger;
+	import mx.logging.Log;
 
 	public class DependencyTreeCreatorImpl implements DependencyTreeCreator
 	{
+		private static var _logger:ILogger = Log.getLogger( "DependencyTreeCreatorImpl" );
+		
 		/**
 		 * @private
 		 */ 
@@ -233,6 +238,8 @@ package org.projectsnooze.impl.dependency
 		 */
 		public function getRetrieveDependencyTree( clazz:Class , id:Object ):DependencyTree
 		{ 
+			_logger.info( "getRetrieveDependencyTree " + clazz + " " + id );
+			
 			var depTree:DependencyTree = new DependencyTreeImpl();
 			depTree.setStatementQueue( getQueueManager().getStatementQueue() );
 			
@@ -240,20 +247,24 @@ package org.projectsnooze.impl.dependency
 			var dataMap:EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
 			var setter:Function = entity[ "set" + dataMap.getPrimaryKey().getName() ] as Function;
 			
-			setter.apply( entity , id );
+			setter.apply( entity , [ id ] );
 			
-			createRetrieveTree( depTree , entity );
+			createRetrieveTree( depTree , entity , id );
 			
 			return depTree;
 		}
 		
-		protected function createRetrieveTree( depTree:DependencyTree , entity:Object ):void
+		protected function createRetrieveTree( depTree:DependencyTree , entity:Object , id:Object ):void
 		{
 			var dataMap:EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
 			
+			_logger.info( "createRetrieveTree " + dataMap + " " + entity );
+			
 			var node:RetrieveDepNode = new RetrieveDepNode();
+			node.setStatement( getStatementCreator().getSelectStatement( dataMap ) );
 			node.setEntityDataMapProvider( getEntitDataMapProvider() );
 			node.setEntity( entity );
+			node.setId( id );
 			
 			depTree.add( node );
 			

@@ -485,6 +485,26 @@ package org.projectsnooze.impl
 			facade.addEntityClass( Tournament );
 			facade.getSession().createDatabase();
 			
+			var player:Player = new Player();
+			player.setFirstName( "Sam" );
+			player.setLastName( "Williams" );
+			
+			var cluba:Club = new Club();
+			cluba.setName( "Random Club" );
+			cluba.setPlayers( [ player ] );
+			
+			var clubb:Club = new Club();
+			clubb.setName( "Big Smelly" );
+			clubb.setPlayers( [ player ] );
+			
+			var tournament:Tournament = new Tournament();
+			tournament.setName( "Winner takes all" );
+			tournament.setClubs( [ cluba , clubb ] );
+			
+			cluba.setTournaments( [ tournament ] );
+			
+			facade.getSession().save( tournament );
+			
 			facade.getSession().retrieve( Player , 1 );
 		}
 	}

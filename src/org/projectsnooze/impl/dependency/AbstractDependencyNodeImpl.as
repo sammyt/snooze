@@ -86,7 +86,7 @@ package org.projectsnooze.impl.dependency
 			
 			notifyObservers();
 			
-			//getDependencyTree().isNodeComplete( this );
+			getDependencyTree().onNodeComplete( this );
 		}
 		
 		/**
@@ -94,7 +94,7 @@ package org.projectsnooze.impl.dependency
 		 */
 		public function fault( info:Object ):void
 		{	
-			//getDependencyTree().isNodeComplete( this );
+			//getDependencyTree().onNodeComplete( this );
 		}
 		
 		/**

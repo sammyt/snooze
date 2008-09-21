@@ -39,6 +39,9 @@ package org.projectsnooze.impl.session
 	import org.projectsnooze.session.Session;
 	import org.projectsnooze.events.SessionEvent;
 	
+	import mx.logging.ILogger;
+	import mx.logging.Log;
+	
 	/**
 	 * Concrete implementation of the <code>Session</code>
 	 * interface.  Manages the saveing and retrieveing of 
@@ -49,6 +52,8 @@ package org.projectsnooze.impl.session
 	 */ 
 	public class SessionImpl implements Session, Observer
 	{
+		private var _logger:ILogger = Log.getLogger( "SessionImpl" );
+		
 		protected var _dependencyTreeCreator:DependencyTreeCreator;
 		protected var _queueManager:QueueManager;
 		protected var _ddlGenerator:DDLGenerator;
@@ -122,8 +127,7 @@ package org.projectsnooze.impl.session
 		 * @inheritDoc
 		 */
 		public function update ( obj:Object = null ):void
-		{
-			trace( "SessionImpl::update" , obj );
+		{	
 			getDispatcher().trigger( obj as StatementQueue , true );
 		} 
 		

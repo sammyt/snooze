@@ -47,13 +47,14 @@ package org.projectsnooze.impl.session
 		public function trigger( queue:StatementQueue, success:Boolean ):void
 		{
 			var data:QueueEventMap = events[ queue ] as QueueEventMap;
-			
-			var event:AbstractSnoozeEvent = success ?
-				data.successEvent : data.failEvent; 
-			 
-			dispatchEvent( event );
-			
-			delete event[ queue ];
+			if ( data )	
+			{
+				var event:AbstractSnoozeEvent = success ? data.successEvent : data.failEvent; 
+
+				dispatchEvent( event );
+
+				delete event[ queue ];				
+			}
 		}
 	}
 }

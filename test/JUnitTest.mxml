@@ -1,57 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="onCreationComplete()" >
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" 
+	creationComplete="onCreationComplete()" >
+	
 	<mx:Script>
 		<![CDATA[
-			import mx.logging.LogEventLevel;
-			import mx.logging.ILogger;
-			import mx.logging.Log;
-			import mx.logging.targets.TraceTarget;
-			
 			import flexunit.junit.JUnitTestRunner;
-			import flexunit.framework.TestSuite;
-			
-			import org.projectsnooze.impl.dependency.DependencyTreeCreatorImplTest;
-			import org.projectsnooze.impl.generator.DDLGeneratorImplTest;
-			import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
-			import org.projectsnooze.impl.scheme.EntityDataMapproviderImplTest;
-			import org.projectsnooze.impl.scheme.SchemeBuilderImplTest;
-			import org.projectsnooze.impl.scheme.TypeUtilsImplTest;
-			import org.projectsnooze.impl.EntityFacadeTest;
-			import org.projectsnooze.impl.ArrayIteratorTest;
-			import org.projectsnooze.impl.StatementCreatorImplTest;
 			
 			private var runner:JUnitTestRunner;
 
 			private function testComplete():void 
 			{
-				var logger:ILogger = Log.getLogger(this.className);
 				fscommand( "quit" );
 			}
 			
 			private function onCreationComplete():void
 			{
-				var traceTarget: TraceTarget = new TraceTarget();
-				traceTarget.filters=["*"];
-				traceTarget.level = LogEventLevel.ALL;
-				traceTarget.includeDate = true;
-				traceTarget.includeTime = true;
-				traceTarget.includeCategory = true;
-				traceTarget.includeLevel = true;
+ 				var testSuite:Tester = new Tester();
 				
-				var logger:ILogger = Log.getLogger(this.className);
-				logger.debug( "pants" );
-				
- 				var testSuite:TestSuite = new TestSuite();
-
- 				//testSuite.addTest( SchemeBuilderImplTest.suite() );
- 				//testSuite.addTest( EntityDataMapproviderImplTest.suite() );	
- 				//testSuite.addTest( TypeUtilsImplTest.suite() );
- 				//testSuite.addTest( DDLGeneratorImplTest.suite() );
- 				//testSuite.addTest( DependencyTreeCreatorImplTest.suite() );
- 				//testSuite.addTest( StatementCreatorImplTest.suite() );
- 				//testSuite.addTest( ArrayIteratorTest.suite() );
- 				testSuite.addTest( EntityFacadeTest.suite() );
- 				
 				runner = new JUnitTestRunner();
  				runner.run( testSuite , testComplete );
  			}

@@ -6,9 +6,26 @@
 	<property file="build.properties" />
 	<property name="FLEX_HOME" value="${flex.sdk}" />
 
-	<target name="compile" depends="lib">
+	<target name="junit_compile" depends="lib">
 		<mxmlc 	file="${test.dir}/JUnitTest.mxml" 
 				output="${deploy.unit}/${unit.out}" 
+				locale="en_US" debug="true">
+			<load-config filename="${flex.sdk}/frameworks/air-config.xml" />
+			<source-path path-element="${test.dir}" />
+			<library-path dir="${lib.dir}" append="true">
+				<include name="flexunit.swc" />
+				<include name="FlexUnitOptional.swc" />
+				<include name="LocalConnectionTarget.swc" />
+			</library-path>
+			<library-path dir="${deploy.swc}/" append="true">
+				<include name="${snooze.out}" />
+			</library-path>
+		</mxmlc>
+	</target>
+	
+	<target name="visualunit_compile" depends="lib">
+		<mxmlc 	file="${test.dir}/VisualUnitTest.mxml" 
+				output="${deploy.test}/${test.out}" 
 				locale="en_US" debug="true">
 			<load-config filename="${flex.sdk}/frameworks/air-config.xml" />
 			<source-path path-element="${test.dir}" />
@@ -39,20 +56,19 @@
 		</compc>
 	</target>
 
-	<target name="run" depends="compile">
+	<target name="run" depends="visualunit_compile">
 		<copy file="${test.dir}/${visual.appxml}" tofile="${deploy.test}/${visual.appxml}" />
+		<echo message="${basedir}/${deploy.test}/${visual.appxml}" />
 		<exec executable="${flex.adl}" failonerror="true">
 			<arg value="${basedir}/${deploy.test}/${visual.appxml}" />
 		</exec>
 	</target>
 
-	<target name="unittest" depends="compile">
-		<flexunit swf="${deploy.unit}/${unit.out}" toDir="${deploy.unit}/junit" haltonfailure="false" verbose="true" failureproperty="flexunit.failed" />
-		<fail message="One or more flexunit tests failed. See test reports for details." if="flexunit.failed" />
-	</target>
-
-	<target name="asdoc">
-		<asdoc />
+	<target name="unittest" depends="junit_compile">
+		<flexunit swf="${deploy.unit}/${unit.out}" toDir="${deploy.unit}/junit" 
+			haltonfailure="false"  verbose="true"  failureproperty="flexunit.failed" />
+		<fail message="One or more flexunit tests failed. See test reports for details." 
+			if="flexunit.failed" />
 	</target>
 
 	<target name="clean">

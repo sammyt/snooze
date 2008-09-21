@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://ns.adobe.com/air/application/1.0">
+	<id>VisualUnitTest</id>
+	<filename>VisualUnitTest</filename>
+	<name>VisualUnitTest</name>
+	<version>v1</version>
+	<initialWindow>
+		<content>VisualUnitTest.swf</content>
+		<x>50</x>
+		<y>50</y>
+	</initialWindow>
+</application>

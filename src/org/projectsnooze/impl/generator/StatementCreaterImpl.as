@@ -40,7 +40,7 @@ package org.projectsnooze.impl.generator
 	 */ 
 	public class StatementCreaterImpl implements StatementCreator
 	{
-		private static var logger:ILogger = Log.getLogger( "StatementCreaterImpl" );
+		private static var _logger:ILogger = Log.getLogger( "StatementCreaterImpl" );
 		
 		private const ValuePrefix:String = ":";
 		
@@ -78,7 +78,25 @@ package org.projectsnooze.impl.generator
 		 */
 		public function getSelectStatement( data:EntityDataMap ):Statement
 		{
-			return null;
+			var statement:Statement = new StatementImpl();
+			var sql:String = "";
+			
+			sql = "SELECT "; 
+			
+			var names:Array = new Array();
+			addForeignKeys( names , data );
+			addArgList( names , data );
+			sql += getCsvFromArray( names );
+			
+			sql += " FROM " 
+			sql += data.getTableName();
+			sql +=  ";";
+			
+			statement.setSqlSkeleton( sql );
+			
+			_logger.debug( "getSelectStatement " + sql );
+			
+			return statement;
 		}
 		
 		/**
