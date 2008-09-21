@@ -4,9 +4,9 @@ package org.projectsnooze.execute
 	import org.projectsnooze.patterns.Subject;
 	
 	/**
-	*	A Queue manager is a <code>com.lbi.queue.IQueue</code>
+	*	A Queue manager is a <code>com.lbi.queue.Queue</code>
 	*	which manages the execution of StatementQueues, which are
-	*	also <code>com.lbi.queue.IQueue</code> instances
+	*	also <code>com.lbi.queue.Queue</code> instances
 	*	
 	*	@author Samuel Williams
 	*	@since 12.08.08

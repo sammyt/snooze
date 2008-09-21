@@ -25,11 +25,11 @@
 
 package org.projectsnooze.execute
 {
-	import com.lbi.queue.IQueue;
+	import org.projectsnooze.patterns.Queue;
 	
 	import org.projectsnooze.connections.ConnectionPool;
 	
-	public interface StatementQueue extends IQueue
+	public interface StatementQueue extends Queue
 	{
 		
 		/**

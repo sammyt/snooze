@@ -25,8 +25,8 @@
  
 package org.projectsnooze.impl.execute
 {
-	import com.lbi.queue.IQueue;
-	import com.lbi.queue.Queue;
+	import org.projectsnooze.patterns.Queue;
+	import org.projectsnooze.impl.patterns.QueueImpl;
 	
 	import org.projectsnooze.connections.ConnectionPool;
 	import org.projectsnooze.execute.QueueManager;
@@ -42,7 +42,7 @@ package org.projectsnooze.impl.execute
 	*	@author Samuel Williams
 	*	@since 12.08.08
 	*/	
-	public class QueueManagerImpl extends Queue implements QueueManager
+	public class QueueManagerImpl extends QueueImpl implements QueueManager
 	{
 		/**
 		 *	@private
@@ -87,7 +87,7 @@ package org.projectsnooze.impl.execute
 		/**
 		 * @inheritDoc
 		 */ 
-		override public function onElementFinish( queue:IQueue ):void
+		override public function onElementFinish( queue:Queue ):void
 		{
 			super.onElementFinish( queue );
 			notifyObservers( queue );

@@ -25,18 +25,18 @@
  
 package org.projectsnooze.execute
 {
-	import com.lbi.queue.IQueue;
+	import org.projectsnooze.patterns.Queue;
 	
 	import org.projectsnooze.connections.RequiresConnection;
 	
 	/**
-	 * Executes the SQL contained in a <code>StatementWrapper</code
+	 * Executes the SQL contained in a <code>StatementWrapper</code>
 	 * against the connection provided
 	 * 
 	 * @author Samuel Williams
 	 * @since 25.08.08
 	 */ 
-	public interface StatementExecutor extends RequiresConnection, IQueue
+	public interface StatementExecutor extends RequiresConnection, Queue
 	{
 		/**
 		 * Sets the <code>StatementWrapper</code> which contain the sql

@@ -25,7 +25,7 @@
  
 package org.projectsnooze.impl.execute
 {
-	import com.lbi.queue.Queue;
+	import org.projectsnooze.impl.patterns.QueueImpl;
 	
 	import flash.data.SQLConnection;
 	import flash.events.SQLEvent;
@@ -48,7 +48,7 @@ package org.projectsnooze.impl.execute
 	 * @author Samuel Williams
 	 * @since 12.08.08
 	 */	
-	public class StatementQueueImpl extends Queue implements StatementQueue
+	public class StatementQueueImpl extends QueueImpl implements StatementQueue
 	{
 		
 		private var _connectionPool:ConnectionPool;
