@@ -71,9 +71,6 @@ package org.projectsnooze.impl.scheme
 		
 		public function getRelationshipIterator ():Iterator
 		{
-			//logger.debug( "create ArrayIterator with {0} or length {1} " , 
-			//	_relationships , _relationships.length );
-				
 			return new ArrayIterator ( _relationships );
 		}
 		

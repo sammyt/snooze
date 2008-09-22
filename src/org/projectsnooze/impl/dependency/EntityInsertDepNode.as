@@ -69,7 +69,7 @@ package org.projectsnooze.impl.dependency
 				
 				var mark:String = mapping.getType().getSQLType() == "TEXT" ? '"':"";
 				
-				_statement.addValue( ":" + mapping.getLowerCaseName() , mark + data + mark );
+				_statement.addValue( mapping.getLowerCaseName() , mark + data + mark );
 			}
 		}
 		
@@ -81,7 +81,7 @@ package org.projectsnooze.impl.dependency
 				
 			var data:* = getter.apply( _entity );
 			
-			_statement.addValue( ":" + mapping.getLowerCaseName() + "_value" , data );
+			_statement.addValue( mapping.getLowerCaseName() + "_value" , data );
 		}
 		
 		protected function addForeignKeyParams ():void
@@ -105,7 +105,7 @@ package org.projectsnooze.impl.dependency
 							
 						var idName:String = relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
 						
-						_statement.addValue( ":" + tableName + "_" + idName , data );
+						_statement.addValue( tableName + "_" + idName , data );
 					}
 				}
 			}

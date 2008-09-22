@@ -73,10 +73,10 @@ package org.projectsnooze.impl.dependency
 			var getter2:Function = _secondEntity[ 
 				"get" + map2.getPrimaryKey().getName() ] as Function;
 			
-			_statement.addValue( ":" + 
+			_statement.addValue( 
 				map1.getForeignKeyName() , getter1.apply( _firstEntity ) );
 			
-			_statement.addValue( ":" + 
+			_statement.addValue( 
 				map2.getForeignKeyName() , getter2.apply( _secondEntity ) );
 		}
 		

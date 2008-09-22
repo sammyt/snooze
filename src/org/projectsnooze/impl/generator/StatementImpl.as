@@ -82,7 +82,7 @@ package org.projectsnooze.impl.generator
 	    
 		public function addValue ( key:String , value:* ):void
 		{
-			_dict[ key ] = value;
+			_dict[ ":" + key ] = value;
 		}
 		
 		public function getValuebyKey ( key:String ):*

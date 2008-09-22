@@ -53,7 +53,8 @@ package org.projectsnooze.impl
 			//ts.addTest( new EntityFacadeTest( "testTournamentTable" ) );
 			//ts.addTest( new EntityFacadeTest( "testClubTournamentTable" ) );
 			//ts.addTest( new EntityFacadeTest( "testInsertionWithFootballDomain" ) );
-			ts.addTest( new EntityFacadeTest( "retrieveEntity" ) );
+			//ts.addTest( new EntityFacadeTest( "retrieveEntity" ) );
+			ts.addTest( new EntityFacadeTest( "testReflection" ) );
 			
 			return ts;
 		}
@@ -506,6 +507,14 @@ package org.projectsnooze.impl
 			facade.getSession().save( tournament );
 			
 			facade.getSession().retrieve( Player , 1 );
+		}
+		
+		public function testReflection():void
+		{
+			var child:Child = new Child();
+			child.something = "dave";
+			
+			logger.debug( describeType( child ) );
 		}
 	}
 }
