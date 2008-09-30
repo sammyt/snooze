@@ -21,7 +21,7 @@ package uk.co.ziazoo.reflection
 		{
 			_object = object;
 			_description = describeType( _object );
-			addMetaData( _description.metadata , this );
+			createMetaData( _description.metadata , this );
 		}
 		
 		public function getClassName():String
@@ -63,7 +63,7 @@ package uk.co.ziazoo.reflection
 			_metaData.push( metaData );
 		}
       
-		public function hadMetaData( name:String = null ):Boolean
+		public function hasMetaData( name:String = null ):Boolean
 		{
 			if( !name )
 			{
@@ -126,7 +126,7 @@ package uk.co.ziazoo.reflection
 				method.setName( methodData.@name );
 				method.setType( methodData.@returnType );
 				
-				addMetaData( methodData.metadata , method );
+				createMetaData( methodData.metadata , method );
 				
 				_methods.push( method );
 			}
@@ -148,14 +148,14 @@ package uk.co.ziazoo.reflection
 				accessor.setType( accessorData.@type );
 				accessor.setAccess( accessorData.@access );
 				
-				addMetaData( accessorData.metaData , accessor );
+				createMetaData( accessorData.metaData , accessor );
 				
 				_accessors.push( accessor );
 			}
 			return _accessors;
 		}
 		
-		public function addMetaData( metaDataXMLList:XMLList, list:MetaDataList ):void
+		public function createMetaData( metaDataXMLList:XMLList, list:MetaDataList ):void
 		{
 			for each( var metaDataXML:XML in metaDataXMLList )
 			{
@@ -210,7 +210,7 @@ package uk.co.ziazoo.reflection
 					haveMetaData.push( metaDataList );
 				}
 			}
-			return metaDataList;
+			return haveMetaData;
 		}
 		
 		public function getPropertyByName( name:String ):NameAndTypeReference
@@ -253,7 +253,7 @@ package uk.co.ziazoo.reflection
 			return _all;
 		}
 		
-		protected function addElements( list:Array, toAdd:List ):void
+		protected function addElements( list:Array, toAdd:Array ):void
 		{
 			for( var i:Iterator = new ArrayIterator( toAdd ); i.hasNext() ; )
 			{

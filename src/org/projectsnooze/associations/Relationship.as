@@ -27,6 +27,8 @@ package org.projectsnooze.associations
 {
 	import org.projectsnooze.scheme.EntityDataMap;
 	
+	import uk.co.ziazoo.reflection.NameReference;
+	
 	/**
 	*	a Relationships is a description of a relationship
 	*	between or more tables in a relational data base from
@@ -70,16 +72,14 @@ package org.projectsnooze.associations
 		function getEntityDataMap ():EntityDataMap;
 		
 		/**
-		*	set the property name  (Duck for getDuck) where the entity
-		*	contains the related entity
-		*/	
-		function setPropertyName ( name:String ):void;
-		
-		/**
 		*	returns the property name where there is one. If thie IsEntityContainer
 		*	property is true, then their will be a property name
 		*/	
 		function getPropertyName ():String;
+		
+		function getReflection():NameReference;
+		
+		function setReflection( reflection:NameReference ):void;
 		
 		/**
 		*	set whether or not this is the entity container

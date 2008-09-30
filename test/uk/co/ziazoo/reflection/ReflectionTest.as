@@ -30,8 +30,8 @@ package uk.co.ziazoo.reflection
 			ts.addTest( new ReflectionTest( "testMethodReflection" ) );
 			ts.addTest( new ReflectionTest( "testAccessorReflection" ) );
 			ts.addTest( new ReflectionTest( "testNoFilterFilter" ) );
-			ts.addTest( new ReflectionTest( "testMethodFilterFilter" ) );
-			ts.addTest( new ReflectionTest( "testAccessorFilterFilter" ) );
+			//ts.addTest( new ReflectionTest( "testMethodFilterFilter" ) );
+			//ts.addTest( new ReflectionTest( "testAccessorFilterFilter" ) );
 			return ts;
 		}
 		
@@ -80,6 +80,7 @@ package uk.co.ziazoo.reflection
 			assertTrue( "length is 5" , all.length == 5 );
 		}
 		
+		/*
 		public function testMethodFilterFilter():void
 		{
 			var reflection:Reflection = new ReflectionImpl( new Tree() );
@@ -93,6 +94,7 @@ package uk.co.ziazoo.reflection
 			var all:Array = reflection.getPropertiesWithType( Accessor );
 			assertTrue( "length is 2" , all.length == 2 );
 		}
+		*/
 	}
 }
 

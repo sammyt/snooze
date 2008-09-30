@@ -38,7 +38,7 @@ package uk.co.ziazoo.reflection
 			_metaData.push( metaData );
 		}
 		
-		public function hadMetaData( name:String = null ):Boolean
+		public function hasMetaData( name:String = null ):Boolean
 		{
 			if( !name )
 			{

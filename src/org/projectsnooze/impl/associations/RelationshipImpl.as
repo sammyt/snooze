@@ -28,28 +28,52 @@ package org.projectsnooze.impl.associations
 	import org.projectsnooze.associations.LinkType;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.scheme.EntityDataMap;
+	
+	import uk.co.ziazoo.reflection.NameReference;
+	import uk.co.ziazoo.reflection.Accessor;
+	import uk.co.ziazoo.reflection.Variable;
 
 	/**
 	*	@inheritDoc
 	*/	
 	public class RelationshipImpl implements Relationship
 	{
-		// what type of relationship is it
-		private var _type:LinkType;
+		/**
+		*	@private
+		*	
+		*	what type of relationship is it
+		*/
+		protected var _type:LinkType;
 		
-		// the entity data map of the entity who
-		// relationship this describes
-		private var _dataMap:EntityDataMap;
+		/**
+		*	@private
+		*	
+		*	the entity data map of the entity who
+		*	relationship this describes
+		*/
+		protected var _dataMap:EntityDataMap;
 		
-		// the name of the property getter and setter
-		private var _propertyName:String;
+		/**
+		*	@private
+		*	
+		*	is this entity the one which contains the other
+		*	ie. entity.setOtherEntity( otherEntity );
+		*/	
+		protected var _isEntityContainer:Boolean;
 		
-		// is this entity the one which contains the other
-		// ie. entity.setOtherEntity( otherEntity );
-		private var _isEntityContainer:Boolean;
+		/**
+		*	@private
+		*	
+		*	if a join table i needed its name is stored here
+		*/	
+		protected var _joinTableName:String;
 		
-		// if a join table i needed its name is stored here
-		private var _joinTableName:String;
+		/**
+		*	@private
+		*	
+		*	the reflection of the property
+		*/	
+		protected var _reflection:NameReference;
 		
 		public function RelationshipImpl()
 		{
@@ -90,17 +114,26 @@ package org.projectsnooze.impl.associations
 		/**
 		*	@inheritDoc	
 		*/
-		public function setPropertyName ( propertyName:String ):void
-		{
-			_propertyName = propertyName;
-		}
-		
-		/**
-		*	@inheritDoc	
-		*/
 		public function getPropertyName ():String
 		{
-			return _propertyName;
+			if( _reflection is Variable
+			 	|| _reflection is Accessor )
+			{
+				return _reflection.getName();
+			}
+			
+			var name:String = _reflection.getName();
+			return name.substr( 3 , name.length );
+		}
+		
+		public function getReflection():NameReference
+		{
+			return _reflection;
+		}
+      
+		public function setReflection( reflection:NameReference ):void
+		{
+			_reflection = reflection;
 		}
 		
 		/**

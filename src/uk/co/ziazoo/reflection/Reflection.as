@@ -13,7 +13,7 @@ package uk.co.ziazoo.reflection
 		
 		function getAccessors():Array;
 		
-		function addMetaData( metaData:XMLList, list:MetaDataList ):void;
+		function createMetaData( metaData:XMLList, list:MetaDataList ):void;
 		
 		function getPropertiesWithType( type:String = null ):Array;
 		

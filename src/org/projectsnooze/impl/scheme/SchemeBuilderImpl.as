@@ -44,6 +44,10 @@ package org.projectsnooze.impl.scheme
 	
 	import uk.co.ziazoo.collections.ArrayIterator;
 	import uk.co.ziazoo.collections.Iterator;
+	import uk.co.ziazoo.reflection.Reflection;
+	import uk.co.ziazoo.reflection.ReflectionImpl;
+	import uk.co.ziazoo.reflection.MetaDataList;
+	import uk.co.ziazoo.reflection.NameAndTypeReference;
 	
 	public class SchemeBuilderImpl implements SchemeBuilder
 	{
@@ -74,21 +78,19 @@ package org.projectsnooze.impl.scheme
 			_mapsAreGenerated = true;
 		}
 		
-		//---------------------------------------
-		// TODO
-		//---------------------------------------
 		private function relateDataMaps ():void
 		{
 			for ( var i:Iterator = new ArrayIterator ( _classes ) ; i.hasNext() ; )
 			{
-				var entity:Object = new ( i.next() as Class )();
-				var reflection:XML = describeType( entity );
+				var clazz:Class = i.next() as Class;
+				var entity:Object = new clazz();
+				var reflection:Reflection = new ReflectionImpl( entity );
 				
 				var dataMap:EntityDataMap = 
-					getEntityDataMapProvider().getEntityDataMapByClassName( reflection.@name );
+					getEntityDataMapProvider().getEntityDataMapByClassName( reflection.getName() );
 					
-				addForeignKeyRelationships( reflection , dataMap );
-				addManyToManyRelationships( reflection , dataMap );
+				addForeignKeyRelationships( reflection, dataMap );
+				addManyToManyRelationships( reflection, dataMap );
 			}
 		}
 		
@@ -100,7 +102,7 @@ package org.projectsnooze.impl.scheme
 			{
 				var clazz:Class = i.next() as Class;
 				var reflection:Reflection = new ReflectionImpl( new clazz() );
-				var dataMap:EntityMapData = new EntityMapDataImpl();
+				var dataMap:EntityDataMap = new EntityMapDataImpl();
 				
 				dataMap.setTableName( reflection.getClassName() );
 				
@@ -111,142 +113,145 @@ package org.projectsnooze.impl.scheme
 			}	
 		}
 		
-		private function addManyToManyRelationships (  reflection:XML ,
+		private function addManyToManyRelationships ( reflection:Reflection,
 		 	entityDataMap:EntityDataMap ):void
 		{
-			// looping through all the methods
-			for each( var method:XML in reflection.method )
-			{
-				// only do the following for many to many relationships
-				if ( isManyToManyRelationship( method.metadata.@name ) )
-				{	
-					// the name of the getter method being inspected
-					var getter:String = method.@name;
-                    
-					// the name of the property, getName --> Name
-					var name:String = getter.substr( 3 , getter.length );
-                    
-					// create a Relationship object to describe the relationship 
-					// from the perspective of the annotated class
-					var hasMetadata:Relationship = new RelationshipImpl();
-					
-					// use the type utils to return the full class path of the 
-					// entity that is related view the above relationship
-					var describedClazz:String = 
-						getTypeUtils().getTypeFromMetadata( method );
-					
-					// get the entity data map for the entity on the 
-					// other side of the relationship
-					var describedEntityDataMap:EntityDataMap = 
-						getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
-					
-					// add the necessary properties to the relationship
-					hasMetadata.setEntityDataMap( describedEntityDataMap );
-					hasMetadata.setType( getLinkTypeFactory().getLinkType( 
-						method.metadata.@name , true ) );
-					hasMetadata.setPropertyName( name );
-					hasMetadata.setIsEntityContainer( true );
-					
-					// add the two table names to an array for sorting
-					var tableNames:Array = [ entityDataMap.getTableName() , 
-						describedEntityDataMap.getTableName() ];
-					
-					// sort the names
-					tableNames.sort();
-					
-					// create the table names from the sorted tables names
-					hasMetadata.setJoinTableName( tableNames[0] + "_" + tableNames[1] );
-					
-					entityDataMap.addRelationship( hasMetadata );
-				}
-			}
 			
+			var properties:Array = 
+				reflection.getPropertiesWithMetaData( MetaData.MANY_TO_MANY );
+				
+			var i:Iterator = new ArrayIterator( properties );
+			
+			for( ; i.hasNext() ; )
+			{
+				var prop:MetaDataList = i.next() as MetaDataList;
+				
+				// create a Relationship object to describe the relationship 
+				// from the perspective of the annotated class
+				var hasMetadata:Relationship = new RelationshipImpl();
+				
+				var describedClazz:String = prop.getMetaDataByName( 
+					MetaData.MANY_TO_MANY ).getArgByKey( "ref" );
+					
+				// get the entity data map for the entity on the 
+				// other side of the relationship
+				var describedDataMap:EntityDataMap = 
+					getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
+				
+				// add the necessary properties to the relationship
+				hasMetadata.setEntityDataMap( describedDataMap );
+				hasMetadata.setType( getLinkTypeFactory().getLinkType( MetaData.MANY_TO_MANY , true ) );
+				hasMetadata.setReflection( prop );
+				hasMetadata.setIsEntityContainer( true );
+				
+				// add the two table names to an array for sorting
+				var tableNames:Array = [ entityDataMap.getTableName() , 
+					describedDataMap.getTableName() ];
+				
+				// sort the names
+				tableNames.sort();
+				
+				// create the table names from the sorted tables names
+				hasMetadata.setJoinTableName( tableNames[0] + "_" + tableNames[1] );
+				
+				entityDataMap.addRelationship( hasMetadata );
+			}
 		}
 		
-		private function addForeignKeyRelationships ( reflection:XML , 
+		private function addForeignKeyRelationships ( reflection:Reflection , 
 			entityDataMap:EntityDataMap ):void
 		{
-			// looping through all the method signatures in the reflection
-			for each ( var method:XML in reflection.method )
+			
+			var properties:Array = 
+				reflection.getPropertiesWithMetaData();
+			
+			var i:Iterator = new ArrayIterator( properties );
+         
+			for( ; i.hasNext() ; )
 			{
-				// the isRelationship method detremines if the method is  
-				// question describes a relationship between two entities
-				if ( isForeignKeyRelationship( method.metadata.@name ) )
+				var prop:MetaDataList = i.next() as MetaDataList;
+				if( prop.hasMetaData( MetaData.MANY_TO_ONE )
+				 	|| prop.hasMetaData( MetaData.ONE_TO_MANY ) )
 				{
-					// the name of the getter method being inspected
-					var getter:String = method.@name;
-					
-					// the name of the property, getName --> Name
-					var name:String = getter.substr( 3 , getter.length );
 					
 					// create a Relationship object to describe the relationship from
 					// the perspective of the annotated class
 					var hasMetadata:Relationship = new RelationshipImpl();
 					
-					// use the type utils to return the full class path of the entity
-					// that is related view the above relationship
-					var describedClazz:String = 
-							getTypeUtils().getTypeFromMetadata( method );
-					
+					var describedClazz:String = prop.getMetaDataByName( 
+						MetaData.MANY_TO_MANY ).getArgByKey( "ref" );
+						
 					// get the entity data map for the entity on the 
 					// other side of the relationship
-					var describedEntityDataMap:EntityDataMap = 
+					var describedDataMap:EntityDataMap = 
 						getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
 					
 					// create the relationship
 					var describedByMetadata:Relationship = new RelationshipImpl();
 					describedByMetadata.setEntityDataMap( entityDataMap );
-					describedByMetadata.setType( getLinkTypeFactory().getLinkType( 
-						method.metadata.@name , false ) );
-					describedByMetadata.setPropertyName( name );
+					
+					var typeName:String = prop.hasMetaData( MetaData.MANY_TO_ONE ) ?
+						MetaData.MANY_TO_ONE : MetaData.ONE_TO_MANY;
+					
+					describedByMetadata.setType( getLinkTypeFactory().getLinkType( typeName , false ) );
+					describedByMetadata.setReflection( prop );
 					describedByMetadata.setIsEntityContainer( false );
 					
 					// add the relationship
-					describedEntityDataMap.addRelationship( describedByMetadata ); 
-				    
-					// add the necessary properties to the relationship
-					hasMetadata.setEntityDataMap( describedEntityDataMap );
-					hasMetadata.setType( getLinkTypeFactory().getLinkType( 
-						method.metadata.@name , true ) );
-					hasMetadata.setPropertyName( name );
-					hasMetadata.setIsEntityContainer( true );
+					describedDataMap.addRelationship( describedByMetadata ); 
 					
-					// add the relationship to the metadata
+					// add the necessary properties to the relationship
+				  	hasMetadata.setEntityDataMap( describedDataMap );
+				 	hasMetadata.setType( getLinkTypeFactory().getLinkType( typeName , true ) );
+				 	hasMetadata.setReflection( prop );
+				 	hasMetadata.setIsEntityContainer( true );
+              
+				  	// add the relationship to the metadata
 					entityDataMap.addRelationship( hasMetadata );
 					
 				}
 			}
 		}
 		
-		private function isManyToManyRelationship ( metaDataName:String ):Boolean
-		{
-			return ( metaDataName == MetaData.MANY_TO_MANY );
-		}
-		
-		private function isForeignKeyRelationship ( metaDataName:String ):Boolean
-		{
-			return ( metaDataName == MetaData.MANY_TO_ONE || 
-					metaDataName == MetaData.ONE_TO_MANY );
-		}
 		
 		private function addId ( reflection:Reflection, dataMap:EntityDataMap ):void
 		{
 			
+			var ids:Array = reflection.getPropertiesWithMetaData( MetaData.ID );
 			
-			for each ( var method:XML in reflection.method )
+			var mapping:NameTypeMapping = new NameTypeMappingImpl();
+			var prop:NameAndTypeReference = null;
+			
+			if( ids.length > 1 )
 			{
-				if ( method.metadata.@name == MetaData.ID )
-				{
-					var getter:String = method.@name;
-					var name:String = getter.substr( 3 , getter.length );
-					var type:Type =  getTypeFactory().getType( method.@returnType );
+				throw new Error( "More than one ID specified for " 
+					+ reflection.getName() );
+			}
+			
+			if( ids.length == 0 )
+			{
+				prop = reflection.getPropertyByName( "id" );
 					
-					var mapping:NameTypeMapping = new NameTypeMappingImpl();
-					mapping.setName( name );
-					mapping.setType( type );
-					mapping.setIsPrimaryKey( true );
-					entityDataMap.setPrimaryKey( mapping );
+				if( !prop )
+				{
+					throw new Error( "No ID defined for " 
+						+ reflection.getName() );
 				}
+				
+				mapping.setReflection( prop );
+				mapping.setType( getTypeFactory().getType( prop.getType() ) );
+				mapping.setIsPrimaryKey( true );
+				dataMap.setPrimaryKey( mapping );
+			}
+			
+			if( ids.length == 1 )
+			{
+				prop = ids[0] as NameAndTypeReference;
+				
+				mapping.setReflection( prop );
+				mapping.setType( getTypeFactory().getType( prop.getType() ) );
+				mapping.setIsPrimaryKey( true );
+				dataMap.setPrimaryKey( mapping );
 			}
 		}
 		
@@ -265,15 +270,15 @@ package org.projectsnooze.impl.scheme
 					var metaContainer:MetaDataList = nameAndType as MetaDataList;
 					if( !metaContainer.hasMetaData() )
 					{
-						mapping.setName( nameAndType.getName() );
-						mapping.setType( nameAndType.getType() );
+						mapping.setReflection( nameAndType );
+						mapping.setType( getTypeFactory().getType( nameAndType.getType() ) );
 						dataMap.addProperty( mapping );
 					}
 				}
 				else
 				{
-					mapping.setName( nameAndType.getName() );
-					mapping.setType( nameAndType.getType() );
+					mapping.setReflection( nameAndType );
+					mapping.setType( getTypeFactory().getType( nameAndType.getType() ) );
 					dataMap.addProperty( mapping );
 				}
 			}

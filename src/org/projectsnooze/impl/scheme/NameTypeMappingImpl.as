@@ -28,13 +28,16 @@ package org.projectsnooze.impl.scheme
 	import org.projectsnooze.scheme.NameTypeMapping;
 	import org.projectsnooze.datatype.Type;
 	
+	import uk.co.ziazoo.reflection.NameReference;
+	import uk.co.ziazoo.reflection.Accessor;
+	import uk.co.ziazoo.reflection.Variable;
 	
 	public class NameTypeMappingImpl implements NameTypeMapping 
 	{
-		private var _name:String;
 		private var _type:Type;
 		private var _value:Object;
 		private var _isPrimaryKey:Boolean = false;
+		private var _reflection:NameReference;
 		
 		public function NameTypeMappingImpl ()
 		{
@@ -55,14 +58,26 @@ package org.projectsnooze.impl.scheme
 			return _isPrimaryKey;
 		}
 		
-		public function setName ( name:String ):void
-		{
-			_name = name;
-		}
-		
 		public function getName ():String
 		{
-			return _name;
+			if( _reflection is Variable
+			 	|| _reflection is Accessor )
+			{
+				return _reflection.getName();
+			}
+			
+			var name:String = _reflection.getName();
+			return name.substr( 3 , name.length );
+		}
+		
+		public function getReflection():NameReference
+		{
+			return _reflection;
+		}
+		
+		public function setReflection( reflection:NameReference ):void
+		{
+			_reflection = reflection;
 		}
 		
 		public function setType ( type:Type ):void

@@ -27,6 +27,8 @@ package org.projectsnooze.scheme
 {
 	import org.projectsnooze.datatype.Type;
 	
+	import uk.co.ziazoo.reflection.NameReference;
+	
 	/**
 	 * 	This class maps the name of a property getter/setter to its 
 	 * 	<code>Type</code>.  It also holds useful information about whether or
@@ -47,9 +49,11 @@ package org.projectsnooze.scheme
 		
 		function getIsPrimaryKey ():Boolean;
 		
-		function setName ( name:String ):void;
-		
 		function getName ():String;
+		
+		function getReflection():NameReference;
+		
+		function setReflection( reflection:NameReference ):void;
 		
 		function setType ( type:Type ):void;
 		

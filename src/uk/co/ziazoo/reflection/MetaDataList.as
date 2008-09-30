@@ -2,13 +2,13 @@ package uk.co.ziazoo.reflection
 {
 	import uk.co.ziazoo.collections.Iterator;
 	
-	public interface MetaDataList 
+	public interface MetaDataList extends NameAndTypeReference
 	{
 		function addMetaData( metaData:MetaData ):void;
 		
-		function hadMetaData( name:String ):Boolean;
+		function hasMetaData( name:String = null ):Boolean;
 		
-		function getMetaDataByName( name:String = null ):MetaData;
+		function getMetaDataByName( name:String ):MetaData;
 		
 		function getMetaDataIterator():Iterator;
 	}
