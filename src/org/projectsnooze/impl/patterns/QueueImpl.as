@@ -26,8 +26,8 @@
 package org.projectsnooze.impl.patterns
 {
 	import org.projectsnooze.patterns.Queue;
-	import org.projectsnooze.patterns.Iterator;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
+	import uk.co.ziazoo.collections.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
 	
 	/**
 	 *  Instance of Queue.  Can be used to queue

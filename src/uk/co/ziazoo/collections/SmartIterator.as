@@ -23,14 +23,14 @@
  * THE SOFTWARE.
  */
  
-package org.projectsnooze.impl.patterns
+package uk.co.ziazoo.collections
 {
 	import flash.utils.describeType;
 	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
 	
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.Iterator;
 
 	public class SmartIterator implements Iterator
 	{

@@ -38,6 +38,8 @@ package org.projectsnooze.scheme
 		*	one property in each entity must act as a primary key.
 		*	This function returns wether of not this is the 
 		*	property which holds the primary key
+		*	
+		*	@return	true if property id primary key
 		*/	
 		function isPrimaryKey ():Boolean;
 		

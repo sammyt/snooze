@@ -33,8 +33,8 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.execute.StatementWrapper;
 	import org.projectsnooze.impl.execute.StatementWrapperImpl;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
+	import uk.co.ziazoo.collections.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.NameTypeMapping;
 

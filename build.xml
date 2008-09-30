@@ -11,6 +11,15 @@
 				output="${deploy.unit}/${unit.out}" 
 				locale="en_US" debug="true">
 			<load-config filename="${flex.sdk}/frameworks/air-config.xml" />
+			
+			<keep-as3-metadata name="Id" />
+			<keep-as3-metadata name="Entity" />
+			<keep-as3-metadata name="Transient" />
+			<keep-as3-metadata name="ManyToOne" />
+			<keep-as3-metadata name="ManyToMany" />
+			<keep-as3-metadata name="OneToMany" />
+			<keep-as3-metadata name="OneToOne" />
+			
 			<source-path path-element="${test.dir}" />
 			<library-path dir="${lib.dir}" append="true">
 				<include name="flexunit.swc" />
@@ -28,6 +37,15 @@
 				output="${deploy.test}/${test.out}" 
 				locale="en_US" debug="true">
 			<load-config filename="${flex.sdk}/frameworks/air-config.xml" />
+			
+			<keep-as3-metadata name="Id" />
+			<keep-as3-metadata name="Entity" />
+			<keep-as3-metadata name="Transient" />
+			<keep-as3-metadata name="ManyToOne" />
+			<keep-as3-metadata name="ManyToMany" />
+			<keep-as3-metadata name="OneToMany" />
+			<keep-as3-metadata name="OneToOne" />
+			
 			<source-path path-element="${test.dir}" />
 			<library-path dir="${lib.dir}" append="true">
 				<include name="flexunit.swc" />

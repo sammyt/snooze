@@ -31,7 +31,7 @@ package org.projectsnooze.impl.generator
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.NameTypeMapping;
 

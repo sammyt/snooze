@@ -2,7 +2,7 @@ package domain
 {
 	[Entity]
 	public class Mother
-	{
+	{	
 		private var _id:int;
 		private var _name:String;
 		private var _concerns:Array;

@@ -29,9 +29,9 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.dependency.DependencyNode;
 	import org.projectsnooze.dependency.DependencyTree;
 	import org.projectsnooze.execute.StatementQueue;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
-	import org.projectsnooze.impl.patterns.SmartIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
+	import uk.co.ziazoo.collections.SmartIterator;
+	import uk.co.ziazoo.collections.Iterator;
 	
 	/**
 	*		@inheritDoc

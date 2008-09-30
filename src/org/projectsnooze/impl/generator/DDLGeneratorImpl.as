@@ -34,7 +34,7 @@ package org.projectsnooze.impl.generator
 	import org.projectsnooze.constants.MetaData;
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.Statement;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.scheme.NameTypeMapping;

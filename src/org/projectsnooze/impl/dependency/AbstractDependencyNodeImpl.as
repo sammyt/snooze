@@ -4,9 +4,9 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.dependency.DependencyTree;
 	import org.projectsnooze.execute.StatementQueue;
 	import org.projectsnooze.generator.Statement;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
 	import org.projectsnooze.impl.patterns.SubjectImpl;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.Iterator;
 
 	public class AbstractDependencyNodeImpl extends SubjectImpl implements DependencyNode
 	{

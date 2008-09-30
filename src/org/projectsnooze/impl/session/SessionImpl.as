@@ -32,8 +32,8 @@ package org.projectsnooze.impl.session
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.impl.execute.StatementWrapperImpl;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
+	import uk.co.ziazoo.collections.Iterator;
 	import org.projectsnooze.patterns.Observer;
 	import org.projectsnooze.session.Dispatcher;
 	import org.projectsnooze.session.Session;

@@ -27,7 +27,7 @@ package org.projectsnooze.scheme
 {
 	import org.projectsnooze.scheme.NameTypeMapping;
 	import org.projectsnooze.associations.Relationship;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.Iterator;
 	
 	/**
 	*	this class hold all the infotmation about a given entity

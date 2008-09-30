@@ -18,8 +18,8 @@ package org.projectsnooze.impl
 	import mx.logging.Log;
 	
 	import org.projectsnooze.impl.execute.ResponderImpl;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
+	import uk.co.ziazoo.collections.Iterator;
 	import org.projectsnooze.session.Session;
 	
 	import some.other.domain.*;
@@ -53,8 +53,8 @@ package org.projectsnooze.impl
 			//ts.addTest( new EntityFacadeTest( "testTournamentTable" ) );
 			//ts.addTest( new EntityFacadeTest( "testClubTournamentTable" ) );
 			//ts.addTest( new EntityFacadeTest( "testInsertionWithFootballDomain" ) );
-			//ts.addTest( new EntityFacadeTest( "retrieveEntity" ) );
-			ts.addTest( new EntityFacadeTest( "testReflection" ) );
+			ts.addTest( new EntityFacadeTest( "retrieveEntity" ) );
+			//ts.addTest( new EntityFacadeTest( "testReflection" ) );
 			
 			return ts;
 		}
@@ -507,14 +507,6 @@ package org.projectsnooze.impl
 			facade.getSession().save( tournament );
 			
 			facade.getSession().retrieve( Player , 1 );
-		}
-		
-		public function testReflection():void
-		{
-			var child:Child = new Child();
-			child.something = "dave";
-			
-			logger.debug( describeType( child ) );
 		}
 	}
 }

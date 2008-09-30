@@ -30,7 +30,14 @@ package org.projectsnooze.scheme
 	import org.projectsnooze.datatype.TypeUtils;
 	
 	public interface SchemeBuilder
-	{
+	{	
+		
+		function addEntityClass ( clazz:Class ):void;
+		
+		function generateEntityDataMaps ():void;
+		
+		function areEntityDataMapsGenerated ():Boolean;
+		
 		function setTypeFactory ( typeFactory:TypeFactory ):void;
 		
 		function getTypeFactory ():TypeFactory;
@@ -46,11 +53,5 @@ package org.projectsnooze.scheme
 		function setEntityDataMapProvider ( entityDataMapProvider:EntityDataMapProvider ):void;
 		
 		function getEntityDataMapProvider ( ):EntityDataMapProvider;
-		
-		function addEntityClass ( clazz:Class ):void;
-		
-		function generateEntityDataMaps ():void;
-		
-		function areEntityDataMapsGenerated ():Boolean;
 	}
 }

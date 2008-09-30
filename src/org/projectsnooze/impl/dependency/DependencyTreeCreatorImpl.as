@@ -35,8 +35,8 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
-	import org.projectsnooze.impl.patterns.SmartIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.Iterator;
+	import uk.co.ziazoo.collections.SmartIterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.impl.dependency.RetrieveDepNode;

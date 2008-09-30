@@ -23,35 +23,44 @@
  * THE SOFTWARE.
  */
  
-package org.projectsnooze.impl.patterns
+package uk.co.ziazoo.collections
 {
-	import org.projectsnooze.patterns.Iterator;
+	import flash.utils.Dictionary;
+	
+	import uk.co.ziazoo.collections.Iterator;
 
-	public class ArrayIterator implements Iterator
+	public class DictionaryIterator implements Iterator
 	{
-		private var _list:Array;
-		private var _index:int = -1;
+		private var _dict:Dictionary;
+		private var _iterator:ArrayIterator;
 		
-		public function ArrayIterator( list:Array )
+		public function DictionaryIterator( dict:Dictionary )
 		{
-			_list = list;
+			_dict = dict;
+			
+			var keys:Array = new Array();
+			for ( var key:String in _dict )
+			{
+				keys.push( key );
+			}
+			_iterator = new ArrayIterator( keys );
 		}
 
 		public function hasNext():Boolean
 		{
-			return _index < _list.length - 1;
+			return _iterator.hasNext();
 		}
 		
 		public function next():Object
 		{
-			_index ++;
-			return _list[ _index ];
+			return _dict[ _iterator.next() ];
 		}
 		
 		public function remove ():void
 		{
-			_list.splice( _index , 1 );
-			_index --;
+			_iterator.remove();
+			trace( "this doesnt work!" )
 		}
+		
 	}
 }

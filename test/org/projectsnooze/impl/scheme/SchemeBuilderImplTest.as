@@ -21,7 +21,7 @@ package org.projectsnooze.impl.scheme
 	import org.projectsnooze.impl.associations.OneToManyOwns;
 	import org.projectsnooze.impl.datatypes.TypeFactoryImpl;
 	import org.projectsnooze.impl.datatypes.TypeUtilsImpl;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	
 	import some.other.domain.Club;

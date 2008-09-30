@@ -34,8 +34,8 @@ package org.projectsnooze.impl.execute
 	import org.projectsnooze.execute.StatementExecutor;
 	import org.projectsnooze.execute.StatementQueue;
 	import org.projectsnooze.execute.StatementWrapper;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
+	import uk.co.ziazoo.collections.Iterator;
 
 	/**
 	 * The <code>StatementQueueImpl</code> is responsible for 

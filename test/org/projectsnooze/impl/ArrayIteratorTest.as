@@ -5,8 +5,8 @@ package org.projectsnooze.impl
 	import flexunit.framework.TestCase;
 	import flexunit.framework.TestSuite;
 	
-	import org.projectsnooze.impl.patterns.ArrayIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
+	import uk.co.ziazoo.collections.Iterator;
 
 	public class ArrayIteratorTest extends TestCase
 	{

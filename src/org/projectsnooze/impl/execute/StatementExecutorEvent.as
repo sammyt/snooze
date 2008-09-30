@@ -7,7 +7,7 @@ package org.projectsnooze.impl.execute
 	public class StatementExecutorEvent extends Event
 	{
 		public static const RESULT : String = "executeResult";
-		public static const FAULT : String = "executeFault";;
+		public static const FAULT : String = "executeFault";
 		
 		private var _statementExecutor : StatementExecutor;
 		

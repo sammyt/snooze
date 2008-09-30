@@ -25,7 +25,7 @@
  
 package org.projectsnooze.scheme
 {
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.Iterator;
 	
 	public interface EntityDataMapProvider
 	{

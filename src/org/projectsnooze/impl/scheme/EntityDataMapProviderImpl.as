@@ -28,8 +28,8 @@ package org.projectsnooze.impl.scheme
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	
-	import org.projectsnooze.impl.patterns.DictionaryIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.DictionaryIterator;
+	import uk.co.ziazoo.collections.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	

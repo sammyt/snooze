@@ -10,6 +10,7 @@ package
 	import org.projectsnooze.impl.EntityFacadeTest;
 	import org.projectsnooze.impl.ArrayIteratorTest;
 	import org.projectsnooze.impl.StatementCreatorImplTest;
+	import uk.co.ziazoo.reflection.ReflectionTest;
 	
 	public class Tester extends TestSuite
 	{
@@ -23,7 +24,8 @@ package
 			//addTest( DependencyTreeCreatorImplTest.suite() );
 			//addTest( StatementCreatorImplTest.suite() );
 			//addTest( ArrayIteratorTest.suite() );
-			addTest( EntityFacadeTest.suite() );
+			//addTest( EntityFacadeTest.suite() );
+			addTest( ReflectionTest.suite() );
 		}
 	}
 }

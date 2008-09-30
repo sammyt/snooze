@@ -29,8 +29,8 @@ package org.projectsnooze.impl.scheme
 	import mx.logging.Log;
 	
 	import org.projectsnooze.associations.Relationship;
-	import org.projectsnooze.impl.patterns.ArrayIterator;
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
+	import uk.co.ziazoo.collections.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.NameTypeMapping;
 

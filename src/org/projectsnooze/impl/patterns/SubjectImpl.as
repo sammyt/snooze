@@ -25,7 +25,8 @@
  
 package org.projectsnooze.impl.patterns
 {
-	import org.projectsnooze.patterns.Iterator;
+	import uk.co.ziazoo.collections.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
 	import org.projectsnooze.patterns.Observer;
 	import org.projectsnooze.patterns.Subject;
 
