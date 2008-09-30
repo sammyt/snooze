@@ -2,18 +2,91 @@ package uk.co.ziazoo.reflection
 {
 	import flash.utils.describeType;
 	
+	import uk.co.ziazoo.collections.Iterator;
+	import uk.co.ziazoo.collections.ArrayIterator;
+	
 	public class ReflectionImpl implements Reflection
 	{
+		protected var _name:String;
+		protected var _type:String;
+		protected var _metaData:Array;
 		protected var _object:Object;
 		protected var _description:XML;
 		protected var _variables:Array;
 		protected var _methods:Array;
 		protected var _accessors:Array;
+		protected var _all:Array;
 		
 		public function ReflectionImpl( object:Object )
 		{
 			_object = object;
 			_description = describeType( _object );
+			addMetaData( _description.metadata , this );
+		}
+		
+		public function getClassName():String
+		{
+			return getName().substr( getName().indexOf( "::" ) + 2 , 
+				getName().length - getName().indexOf("::") );
+		}
+		
+		public function getName():String
+		{ 
+			if( !_name )
+			{
+				setName( _description.@name );
+			}
+			return _name; 
+		}
+      
+		public function setName( name:String ):void
+		{
+			_name = name;
+		}
+      
+		public function getType():String
+		{
+			if( !_type )
+			{
+				 setType( _description.@type );
+			}
+			return _type;
+		}
+      
+		public function setType( type:String ):void
+		{
+			_type = type;
+		}
+      
+		public function addMetaData( metaData:MetaData ):void
+		{
+			_metaData.push( metaData );
+		}
+      
+		public function hadMetaData( name:String = null ):Boolean
+		{
+			if( !name )
+			{
+				return _metaData.length > 0;
+			}
+			return getMetaDataByName( name ) != null;
+		}
+      
+		public function getMetaDataByName( name:String ):MetaData
+		{
+			for each( var metaData:MetaData in _metaData )
+			{
+				if( metaData.getName() == name )
+				{
+					return metaData;
+				}
+			}
+			return null;
+		}
+      
+		public function getMetaDataIterator():Iterator
+		{
+			return new ArrayIterator( _metaData );
 		}
 		
 		public function reflect():void
@@ -96,32 +169,96 @@ package uk.co.ziazoo.reflection
 			}
 		}
 		
-		public function getPropertiesWithType( genre:Class = null ):Array
+		public function getPropertiesWithType( type:String = null ):Array
 		{
-			function filter( all:Array, elements:Array, genre:Class = null ):void
+			var i:Iterator = new ArrayIterator( getAllProperties() );
+			
+			var haveType:Array = new Array();
+			
+			for( ; i.hasNext() ; )
 			{
-				for each( var hasType:TypeReference in elements )
+				var prop:NameAndTypeReference = i.next() as NameAndTypeReference;
+				if( prop.getType() != "void" )
 				{
-					if( hasType.getType() != "void" )
+					if( type )
 					{
-						if( !genre )
+						if( type == prop.getType() )
 						{
-							all.push( hasType );
+							haveType.push( prop );
 						}
-						else if( hasType is genre )
-						{
-							all.push( hasType );
-						}
+					}
+					else
+					{
+						haveType.push( prop );	
 					}
 				}
 			}
-			var result:Array = new Array();
+			return haveType;
+		}
+		
+		public function getPropertiesWithMetaData( name:String = null ):Array
+		{
+			var i:Iterator = new ArrayIterator( getAllProperties() );
 			
-			filter( result , getVariables() , genre );
-			filter( result , getMethods() , genre );
-			filter( result , getAccessors() , genre );
+			var haveMetaData:Array = new Array();
 			
-			return result;
+			for( ; i.hasNext() ; )
+			{
+				var metaDataList:MetaDataList = i.next() as MetaDataList;
+				if( metaDataList.hasMetaData( name ) )
+				{
+					haveMetaData.push( metaDataList );
+				}
+			}
+			return metaDataList;
+		}
+		
+		public function getPropertyByName( name:String ):NameAndTypeReference
+		{
+			var i:Iterator = new ArrayIterator( getAllProperties() );
+			
+			for( ; i.hasNext() ; )
+			{
+				var prop:NameAndTypeReference = i.next() as NameAndTypeReference;
+				if( prop.getName() == name )
+				{
+					return prop;
+				}
+			}
+			return null;
+		}
+		
+		protected function getAllProperties():Array
+		{
+			if( !_all )
+			{
+				if( !_accessors )
+				{
+					getAccessors();
+				}
+				if( !_methods )
+				{
+					getMethods();
+				}
+				if( !_variables )
+				{
+					getVariables();
+				}
+
+				_all = new Array();
+				addElements( _all , _accessors );
+				addElements( _all , _methods );
+				addElements( _all , _variables );	
+			}
+			return _all;
+		}
+		
+		protected function addElements( list:Array, toAdd:List ):void
+		{
+			for( var i:Iterator = new ArrayIterator( toAdd ); i.hasNext() ; )
+			{
+				list.push( i.next() );
+			}
 		}
 	}
 }

@@ -74,6 +74,9 @@ package org.projectsnooze.impl.scheme
 			_mapsAreGenerated = true;
 		}
 		
+		//---------------------------------------
+		// TODO
+		//---------------------------------------
 		private function relateDataMaps ():void
 		{
 			for ( var i:Iterator = new ArrayIterator ( _classes ) ; i.hasNext() ; )
@@ -91,22 +94,20 @@ package org.projectsnooze.impl.scheme
 		
 		private function createNonRelatedDataMaps ():void
 		{
-			for ( var i:int = 0 ; i < _classes.length ; i ++ )
+			
+			var i:Iterator = new ArrayIterator( _classes );
+			for( ; i.hasNext() ; )
 			{
-				var entity:Object = new ( _classes[i] as Class )();
-				var reflection:XML = describeType( entity );
-				var entityDataMap:EntityMapDataImp = new EntityMapDataImp();
+				var clazz:Class = i.next() as Class;
+				var reflection:Reflection = new ReflectionImpl( new clazz() );
+				var dataMap:EntityMapData = new EntityMapDataImpl();
 				
-				var name:String = reflection.@name;
-				var tableName:String = name.substr( name.indexOf( "::" ) + 2 , 
-					name.length - name.indexOf("::") );
+				dataMap.setTableName( reflection.getClassName() );
 				
-				entityDataMap.setTableName( tableName );
-				
-				addNatralProperties( reflection , entityDataMap );
-				addId( reflection , entityDataMap );
-				getEntityDataMapProvider().setEntityDataMap( 
-					reflection.@name , entityDataMap );
+				addNatralProperties( reflection, dataMap );
+				addId( reflection, dataMap );
+			
+				getEntityDataMapProvider().setEntityDataMap( reflection.getName() , dataMap );
 			}	
 		}
 		
@@ -228,9 +229,10 @@ package org.projectsnooze.impl.scheme
 					metaDataName == MetaData.ONE_TO_MANY );
 		}
 		
-		private function addId ( reflection:XML , 
-			entityDataMap:EntityDataMap ):void
+		private function addId ( reflection:Reflection, dataMap:EntityDataMap ):void
 		{
+			
+			
 			for each ( var method:XML in reflection.method )
 			{
 				if ( method.metadata.@name == MetaData.ID )
@@ -248,24 +250,32 @@ package org.projectsnooze.impl.scheme
 			}
 		}
 		
-		private function addNatralProperties ( reflection:XML , 
-			entityDataMap:EntityDataMap ):void
+		private function addNatralProperties ( reflection:Reflection, 
+			dataMap:EntityDataMap ):void
 		{
-			for each ( var method:XML in reflection.method )
+			var types:Array = reflection.getPropertiesWithType();
+			
+			for( var i:Iterator = new ArrayIterator( types ) ; i.hasNext() ; )
 			{
-				_logger.info( "method:" + method );
+				var nameAndType:NameAndTypeReference = i.next() as NameAndTypeReference;
+				var mapping:NameTypeMapping = new NameTypeMappingImpl();
 				
-				var getter:String = method.( ! hasOwnProperty( "metadata" ) ).@name;
-				if ( getter.substr( 0, 3 ) == "get" )
+				if( nameAndType is MetaDataList )
 				{
-					var name:String = getter.substr( 3 , getter.length );
-					var type:Type =  getTypeFactory().getType( method.@returnType );
-					
-					var mapping:NameTypeMapping = new NameTypeMappingImpl();
-					mapping.setName( name );
-					mapping.setType( type );
-					entityDataMap.addProperty( mapping );
-				} 
+					var metaContainer:MetaDataList = nameAndType as MetaDataList;
+					if( !metaContainer.hasMetaData() )
+					{
+						mapping.setName( nameAndType.getName() );
+						mapping.setType( nameAndType.getType() );
+						dataMap.addProperty( mapping );
+					}
+				}
+				else
+				{
+					mapping.setName( nameAndType.getName() );
+					mapping.setType( nameAndType.getType() );
+					dataMap.addProperty( mapping );
+				}
 			}
 		}
 		

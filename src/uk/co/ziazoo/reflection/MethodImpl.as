@@ -33,13 +33,17 @@ package uk.co.ziazoo.reflection
 			_type = type;
 		}
 		
-		public function addMedataData( metaData:MetaData ):void
+		public function addMetaData( metaData:MetaData ):void
 		{
 			_metaData.push( metaData );
 		}
 		
-		public function hadMetaData( name:String ):Boolean
+		public function hadMetaData( name:String = null ):Boolean
 		{
+			if( !name )
+			{
+				return _metaData.length > 0;
+			}
 			return getMetaDataByName( name ) != null;
 		}
 		

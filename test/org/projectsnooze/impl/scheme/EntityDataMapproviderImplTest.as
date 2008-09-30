@@ -39,7 +39,7 @@ package org.projectsnooze.impl.scheme
    		public function testGetByName ():void
    		{
    			var concern:Concern = new Concern();
-   			var map:EntityDataMap = new EntityMapDataImp();
+   			var map:EntityDataMap = new EntityMapDataImpl();
    			
    			_dataMapProvider.setEntityDataMap( describeType( concern ).@name , map );
    			
@@ -52,7 +52,7 @@ package org.projectsnooze.impl.scheme
    		public function testGetByEntity ():void
    		{
    			var concern:Concern = new Concern();
-   			var map:EntityDataMap = new EntityMapDataImp();
+   			var map:EntityDataMap = new EntityMapDataImpl();
    			
    			_dataMapProvider.setEntityDataMap( describeType( concern ).@name , map );
    			

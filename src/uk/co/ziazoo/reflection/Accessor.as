@@ -1,7 +1,7 @@
 package uk.co.ziazoo.reflection 
 {
 	public interface Accessor 
-		extends NameReference, TypeReference, MetaDataList
+		extends NameAndTypeReference, MetaDataList
 	{
 		function getAccess():String;
 		function setAccess( access:String ):void;

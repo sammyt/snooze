@@ -4,11 +4,11 @@ package uk.co.ziazoo.reflection
 	
 	public interface MetaDataList 
 	{
-		function addMedataData( metaData:MetaData ):void;
+		function addMetaData( metaData:MetaData ):void;
 		
 		function hadMetaData( name:String ):Boolean;
 		
-		function getMetaDataByName( name:String ):MetaData;
+		function getMetaDataByName( name:String = null ):MetaData;
 		
 		function getMetaDataIterator():Iterator;
 	}

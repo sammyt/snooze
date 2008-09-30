@@ -34,16 +34,16 @@ package org.projectsnooze.impl.scheme
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.NameTypeMapping;
 
-	public class EntityMapDataImp implements EntityDataMap
+	public class EntityMapDataImpl implements EntityDataMap
 	{
-		private var logger:ILogger = Log.getLogger( "EntityMapDataImp" );
+		private var logger:ILogger = Log.getLogger( "EntityMapDataImpl" );
 		
 		private var _properties:Array;
 		private var _relationships:Array;
 		private var _tableName:String;
 		private var _pkMapping:NameTypeMapping;
 		
-		public function EntityMapDataImp()
+		public function EntityMapDataImpl()
 		{
 			_properties = new Array();
 			_relationships = new Array();

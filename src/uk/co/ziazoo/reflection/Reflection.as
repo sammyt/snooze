@@ -1,7 +1,10 @@
 package uk.co.ziazoo.reflection 
 {
-	public interface Reflection
+	public interface Reflection 
+		extends NameAndTypeReference, MetaDataList
 	{
+		function getClassName():String;
+		
 		function reflect():void;
 		
 		function getVariables():Array;
@@ -12,6 +15,10 @@ package uk.co.ziazoo.reflection
 		
 		function addMetaData( metaData:XMLList, list:MetaDataList ):void;
 		
-		function getPropertiesWithType( genre:Class = null ):Array;
+		function getPropertiesWithType( type:String = null ):Array;
+		
+		function getPropertiesWithMetaData( name:String = null ):Array;
+		
+		function getPropertyByName( name:String ):NameAndTypeReference;
 	}
 }
