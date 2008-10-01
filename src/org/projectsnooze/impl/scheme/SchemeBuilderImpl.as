@@ -171,15 +171,17 @@ package org.projectsnooze.impl.scheme
 			{
 				var prop:MetaDataList = i.next() as MetaDataList;
 				if( prop.hasMetaData( MetaData.MANY_TO_ONE )
-				 	|| prop.hasMetaData( MetaData.ONE_TO_MANY ) )
+				 	|| prop.hasMetaData( MetaData.ONE_TO_MANY ) )	
 				{
-					
+					var typeName:String = prop.hasMetaData( MetaData.MANY_TO_ONE ) ?
+						MetaData.MANY_TO_ONE : MetaData.ONE_TO_MANY;
+						
 					// create a Relationship object to describe the relationship from
 					// the perspective of the annotated class
 					var hasMetadata:Relationship = new RelationshipImpl();
 					
 					var describedClazz:String = prop.getMetaDataByName( 
-						MetaData.MANY_TO_MANY ).getArgByKey( "ref" );
+						typeName ).getArgByKey( "ref" );
 						
 					// get the entity data map for the entity on the 
 					// other side of the relationship
@@ -189,10 +191,6 @@ package org.projectsnooze.impl.scheme
 					// create the relationship
 					var describedByMetadata:Relationship = new RelationshipImpl();
 					describedByMetadata.setEntityDataMap( entityDataMap );
-					
-					var typeName:String = prop.hasMetaData( MetaData.MANY_TO_ONE ) ?
-						MetaData.MANY_TO_ONE : MetaData.ONE_TO_MANY;
-					
 					describedByMetadata.setType( getLinkTypeFactory().getLinkType( typeName , false ) );
 					describedByMetadata.setReflection( prop );
 					describedByMetadata.setIsEntityContainer( false );
@@ -275,7 +273,7 @@ package org.projectsnooze.impl.scheme
 						dataMap.addProperty( mapping );
 					}
 				}
-				else
+				else if( nameAndType.getName() != "id" )
 				{
 					mapping.setReflection( nameAndType );
 					mapping.setType( getTypeFactory().getType( nameAndType.getType() ) );

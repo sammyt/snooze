@@ -270,6 +270,7 @@ package org.projectsnooze.impl.generator
 			for ( var iterator:Iterator = entityDataMap.getPropertyIterator() ; iterator.hasNext() ; )
 			{
 				var mapping:NameTypeMapping = iterator.next() as NameTypeMapping;
+				trace("DDLGeneratorImpl::addNaturalProperties()", mapping.getType() );
 				values.push( mapping.getLowerCaseName() + " " + mapping.getType().getSQLType() );
 			}
 		}

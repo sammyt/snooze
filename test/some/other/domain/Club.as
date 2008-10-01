@@ -33,12 +33,12 @@ package some.other.domain
 		}
 
 		[OneToMany(ref="some.other.domain::Player")]
-		public function getPlayers ():Array
+		public function get players ():Array
 		{
 			return _players;
 		}
 		
-		public function setPlayers ( players:Array ):void
+		public function set players ( players:Array ):void
 		{
 			_players = players;
 		}

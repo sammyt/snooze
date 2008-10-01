@@ -24,7 +24,7 @@ package
 			//addTest( DependencyTreeCreatorImplTest.suite() );
 			//addTest( StatementCreatorImplTest.suite() );
 			//addTest( ArrayIteratorTest.suite() );
-			//addTest( EntityFacadeTest.suite() );
+			addTest( EntityFacadeTest.suite() );
 			addTest( ReflectionTest.suite() );
 		}
 	}

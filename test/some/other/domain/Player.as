@@ -2,14 +2,14 @@ package some.other.domain
 {
 	public class Player
 	{
-		private var _id:int;
+		public var id:int;
 		private var _firstName:String;
 		private var _lastName:String;
 		
 		public function Player()
 		{
 		}
-		
+		/*
 		[Id]
 		public function getId ():int
 		{
@@ -20,6 +20,7 @@ package some.other.domain
 		{
 			_id = id;
 		}
+		*/
 		
 		public function getFirstName ():String
 		{

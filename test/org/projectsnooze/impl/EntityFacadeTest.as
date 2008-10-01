@@ -53,7 +53,8 @@ package org.projectsnooze.impl
 			//ts.addTest( new EntityFacadeTest( "testTournamentTable" ) );
 			//ts.addTest( new EntityFacadeTest( "testClubTournamentTable" ) );
 			//ts.addTest( new EntityFacadeTest( "testInsertionWithFootballDomain" ) );
-			ts.addTest( new EntityFacadeTest( "retrieveEntity" ) );
+			//ts.addTest( new EntityFacadeTest( "retrieveEntity" ) );
+			ts.addTest( new EntityFacadeTest( "saveEntity" ) );
 			//ts.addTest( new EntityFacadeTest( "testReflection" ) );
 			
 			return ts;
@@ -70,6 +71,7 @@ package org.projectsnooze.impl
 			facade = null;
 		}
 		
+		/*
 		public function smartAddAsync(f:Function):Function 
 		{
 			var f1:Function = function(e:DynamicEvent):void 
@@ -476,7 +478,36 @@ package org.projectsnooze.impl
 			
 			return true;
 		}
+		*/
 		
+		public function saveEntity():void
+		{
+			trace("EntityFacadeTest::retrieveEntity()");
+			facade.addEntityClass( Club );
+			facade.addEntityClass( Player );
+			facade.addEntityClass( Tournament );
+			facade.getSession().createDatabase();
+			
+			var player:Player = new Player();
+			player.setFirstName( "Sam" );
+			player.setLastName( "Williams" );
+			
+			var cluba:Club = new Club();
+			cluba.setName( "Random Club" );
+			cluba.players = [ player ];
+			
+			var clubb:Club = new Club();
+			clubb.setName( "Big Smelly" );
+			clubb.players = [ player ];
+			
+			var tournament:Tournament = new Tournament();
+			tournament.setName( "Winner takes all" );
+			tournament.setClubs( [ cluba , clubb ] );
+			
+			cluba.setTournaments( [ tournament ] );
+			
+			facade.getSession().save( tournament );
+		}
 		
 		public function retrieveEntity():void
 		{
@@ -492,11 +523,11 @@ package org.projectsnooze.impl
 			
 			var cluba:Club = new Club();
 			cluba.setName( "Random Club" );
-			cluba.setPlayers( [ player ] );
+			cluba.players = [ player ];
 			
 			var clubb:Club = new Club();
 			clubb.setName( "Big Smelly" );
-			clubb.setPlayers( [ player ] );
+			clubb.players = [ player ];
 			
 			var tournament:Tournament = new Tournament();
 			tournament.setName( "Winner takes all" );

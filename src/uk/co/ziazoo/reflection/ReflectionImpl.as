@@ -21,6 +21,7 @@ package uk.co.ziazoo.reflection
 		{
 			_object = object;
 			_description = describeType( _object );
+			_metaData = [];
 			createMetaData( _description.metadata , this );
 		}
 		
@@ -166,6 +167,8 @@ package uk.co.ziazoo.reflection
 				{
 					metaData.addArg( arg.@key, arg.@value );
 				}
+				
+				list.addMetaData( metaData );
 			}
 		}
 		
@@ -204,10 +207,14 @@ package uk.co.ziazoo.reflection
 			
 			for( ; i.hasNext() ; )
 			{
-				var metaDataList:MetaDataList = i.next() as MetaDataList;
-				if( metaDataList.hasMetaData( name ) )
+				var prop:NameAndTypeReference = i.next() as NameAndTypeReference;
+				if( prop is MetaDataList )
 				{
-					haveMetaData.push( metaDataList );
+					var metaDataList:MetaDataList = prop as MetaDataList;
+					if( metaDataList.hasMetaData( name ) )
+					{
+						haveMetaData.push( metaDataList );
+					}
 				}
 			}
 			return haveMetaData;

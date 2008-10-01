@@ -78,6 +78,8 @@ package org.projectsnooze.impl.scheme
 		public function setReflection( reflection:NameReference ):void
 		{
 			_reflection = reflection;
+			trace("NameTypeMappingImpl::setReflection()", 
+				reflection.getName(), getName() );
 		}
 		
 		public function setType ( type:Type ):void

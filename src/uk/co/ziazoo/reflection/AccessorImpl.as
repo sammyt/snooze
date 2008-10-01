@@ -12,6 +12,7 @@ package uk.co.ziazoo.reflection
 	
 		public function AccessorImpl()
 		{
+			_metaData = [];
 		}
 		
 		public function getName():String

@@ -2,6 +2,7 @@ package org.projectsnooze.dependency
 {
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.execute.StatementQueue;
+	import org.projectsnooze.scheme.EntityInteraction;
 	
 	/**	
 	*	The <code>DependencyTree</code> contains references to many
@@ -50,7 +51,7 @@ package org.projectsnooze.dependency
 		*
 		*	@param node:DependencyNode the completed node
 		*/		
-		function onNodeComplete( node:DependencyNode ):void
+		function onNodeComplete( node:DependencyNode ):void;
 					
 		/**
 		*	provides the tree with a reference to the statement queue, which it

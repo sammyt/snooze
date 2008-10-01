@@ -35,11 +35,17 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.generator.DDLGenerator;
 	import org.projectsnooze.generator.Statement;
 	import org.projectsnooze.generator.StatementCreator;
-	import uk.co.ziazoo.collections.Iterator;
-	import uk.co.ziazoo.collections.SmartIterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.EntityDataMapProvider;
 	import org.projectsnooze.impl.dependency.RetrieveDepNode;
+	import org.projectsnooze.scheme.EntityInteraction;
+	import org.projectsnooze.impl.scheme.EntityInteractionImpl;
+	
+	import uk.co.ziazoo.collections.Iterator;
+	import uk.co.ziazoo.collections.SmartIterator;
+	import uk.co.ziazoo.reflection.Reflection;
+	import uk.co.ziazoo.reflection.NameReference;
+
 	
 	import mx.logging.ILogger;
 	import mx.logging.Log;
@@ -72,6 +78,11 @@ package org.projectsnooze.impl.dependency
 		 * @private
 		 */
 		protected var _queueManager:QueueManager; 
+		
+		/**
+		*	@private
+		*/
+		protected var _interaction:EntityInteraction;	
 		
 		/**
 		 * Creates instance of <code>DependencyTreeCreatorImpl</code>
@@ -168,10 +179,10 @@ package org.projectsnooze.impl.dependency
 				{
 					// get a reference to the getter for the contained object
 					// or objects, if it is a collection
-					var getter:Function = entity[ "get" + relationship.getPropertyName() ] as Function;
 					
-					// apply the getter, this returning the date
-					var data:Object = getter.apply( entity );
+					var reflection:NameReference = relationship.getReflection();
+					
+					var data:Object = getEntityInteraction().getValue( reflection , entity );
 					
 					// is the data a collection, ie an Array or ArrayCollection
 					if ( data && getTypeUtils().isCollection( data ) )
@@ -280,6 +291,15 @@ package org.projectsnooze.impl.dependency
 					
 				}
 			}
+		}
+		
+		public function getEntityInteraction():EntityInteraction
+		{
+			if( !_interaction )
+			{
+				_interaction = new EntityInteractionImpl();
+			}
+			return _interaction;
 		}
 		
 		/**

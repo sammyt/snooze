@@ -19,6 +19,7 @@
 			<keep-as3-metadata name="ManyToMany" />
 			<keep-as3-metadata name="OneToMany" />
 			<keep-as3-metadata name="OneToOne" />
+			<keep-as3-metadata name="Column" />
 			
 			<source-path path-element="${test.dir}" />
 			<library-path dir="${lib.dir}" append="true">
@@ -45,6 +46,7 @@
 			<keep-as3-metadata name="ManyToMany" />
 			<keep-as3-metadata name="OneToMany" />
 			<keep-as3-metadata name="OneToOne" />
+			<keep-as3-metadata name="Column" />
 			
 			<source-path path-element="${test.dir}" />
 			<library-path dir="${lib.dir}" append="true">
@@ -70,6 +72,7 @@
 			<keep-as3-metadata name="ManyToMany" />
 			<keep-as3-metadata name="OneToMany" />
 			<keep-as3-metadata name="OneToOne" />
+			<keep-as3-metadata name="Column" />
 		</compc>
 	</target>
 

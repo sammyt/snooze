@@ -31,8 +31,11 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.impl.execute.StatementWrapperImpl;
 	import org.projectsnooze.execute.StatementWrapper;
+	import org.projectsnooze.scheme.EntityInteraction;
+	import org.projectsnooze.impl.scheme.EntityInteractionImpl;
 
-	public class ManyToManyInsertDepNode extends AbstractDependencyNodeImpl implements DependencyNode
+	public class ManyToManyInsertDepNode extends AbstractDependencyNodeImpl 
+		implements DependencyNode
 	{
 		/**
 		 * @private
@@ -55,6 +58,11 @@ package org.projectsnooze.impl.dependency
 		protected var _entityDataMapProvider:EntityDataMapProvider; 
 		
 		/**
+		*	@private
+		*/
+		protected var _entityInteraction:EntityInteraction;	
+		
+		/**
 		 * Creates instance of <code>ManyToManyInsertDepNode</code>
 		 */ 	
 		public function ManyToManyInsertDepNode()
@@ -67,17 +75,17 @@ package org.projectsnooze.impl.dependency
 			var map1:EntityDataMap = _entityDataMapProvider.getEntityDataMap( _firstEntity );
 			var map2:EntityDataMap = _entityDataMapProvider.getEntityDataMap( _secondEntity );
 			
-			var getter1:Function = _firstEntity[ 
-				"get" + map1.getPrimaryKey().getName() ] as Function;
+			var data1:Object = getEntityInteration().getValue( 
+			 	map1.getPrimaryKey().getReflection() ,  _firstEntity );
 			
-			var getter2:Function = _secondEntity[ 
-				"get" + map2.getPrimaryKey().getName() ] as Function;
-			
-			_statement.addValue( 
-				map1.getForeignKeyName() , getter1.apply( _firstEntity ) );
+			var data2:Object = getEntityInteration().getValue( 
+			 	map2.getPrimaryKey().getReflection() ,  _secondEntity );
 			
 			_statement.addValue( 
-				map2.getForeignKeyName() , getter2.apply( _secondEntity ) );
+				map1.getForeignKeyName() , data1 );
+			
+			_statement.addValue( 
+				map2.getForeignKeyName() , data2 );
 		}
 		
 		/**
@@ -126,6 +134,15 @@ package org.projectsnooze.impl.dependency
 		override public function getUniqueObject ():Object
 		{
 			return _relationship.getJoinTableName();
+		}
+		
+		public function getEntityInteration():EntityInteraction
+		{
+			if( !_entityInteraction )
+			{
+				return new EntityInteractionImpl();
+			}
+			return _entityInteraction;
 		}
 	}
 }

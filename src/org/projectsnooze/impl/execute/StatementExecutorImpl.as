@@ -104,6 +104,7 @@ package org.projectsnooze.impl.execute
 		
 		private function onFault ( event:SQLErrorEvent ):void
 		{
+			trace("StatementExecutorImpl::onFault()");
 			if ( getResponder() ) 
 			{
 				getResponder().fault( event );

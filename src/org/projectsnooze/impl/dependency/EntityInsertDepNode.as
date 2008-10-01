@@ -33,10 +33,14 @@ package org.projectsnooze.impl.dependency
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.execute.StatementWrapper;
 	import org.projectsnooze.impl.execute.StatementWrapperImpl;
-	import uk.co.ziazoo.collections.ArrayIterator;
-	import uk.co.ziazoo.collections.Iterator;
 	import org.projectsnooze.scheme.EntityDataMap;
 	import org.projectsnooze.scheme.NameTypeMapping;
+	import org.projectsnooze.scheme.EntityInteraction;
+	import org.projectsnooze.impl.scheme.EntityInteractionImpl;
+	
+	import uk.co.ziazoo.collections.ArrayIterator;
+	import uk.co.ziazoo.collections.Iterator;
+	import uk.co.ziazoo.reflection.NameReference;
 
 	public class EntityInsertDepNode extends AbstractDependencyNodeImpl
 	{
@@ -44,6 +48,7 @@ package org.projectsnooze.impl.dependency
 		
 		protected var _entityDataMap:EntityDataMap;
 		protected var _entity:Object;
+		protected var _entityInteraction:EntityInteraction;
 		
 		public function EntityInsertDepNode()
 		{
@@ -63,9 +68,8 @@ package org.projectsnooze.impl.dependency
 			{
 				var mapping:NameTypeMapping = i.next() as NameTypeMapping;
 				
-				var getter:Function = _entity[ "get" + mapping.getName() ] as Function;
-				
-				var data:* = getter.apply( _entity );
+				var data:Object = getEntityInteraction().getValue( 
+				 	mapping.getReflection() , _entity );
 				
 				var mark:String = mapping.getType().getSQLType() == "TEXT" ? '"':"";
 				
@@ -77,9 +81,8 @@ package org.projectsnooze.impl.dependency
 		{
 			var mapping:NameTypeMapping = getEntityDataMap().getPrimaryKey();
 			
-			var getter:Function = _entity[ "get" + mapping.getName() ] as Function;
-				
-			var data:* = getter.apply( _entity );
+			var data:Object = getEntityInteraction().getValue( 
+			 	mapping.getReflection() , _entity );
 			
 			_statement.addValue( mapping.getLowerCaseName() + "_value" , data );
 		}
@@ -95,11 +98,9 @@ package org.projectsnooze.impl.dependency
 					
 					if ( depNode.isComplete() )
 					{
-						var primaryKeyName:String = depNode.getEntityDataMap().getPrimaryKey().getName();
-							
-						var getter:Function = depNode.getEntity()[ "get" + primaryKeyName ] as Function;
+						var reflection:NameReference = depNode.getEntityDataMap().getPrimaryKey().getReflection();
 						
-						var data:* = getter.apply( depNode.getEntity() );
+						var data:Object = getEntityInteraction().getValue( reflection, depNode.getEntity() );
 						
 						var tableName:String = relationship.getEntityDataMap().getTableName().toLowerCase();
 							
@@ -140,7 +141,9 @@ package org.projectsnooze.impl.dependency
 		override public function result( data:Object ):void
 		{
 			var e:SQLResult = data as SQLResult;
-			getEntity().setId ( e.lastInsertRowID );
+			
+			getEntityInteraction().setValue(
+				getEntityDataMap().getPrimaryKey().getReflection(), e.lastInsertRowID, getEntity() )
 			
 			super.result( data );
 		}
@@ -168,6 +171,15 @@ package org.projectsnooze.impl.dependency
 		public function getEntityDataMap ():EntityDataMap
 		{
 			return _entityDataMap;			
+		}
+		
+		public function getEntityInteraction():EntityInteraction
+		{
+			if( !_entityInteraction )
+			{
+				_entityInteraction = new EntityInteractionImpl();
+			}
+			return _entityInteraction;
 		}
 	}
 }

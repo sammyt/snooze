@@ -33,30 +33,39 @@ package uk.co.ziazoo.reflection
 			_type = type;
 		}
 		
-		public function addMetaData( metaData:MetaData ):void
+		public function addMetaData( data:MetaData ):void
 		{
-			_metaData.push( metaData );
+			metaData.push( data );
 		}
 		
 		public function hasMetaData( name:String = null ):Boolean
 		{
 			if( !name )
 			{
-				return _metaData.length > 0;
+				return metaData.length > 0;
 			}
 			return getMetaDataByName( name ) != null;
 		}
 		
 		public function getMetaDataByName( name:String ):MetaData
 		{
-			for each( var metaData:MetaData in _metaData )
+			for each( var data:MetaData in _metaData )
 			{
-				if( metaData.getName() == name )
+				if( data.getName() == name )
 				{
-					return metaData;
+					return data;
 				}
 			}
 			return null;
+		}
+		
+		protected function get metaData():Array
+		{
+			if( !_metaData )
+			{
+				_metaData = new Array();
+			}
+			return _metaData;
 		}
 		
 		public function getMetaDataIterator():Iterator
