@@ -25,10 +25,25 @@
  
 package org.projectsnooze.associations
 {	
+	/**
+	*	Defines the type of underlying database
+	*	relationship of a <code>Relationship</code>	
+	*/	 
 	public interface LinkType
 	{
+		/**
+		*	The name of the relationship
+		*	eg ManyToMany
+		*	
+		*	@return the relationship name
+		*/	
 		function getName ():String;
 		
+		/**
+		*	Sets the name of the relationship
+		*	
+		*	@param name:String the name
+		*/	
 		function setName ( name:String ):void;
 		
 		/**

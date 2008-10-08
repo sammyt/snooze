@@ -27,7 +27,7 @@ package org.projectsnooze.scheme
 {
 	import org.projectsnooze.datatype.Type;
 	
-	import uk.co.ziazoo.reflection.NameReference;
+	import uk.co.ziazoo.reflection.NameAndTypeReference;
 	
 	/**
 	 * 	This class maps the name of a property getter/setter to its 
@@ -41,25 +41,75 @@ package org.projectsnooze.scheme
 		*	This function returns wether of not this is the 
 		*	property which holds the primary key
 		*	
-		*	@return	true if property id primary key
+		*	@return true if property is a primary key
 		*/	
-		function isPrimaryKey ():Boolean;
+		function isPrimaryKey():Boolean;
 		
-		function setIsPrimaryKey ( value:Boolean ):void;
+		/**
+		*	Used to specify is this <code>NameTypeMapping</code>
+		*	is that of a primary key
+		*	
+		*	@param value:Boolean, true if this is a primary key
+		*/	
+		function setIsPrimaryKey( value:Boolean ):void;
 		
-		function getIsPrimaryKey ():Boolean;
+		/**
+		*	Returns the column name that this property maps to.
+		*	This can be determined from the name of the getter from
+		*	the property or from the [Column] metadata where it 
+		*	is present
+		*	
+		*	@return the column name in the database table
+		*/	
+		function getColumnName():String;
 		
-		function getName ():String;
+		/**
+		*	Sets the column name for this property
+		*	
+		*	@param columnName:String the name for the db column
+		*/	
+		function setColumnName( columnName:String ):void;
 		
-		function getReflection():NameReference;
+		/**
+		*	The <code>NameAndTypeReference</code> created from
+		*	reflection on the getter for this property
+		*	
+		*	@return the NameAndTypeReference for the getter
+		*/	
+		function getGetter():NameAndTypeReference;
 		
-		function setReflection( reflection:NameReference ):void;
+		/**
+		*	Sets the <code>NameAndTypeReference</code> for the
+		*	given property
+		*	
+		*	@param getter:NameAndTypeReference the reflection
+		*/	
+		function setGetter( getter:NameAndTypeReference ):void;
 		
-		function setType ( type:Type ):void;
+		/**
+		*	The <code>NameAndTypeReference</code> created from
+		*	reflection on the setter for this property
+		*	
+		*	@return the NameAndTypeReference for the setter
+		*/	
+		function getSetter():NameAndTypeReference;
 		
-		function getType ():Type;
+		/**
+		*	Sets the <code>NameAndTypeReference</code> for the
+		*	given property
+		*	
+		*	@param setter:NameAndTypeReference the reflection
+		*/
+		function setSetter( setter:NameAndTypeReference ):void;
+			
+		function setType( type:Type ):void;
 		
-		function getLowerCaseName ():String;
+		function getType():Type;
+		
+		/**
+		*	Returns the column name in lowercase
+		*/	
+		function getLowerCaseName():String;
 	
 	}
 }

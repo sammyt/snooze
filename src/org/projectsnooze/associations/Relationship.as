@@ -30,20 +30,24 @@ package org.projectsnooze.associations
 	import uk.co.ziazoo.reflection.NameReference;
 	
 	/**
-	*	a Relationships is a description of a relationship
-	*	between or more tables in a relational data base from
-	*	the perspective of one of the entities in the relationship
+	*	A Relationship is a description of a relationship
+	*	between or more tables in a relational data base <strong>from
+	*	the perspective of one of the entities in the relationship</strong>
 	*/	
 	public interface Relationship
 	{
 		
 		/**
-		*	set the link type object for this relationship
+		*	set the link type object for this relationship.
+		*	LinkTypes define the underlying database relationship
+		*	this object represents
+		*	
+		*	@param the link type for this Relationship
 		*/	
 		function setType ( type:LinkType ):void;
 		
 		/**
-		*	retreive the link type object for the given relationship
+		*	retreive the link type object for this relationship
 		*/	
 		function getType ():LinkType;
 		
@@ -62,7 +66,7 @@ package org.projectsnooze.associations
 		
 		/**
 		*	sets the entity data map of the entity whos 
-		*	relationships the onject describes
+		*	relationships this object describes
 		*/	
 		function setEntityDataMap ( dataMap:EntityDataMap ):void;
 		
@@ -70,16 +74,6 @@ package org.projectsnooze.associations
 		*	returns the entity data map whos relationship is described
 		*/	
 		function getEntityDataMap ():EntityDataMap;
-		
-		/**
-		*	returns the property name where there is one. If thie IsEntityContainer
-		*	property is true, then their will be a property name
-		*/	
-		function getPropertyName ():String;
-		
-		function getReflection():NameReference;
-		
-		function setReflection( reflection:NameReference ):void;
 		
 		/**
 		*	set whether or not this is the entity container
@@ -90,6 +84,20 @@ package org.projectsnooze.associations
 		*	returns is this entity is the entity container is the relationship
 		*/
 		function getIsEntityContainer ():Boolean;
+		
+		/**
+		*	<code>Relationship</code> objects are created by inspecting
+		*	a field on an entity, and its associated metadata.  The 
+		*	<code>NameTypeMapping</code> describes the field that created
+		*	this <code>Relationship</code> object
+		*/	
+		function getNameTypeMapping():NameTypeMapping;
+		
+		/**
+		*	The <code>NameTypeMapping</code> object for this relationship
+		*/	
+		function setNameTypeMapping( nameTypeMapping:NameTypeMapping ):void;
+		
 		
 	}
 }

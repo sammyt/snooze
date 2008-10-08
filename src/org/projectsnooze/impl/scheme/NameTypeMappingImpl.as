@@ -28,85 +28,139 @@ package org.projectsnooze.impl.scheme
 	import org.projectsnooze.scheme.NameTypeMapping;
 	import org.projectsnooze.datatype.Type;
 	
-	import uk.co.ziazoo.reflection.NameReference;
 	import uk.co.ziazoo.reflection.Accessor;
 	import uk.co.ziazoo.reflection.Variable;
+	import uk.co.ziazoo.reflection.NameAndTypeReference;
 	
 	public class NameTypeMappingImpl implements NameTypeMapping 
 	{
-		private var _type:Type;
-		private var _value:Object;
-		private var _isPrimaryKey:Boolean = false;
-		private var _reflection:NameReference;
+		/**
+		*	@private
+		*/
+		protected var _type:Type;
 		
+		/**
+		*	@private
+		*/
+		protected var _isPrimaryKey:Boolean = false;
+		
+		/**
+		*	@private
+		*/
+		protected var _reflection:NameReference;
+		
+		/**
+		*	@private
+		*/
+		protected var _getter:NameAndTypeReference;
+		
+		/**
+		*	@private
+		*/
+		protected var _setter:NameAndTypeReference;
+		
+		/**
+		*	@private
+		*/
+		protected var _columnName:String;	
+		
+		/**
+		*	Creates instance of <code>NameTypeMappingImpl</code>
+		*/	
 		public function NameTypeMappingImpl ()
 		{
 		}
 		
+		/**
+		*	@inheritDoc
+		*/	
 		public function isPrimaryKey ():Boolean
 		{
 			return _isPrimaryKey;
 		}
 		
+		/**
+		*	@inheritDoc
+		*/
 		public function setIsPrimaryKey ( value:Boolean ):void
 		{
 			_isPrimaryKey = value;
 		}
 		
-		public function getIsPrimaryKey ():Boolean
-		{
-			return _isPrimaryKey;
-		}
-		
-		public function getName ():String
-		{
-			if( _reflection is Variable
-			 	|| _reflection is Accessor )
-			{
-				return _reflection.getName();
-			}
-			
-			var name:String = _reflection.getName();
-			return name.substr( 3 , name.length );
-		}
-		
-		public function getReflection():NameReference
-		{
-			return _reflection;
-		}
-		
-		public function setReflection( reflection:NameReference ):void
-		{
-			_reflection = reflection;
-			trace("NameTypeMappingImpl::setReflection()", 
-				reflection.getName(), getName() );
-		}
-		
+		/**
+		*	@inheritDoc
+		*/
 		public function setType ( type:Type ):void
 		{
 			_type = type;
 		}
 		
+		/**
+		*	@inheritDoc
+		*/
 		public function getType ():Type
 		{
 			return _type;
 		}
 		
-		public function getValue ():Object
+		/**
+		*	@inheritDoc
+		*/
+		public function getColumnName():String
 		{
-			return _value;
+			if( _columnName )
+			{
+				return _columnName;
+			}
+			//TODO: return the derived name
 		}
 		
-		public function setValue ( value:Object ):void
+		/**
+		*	@inheritDoc
+		*/	
+		public function setColumnName( columnName:String ):void
 		{
-			_value = value;
+			_columnName = columnName;
 		}
 		
+		/**
+		*	@inheritDoc
+		*/	
+		public function getGetter():NameAndTypeReference
+		{
+			return _getter;
+		}
+		
+		/**
+		*	@inheritDoc
+		*/	
+		public function setGetter( getter:NameAndTypeReference ):void
+		{
+			_getter = getter;
+		}
+		
+		/**
+		*	@inheritDoc
+		*/
+		public function getSetter():NameAndTypeReference
+		{
+			return _setter;
+		}
+		
+		/**
+		*	@inheritDoc
+		*/
+		public function setSetter( setter:NameAndTypeReference ):void
+		{
+			_setter = setter;
+		}
+		
+		/**
+		*	@inheritDoc
+		*/
 		public function getLowerCaseName ():String
 		{
 			return getName().toLowerCase();
 		}
-		
 	}
-
 }

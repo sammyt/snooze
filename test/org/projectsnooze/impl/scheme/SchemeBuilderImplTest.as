@@ -177,6 +177,7 @@ package org.projectsnooze.impl.scheme
 			}
 		}
 		
+		/*
 		public function testClubDomainClub ():void
 		{
 			_builder.addEntityClass( Club );
@@ -213,6 +214,7 @@ package org.projectsnooze.impl.scheme
 			}
 			assertTrue( "there where two relationships " , count == 2 );
 		}
+		*/
 		
 		public function testClubDomainPlayer ():void
 		{
