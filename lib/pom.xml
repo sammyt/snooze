@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0               http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.projectsnooze</groupId>
+		<artifactId>snooze-super</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.projectsnooze</groupId>
+	<artifactId>snooze</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>ProjectSnooze SWC</name>
+	<packaging>swc</packaging>
+	
+	<dependencies>
+		<!-- Air SDK dependencies -->
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>air-framework</artifactId>
+			<version>3.1.0.2710</version>
+			<type>pom</type>
+		</dependency>
+		<!-- FlexUnit dependencies -->
+		<dependency>
+			<groupId>flexunit</groupId>
+			<artifactId>flexunit</artifactId>
+			<version>0.85</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>flexunit.junit</groupId>
+			<artifactId>flexunit-optional</artifactId>
+			<version>0.85</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
