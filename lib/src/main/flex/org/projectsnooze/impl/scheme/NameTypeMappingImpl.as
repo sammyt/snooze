@@ -107,8 +107,6 @@ package org.projectsnooze.impl.scheme
 			{
 				return _columnName;
 			}
-			//TODO: return the derived name
-			// ie, not from metadata
 			
 			if ( getGetter() is Variable
 			 	|| getGetter() is Accessor )
