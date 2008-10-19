@@ -28,7 +28,7 @@ package domain
 			_pupils.push( child );
 		}
 		
-		[OneToMany(many="domain::Child")]
+		[OneToMany(ref="domain::Child")]
 		public function getPupils ():Array
 		{
 			return _pupils;

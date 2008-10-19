@@ -109,6 +109,17 @@ package org.projectsnooze.impl.scheme
 			}
 			//TODO: return the derived name
 			// ie, not from metadata
+			
+			if ( getGetter() is Variable
+			 	|| getGetter() is Accessor )
+			{
+				return getGetter().getName();
+			} else
+			{
+				return getGetter().getName().substr( 3 ,
+				 	getGetter().getName().length );
+			}
+			
 			return null
 		}
 		

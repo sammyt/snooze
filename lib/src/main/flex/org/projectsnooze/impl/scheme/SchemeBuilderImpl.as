@@ -230,7 +230,8 @@ package org.projectsnooze.impl.scheme
 					// create a Relationship object to describe the relationship from
 					// the perspective of the annotated class
 					var hasMetadata:Relationship = new RelationshipImpl();
-					
+					trace("SchemeBuilderImpl::createNonRelatedDataMaps()",
+						prop, prop.getName() );
 					var describedClazz:String = prop.getMetaDataByName( 
 						typeName ).getArgByKey( "ref" );
 						
@@ -238,6 +239,11 @@ package org.projectsnooze.impl.scheme
 					// other side of the relationship
 					var describedDataMap:EntityDataMap = 
 						getEntityDataMapProvider().getEntityDataMapByClassName( describedClazz );
+					
+					if( !describedDataMap )
+					{
+						throw new Error( "no datamap found for " + describedClazz );
+					}
 					
 					// create the relationship
 					var describedByMetadata:Relationship = new RelationshipImpl();
@@ -266,7 +272,6 @@ package org.projectsnooze.impl.scheme
 		
 		private function addId ( reflection:Reflection, dataMap:EntityDataMap ):void
 		{
-			
 			var ids:Array = reflection.getPropertiesWithMetaData( MetaData.ID );
 			
 			var mapping:NameTypeMapping = new NameTypeMappingImpl();

@@ -31,6 +31,16 @@
 					<locales>
 						<locale>en_US</locale>
 					</locales>
+					<keepAs3Metadatas>
+						<param>Id</param>
+						<param>Entity</param>
+						<param>Transient</param>
+						<param>ManyToOne</param>
+						<param>ManyToMany</param>
+						<param>OneToMany</param>
+						<param>OneToOne</param>
+						<param>Column</param>
+					</keepAs3Metadatas>
 				</configuration>
 			</plugin>
 			<plugin>

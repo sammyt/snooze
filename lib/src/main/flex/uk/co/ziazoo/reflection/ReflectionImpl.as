@@ -211,6 +211,7 @@ package uk.co.ziazoo.reflection
 				if( prop is MetaDataList )
 				{
 					var metaDataList:MetaDataList = prop as MetaDataList;
+					
 					if( metaDataList.hasMetaData( name ) )
 					{
 						haveMetaData.push( metaDataList );

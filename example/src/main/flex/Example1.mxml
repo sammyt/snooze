@@ -1,64 +1,51 @@
 <?xml version="1.0"?>
 <mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml"
-                creationComplete="onComplete()">
-
-    <mx:Panel title="My Application"
-              paddingTop="10"
-              paddingBottom="10"
-              paddingLeft="10"
-              paddingRight="10">
-
-        <mx:Label id="out"
-                  text="Hello World!"
-                  fontWeight="bold"
-                  fontSize="24" />
-
-    </mx:Panel>
+                        creationComplete="onComplete()">
 
     <mx:Script>
 
         <![CDATA[
             import org.projectsnooze.EntityFacade;
-			import org.projectsnooze.impl.EntityFacadeImpl;
-			
-      		import domain.*;
+            import org.projectsnooze.impl.EntityFacadeImpl;
+            
+            import domain.*;
             
             private var facade:EntityFacade = new EntityFacadeImpl();
             
             private function onComplete():void
             {
                 trace("Example1.mxml::onComplete()");
-				facade.addEntityClass( Mother );
-				facade.addEntityClass( Child );
-				facade.addEntityClass( SchoolClass );
-				facade.addEntityClass( Concern );
-				
-				facade.getSession().createDatabase();
+                facade.addEntityClass( Mother );
+                facade.addEntityClass( Child );
+                facade.addEntityClass( SchoolClass );
+                facade.addEntityClass( Concern );
                 
-				var school:SchoolClass = new SchoolClass();
-				school.setName( "Big School Place" );
+                facade.getSession().createDatabase();
                 
-		   		var mother:Mother = new Mother();
-		   		mother.setName( "jane" );
+                var school:SchoolClass = new SchoolClass();
+                school.setName( "Big School Place" );
                 
-		   		var concern:Concern = new Concern();
-		   		concern.setConcern( "blah blah" );
+                var mother:Mother = new Mother();
+                mother.setName( "jane" );
                 
-		   		var concern2:Concern = new Concern();
-		   		concern2.setConcern( "blah2 blah2" );
+                var concern:Concern = new Concern();
+                concern.setConcern( "blah blah" );
                 
-		   		mother.addConcern( concern );
-		   		mother.addConcern( concern2 );
+                var concern2:Concern = new Concern();
+                concern2.setConcern( "blah2 blah2" );
                 
-		   		for ( var i:int = 0 ; i < 10 ; i ++  )
-		   		{
-			   		var child:Child = new Child();
-			   		child.setHeight( i );
-			   		child.setMother( mother );
-			   		school.addChild( child );
-		   		}
-		
-				facade.getSession().save( school );
+                mother.addConcern( concern );
+                mother.addConcern( concern2 );
+                
+                for ( var i:int = 0 ; i < 10 ; i ++  )
+                {
+                    var child:Child = new Child();
+                    child.setHeight( i );
+                    child.setMother( mother );
+                    school.addChild( child );
+                }
+        
+                facade.getSession().save( school );
             }
         ]]>
 

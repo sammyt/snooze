@@ -70,7 +70,7 @@ package uk.co.ziazoo.reflection
 		
 		public function getMetaDataIterator():Iterator
 		{
-			return new ArrayIterator( _metaData );
+			return new ArrayIterator( metaData );
 		}
 	}
 }
