@@ -55,7 +55,7 @@ package org.projectsnooze.impl.dependency
 		{
 			var dataMap:EntityDataMap = getEntityDataMapProvider().getEntityDataMap( _entity );
 			
-			getStatement().addValue( dataMap.getPrimaryKey().getName() , _id );
+			getStatement().addValue( dataMap.getPrimaryKey().getColumnName() , _id );
 		}
 		
 		/**

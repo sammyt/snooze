@@ -69,7 +69,7 @@ package org.projectsnooze.impl.dependency
 				var mapping:NameTypeMapping = i.next() as NameTypeMapping;
 				
 				var data:Object = getEntityInteraction().getValue( 
-				 	mapping.getReflection() , _entity );
+				 	mapping.getGetter() , _entity );
 				
 				var mark:String = mapping.getType().getSQLType() == "TEXT" ? '"':"";
 				
@@ -82,7 +82,7 @@ package org.projectsnooze.impl.dependency
 			var mapping:NameTypeMapping = getEntityDataMap().getPrimaryKey();
 			
 			var data:Object = getEntityInteraction().getValue( 
-			 	mapping.getReflection() , _entity );
+			 	mapping.getGetter() , _entity );
 			
 			_statement.addValue( mapping.getLowerCaseName() + "_value" , data );
 		}
@@ -94,17 +94,22 @@ package org.projectsnooze.impl.dependency
 				var relationship:Relationship = i.next() as Relationship;
 				if ( relationship.getType().getForeignKeyContainer() )
 				{
-					var depNode:EntityInsertDepNode = getDependencyNodeByDataMap( relationship.getEntityDataMap() );
+					var depNode:EntityInsertDepNode = 
+						getDependencyNodeByDataMap( relationship.getEntityDataMap() );
 					
 					if ( depNode.isComplete() )
 					{
-						var reflection:NameReference = depNode.getEntityDataMap().getPrimaryKey().getReflection();
+						var reflection:NameReference = 
+							depNode.getEntityDataMap().getPrimaryKey().getGetter();
 						
-						var data:Object = getEntityInteraction().getValue( reflection, depNode.getEntity() );
+						var data:Object = getEntityInteraction().getValue( 
+							reflection, depNode.getEntity() );
 						
-						var tableName:String = relationship.getEntityDataMap().getTableName().toLowerCase();
+						var tableName:String = 
+							relationship.getEntityDataMap().getTableName().toLowerCase();
 							
-						var idName:String = relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
+						var idName:String = 
+							relationship.getEntityDataMap().getPrimaryKey().getLowerCaseName();
 						
 						_statement.addValue( tableName + "_" + idName , data );
 					}
@@ -112,7 +117,8 @@ package org.projectsnooze.impl.dependency
 			}
 		}
 		
-		protected function getDependencyNodeByDataMap ( entityDataMap:EntityDataMap ):EntityInsertDepNode
+		protected function getDependencyNodeByDataMap ( 
+			entityDataMap:EntityDataMap ):EntityInsertDepNode
 		{	
 			for ( var i:Iterator = new ArrayIterator( _dependencies ) ; i.hasNext() ; )
 			{
@@ -142,8 +148,9 @@ package org.projectsnooze.impl.dependency
 		{
 			var e:SQLResult = data as SQLResult;
 			
-			getEntityInteraction().setValue(
-				getEntityDataMap().getPrimaryKey().getReflection(), e.lastInsertRowID, getEntity() )
+			getEntityInteraction().setValue( 
+				getEntityDataMap().getPrimaryKey().getSetter(), 
+				e.lastInsertRowID, getEntity() );
 			
 			super.result( data );
 		}

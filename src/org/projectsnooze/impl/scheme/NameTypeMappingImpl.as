@@ -47,11 +47,6 @@ package org.projectsnooze.impl.scheme
 		/**
 		*	@private
 		*/
-		protected var _reflection:NameReference;
-		
-		/**
-		*	@private
-		*/
 		protected var _getter:NameAndTypeReference;
 		
 		/**
@@ -82,7 +77,7 @@ package org.projectsnooze.impl.scheme
 		/**
 		*	@inheritDoc
 		*/
-		public function setIsPrimaryKey ( value:Boolean ):void
+		public function setPrimaryKey ( value:Boolean ):void
 		{
 			_isPrimaryKey = value;
 		}
@@ -113,6 +108,8 @@ package org.projectsnooze.impl.scheme
 				return _columnName;
 			}
 			//TODO: return the derived name
+			// ie, not from metadata
+			return null
 		}
 		
 		/**
@@ -160,7 +157,7 @@ package org.projectsnooze.impl.scheme
 		*/
 		public function getLowerCaseName ():String
 		{
-			return getName().toLowerCase();
+			return getColumnName().toLowerCase();
 		}
 	}
 }

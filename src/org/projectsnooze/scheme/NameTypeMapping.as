@@ -51,7 +51,7 @@ package org.projectsnooze.scheme
 		*	
 		*	@param value:Boolean, true if this is a primary key
 		*/	
-		function setIsPrimaryKey( value:Boolean ):void;
+		function setPrimaryKey( value:Boolean ):void;
 		
 		/**
 		*	Returns the column name that this property maps to.

@@ -76,10 +76,10 @@ package org.projectsnooze.impl.dependency
 			var map2:EntityDataMap = _entityDataMapProvider.getEntityDataMap( _secondEntity );
 			
 			var data1:Object = getEntityInteration().getValue( 
-			 	map1.getPrimaryKey().getReflection() ,  _firstEntity );
+			 	map1.getPrimaryKey().getGetter() ,  _firstEntity );
 			
 			var data2:Object = getEntityInteration().getValue( 
-			 	map2.getPrimaryKey().getReflection() ,  _secondEntity );
+			 	map2.getPrimaryKey().getGetter() ,  _secondEntity );
 			
 			_statement.addValue( 
 				map1.getForeignKeyName() , data1 );

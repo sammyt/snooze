@@ -180,7 +180,7 @@ package org.projectsnooze.impl.dependency
 					// get a reference to the getter for the contained object
 					// or objects, if it is a collection
 					
-					var reflection:NameReference = relationship.getReflection();
+					var reflection:NameReference = relationship.getNameTypeMapping().getGetter();
 					
 					var data:Object = getEntityInteraction().getValue( reflection , entity );
 					
@@ -256,9 +256,9 @@ package org.projectsnooze.impl.dependency
 			
 			var entity:Object = new clazz();
 			var dataMap:EntityDataMap = getEntitDataMapProvider().getEntityDataMap( entity );
-			var setter:Function = entity[ "set" + dataMap.getPrimaryKey().getName() ] as Function;
 			
-			setter.apply( entity , [ id ] );
+			getEntityInteraction().setValue( dataMap.getPrimaryKey().getSetter(), 
+				id , entity );
 			
 			createRetrieveTree( depTree , entity , id );
 			

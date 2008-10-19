@@ -28,6 +28,7 @@ package org.projectsnooze.impl.associations
 	import org.projectsnooze.associations.LinkType;
 	import org.projectsnooze.associations.Relationship;
 	import org.projectsnooze.scheme.EntityDataMap;
+	import org.projectsnooze.scheme.NameTypeMapping;
 	
 	import uk.co.ziazoo.reflection.NameReference;
 	import uk.co.ziazoo.reflection.Accessor;
@@ -71,10 +72,13 @@ package org.projectsnooze.impl.associations
 		/**
 		*	@private
 		*	
-		*	the reflection of the property
-		*/	
-		protected var _reflection:NameReference;
+		*	the <code>NameTypeMapping</code> for this relationship
+		*/
+		protected var _nameTypeMapping:NameTypeMapping;	
 		
+		/**
+		*	Creates a <code>RelationshipImpl</code> instance
+		*/	
 		public function RelationshipImpl()
 		{
 		}
@@ -114,31 +118,6 @@ package org.projectsnooze.impl.associations
 		/**
 		*	@inheritDoc	
 		*/
-		public function getPropertyName ():String
-		{
-			if( _reflection is Variable
-			 	|| _reflection is Accessor )
-			{
-				return _reflection.getName();
-			}
-			
-			var name:String = _reflection.getName();
-			return name.substr( 3 , name.length );
-		}
-		
-		public function getReflection():NameReference
-		{
-			return _reflection;
-		}
-      
-		public function setReflection( reflection:NameReference ):void
-		{
-			_reflection = reflection;
-		}
-		
-		/**
-		*	@inheritDoc	
-		*/
 		public function setIsEntityContainer ( isEntityContainer:Boolean ):void
 		{
 			_isEntityContainer = isEntityContainer;
@@ -166,6 +145,22 @@ package org.projectsnooze.impl.associations
 		public function setJoinTableName ( joinTableName:String ):void
 		{
 			_joinTableName = joinTableName;
+		}
+		
+		/**
+		*	@inheritDoc
+		*/	
+		public function getNameTypeMapping():NameTypeMapping
+		{
+			return _nameTypeMapping;
+		}
+		
+		/**
+		*	@inheritDoc
+		*/	
+		public function setNameTypeMapping( nameTypeMapping:NameTypeMapping ):void
+		{
+			_nameTypeMapping = nameTypeMapping;
 		}
 	}
 }

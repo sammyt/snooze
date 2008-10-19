@@ -48,6 +48,8 @@ package org.projectsnooze.impl.scheme
 	import uk.co.ziazoo.reflection.ReflectionImpl;
 	import uk.co.ziazoo.reflection.MetaDataList;
 	import uk.co.ziazoo.reflection.NameAndTypeReference;
+	import uk.co.ziazoo.reflection.Variable;
+	import uk.co.ziazoo.reflection.Accessor;
 	
 	public class SchemeBuilderImpl implements SchemeBuilder
 	{
@@ -140,9 +142,10 @@ package org.projectsnooze.impl.scheme
 				
 				// add the necessary properties to the relationship
 				hasMetadata.setEntityDataMap( describedDataMap );
-				hasMetadata.setType( getLinkTypeFactory().getLinkType( MetaData.MANY_TO_MANY , true ) );
-				hasMetadata.setReflection( prop );
+				hasMetadata.setType( getLinkTypeFactory().getLinkType( 
+					MetaData.MANY_TO_MANY , true ) );
 				hasMetadata.setIsEntityContainer( true );
+				hasMetadata.setNameTypeMapping( createNameTypeMapping( prop, reflection ) );
 				
 				// add the two table names to an array for sorting
 				var tableNames:Array = [ entityDataMap.getTableName() , 
@@ -156,6 +159,54 @@ package org.projectsnooze.impl.scheme
 				
 				entityDataMap.addRelationship( hasMetadata );
 			}
+		}
+		
+		private function getGetter( prop:NameAndTypeReference, 
+			reflection:Reflection ):NameAndTypeReference
+		{
+			if( prop is Variable
+			 	|| prop is Accessor )
+			{
+				return prop
+			}
+			if( prop.getName().substr( 0, 3 ) != "get" )
+			{
+				var name:String  = prop.getName();
+				var propName:String = name.substr( 3, name.length );
+				
+				if( reflection.getPropertyByName( "get" + propName ) )
+				{
+					return reflection.getPropertyByName( "get" + propName );
+				}
+				
+				throw new Error( "Could not find getter for " + prop.getName() );
+				
+			}
+			return prop;
+		}
+		
+		private function getSetter( prop:NameAndTypeReference,
+		 	reflection:Reflection ):NameAndTypeReference
+		{
+			if( prop is Variable
+			 	|| prop is Accessor )
+			{
+				return prop
+			}
+			if( prop.getName().substr( 0, 3 ) != "set" )
+			{
+				var name:String  = prop.getName();
+				var propName:String = name.substr( 3, name.length );
+				
+				if( reflection.getPropertyByName( "set" + propName ) )
+				{
+					return reflection.getPropertyByName( "set" + propName );
+				}
+				
+				throw new Error( "Could not find setter for " + prop.getName() );
+				
+			}
+			return prop;
 		}
 		
 		private function addForeignKeyRelationships ( reflection:Reflection , 
@@ -191,8 +242,9 @@ package org.projectsnooze.impl.scheme
 					// create the relationship
 					var describedByMetadata:Relationship = new RelationshipImpl();
 					describedByMetadata.setEntityDataMap( entityDataMap );
-					describedByMetadata.setType( getLinkTypeFactory().getLinkType( typeName , false ) );
-					describedByMetadata.setReflection( prop );
+					describedByMetadata.setType( 
+						getLinkTypeFactory().getLinkType( typeName , false ) );
+					describedByMetadata.setNameTypeMapping( createNameTypeMapping( prop, reflection ) );
 					describedByMetadata.setIsEntityContainer( false );
 					
 					// add the relationship
@@ -201,7 +253,7 @@ package org.projectsnooze.impl.scheme
 					// add the necessary properties to the relationship
 				  	hasMetadata.setEntityDataMap( describedDataMap );
 				 	hasMetadata.setType( getLinkTypeFactory().getLinkType( typeName , true ) );
-				 	hasMetadata.setReflection( prop );
+					hasMetadata.setNameTypeMapping( createNameTypeMapping( prop, reflection ) );
 				 	hasMetadata.setIsEntityContainer( true );
               
 				  	// add the relationship to the metadata
@@ -235,21 +287,13 @@ package org.projectsnooze.impl.scheme
 					throw new Error( "No ID defined for " 
 						+ reflection.getName() );
 				}
-				
-				mapping.setReflection( prop );
-				mapping.setType( getTypeFactory().getType( prop.getType() ) );
-				mapping.setIsPrimaryKey( true );
-				dataMap.setPrimaryKey( mapping );
+				dataMap.setPrimaryKey( createNameTypeMapping( prop, reflection, true ) );
 			}
 			
 			if( ids.length == 1 )
 			{
 				prop = ids[0] as NameAndTypeReference;
-				
-				mapping.setReflection( prop );
-				mapping.setType( getTypeFactory().getType( prop.getType() ) );
-				mapping.setIsPrimaryKey( true );
-				dataMap.setPrimaryKey( mapping );
+				dataMap.setPrimaryKey( createNameTypeMapping( prop, reflection, true ) );
 			}
 		}
 		
@@ -268,18 +312,26 @@ package org.projectsnooze.impl.scheme
 					var metaContainer:MetaDataList = nameAndType as MetaDataList;
 					if( !metaContainer.hasMetaData() )
 					{
-						mapping.setReflection( nameAndType );
-						mapping.setType( getTypeFactory().getType( nameAndType.getType() ) );
-						dataMap.addProperty( mapping );
+						dataMap.addProperty( createNameTypeMapping( nameAndType, reflection ) );
 					}
 				}
 				else if( nameAndType.getName() != "id" )
 				{
-					mapping.setReflection( nameAndType );
-					mapping.setType( getTypeFactory().getType( nameAndType.getType() ) );
-					dataMap.addProperty( mapping );
+					dataMap.addProperty( createNameTypeMapping( nameAndType, reflection ) );
 				}
 			}
+		}
+		
+		private function createNameTypeMapping( prop:NameAndTypeReference, 
+			reflection:Reflection, primaryKey:Boolean = false ):NameTypeMapping
+		{
+			var mapping:NameTypeMapping = new NameTypeMappingImpl();
+			mapping.setGetter( getGetter( prop, reflection ) );
+			mapping.setSetter( getSetter( prop, reflection ) );
+			mapping.setType( getTypeFactory().getType( prop.getType() ) );
+			mapping.setPrimaryKey( primaryKey );
+			
+			return mapping;
 		}
 		
 		public function areEntityDataMapsGenerated ():Boolean

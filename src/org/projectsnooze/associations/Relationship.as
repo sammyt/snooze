@@ -26,6 +26,7 @@
 package org.projectsnooze.associations
 {
 	import org.projectsnooze.scheme.EntityDataMap;
+	import org.projectsnooze.scheme.NameTypeMapping;
 	
 	import uk.co.ziazoo.reflection.NameReference;
 	
